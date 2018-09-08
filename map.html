@@ -32,6 +32,7 @@
 		</style>
 		<script>
 			(function() {
+				//rem 与屏幕/字体大小比例计算
 				var userFontSize = parseFloat(getComputedStyle(document.documentElement, false)['fontSize']);
 				var ratio = 16 / userFontSize;
 				var fontSize = (innerWidth / 1536 * 0.625) * 10 * ratio;
@@ -42,7 +43,7 @@
 //				}
 			})();
 		</script>
-		<!--<script src="http://livejs.com/live.js"></script>-->
+		<script src="http://livejs.com/live.js"></script>
 	</head>
 
 	<body>
@@ -70,10 +71,28 @@
 			map.style.marginTop = -mapSize.height / 2 + 'px';
 			map.width = mapSize.width * 1.03;
 			map.height = mapSize.height * 1.03;
+			//map.height = map.width * window.devicePixelRatio;
+            //map.width = map.height * window.devicePixelRatio;
 			let w = Math.floor(mapSize.width / 8);
 			let h = Math.floor(mapSize.height / 9);
 			console.log(w);
 			let p = map.getContext('2d');
+			/**
+			 * x坐标转换函数
+			 * @param {Number} x
+			 */
+			function funCoordinateX(x){
+				return w * x + w / 8 + 0.5;
+			}
+			
+			/**
+			 * y坐标转换函数
+			 * @param {Number} y
+			 */
+			function funCoordinateY(y){
+				return (mapSize.height) / 9 * y + h / 9 + 0.5
+			}
+         //   p.scale(window.devicePixelRatio, window.devicePixelRatio);
 			p.beginPath();
 			p.strokeStyle = "#000";
 			p.lineWidth = 1;
@@ -102,18 +121,69 @@
 			}
 			p.stroke();
 			p.closePath();
-			//兵位 炮位
-			function DrawPost(){
+			//绘制棋盘兵位 炮位的函数
+			function DrawPost(x,y){
 				p.beginPath();
 				p.strokeStyle = "#000";
 				p.lineWidth = 1;
-				p.moveTo(w * 0 + w / 8 + 0.5+5, (mapSize.height) / 9 * 6 + h / 9 + 0.5 -2);
-				p.lineTo(w * 0 + w / 8 + 0.5+2, (mapSize.height) / 9 * 6 + h / 9 + 0.5);
-				p.stroke();
-				p.closePath();
+				
+					//右
+					if(x!=8){
+						//右上角
+						p.moveTo(w * x + w / 8 +w*0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 -w*0.2);
+						p.lineTo(w * x + w / 8 +w*0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 -w*0.08);
+						p.lineTo(w * x + w / 8 +w*0.25, (mapSize.height) / 9 * y + h / 9 + 0.5 -w*0.08);
+						//右下角
+						p.moveTo(w * x + w / 8 +w*0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 +w*0.2);
+						p.lineTo(w * x + w / 8 +w*0.08, (mapSize.height) / 9 * y+ h / 9 + 0.5 +w*0.08);
+						p.lineTo(w * x + w / 8 +w*0.25, (mapSize.height) / 9 * y + h / 9 + 0.5 +w*0.08);
+					}else{
+						//空
+					}
+					//左 
+					if(x==0){
+						//空
+					}else{
+						//左上角
+						p.moveTo(w * x + w / 8 -w*0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 +w*0.2);
+						p.lineTo(w * x + w / 8 -w*0.08, (mapSize.height) / 9 * y+ h / 9 + 0.5 +w*0.08);
+						p.lineTo(w * x + w / 8 -w*0.25, (mapSize.height) / 9 * y + h / 9 + 0.5 +w*0.08);
+						//左下角
+						p.moveTo(w * x + w / 8 -w*0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 -w*0.2);
+						p.lineTo(w * x + w / 8 -w*0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 -w*0.08);
+						p.lineTo(w * x + w / 8 -w*0.25, (mapSize.height) / 9 * y + h / 9 + 0.5 -w*0.08);
+						
+					}
+					p.stroke();
+					p.closePath();
 			}
-		
+			//绘制兵位  炮位
+			//坐标从0开始 为偶数时 循环执行3行和6行兵位 ,为1、7绘制2、7行炮位
+			for(let i=0;i<9;i++){
+				if(i%2==0){
+					DrawPost(i,6);
+					DrawPost(i,3);
+				}else if(i==1||i==7){
+					DrawPost(i,2);
+					DrawPost(i,7);
+				}else{
+					//空
+				}
+			}
+			//绘制城中斜线
+			p.beginPath();
+			p.moveTo(funCoordinateX(3), funCoordinateY(7));
+			p.lineTo(funCoordinateX(5), funCoordinateY(9));
+			p.moveTo(funCoordinateX(5), funCoordinateY(7));
+			p.lineTo(funCoordinateX(3), funCoordinateY(9));
 			
+			p.moveTo(funCoordinateX(3), funCoordinateY(2));
+			p.lineTo(funCoordinateX(5), funCoordinateY(0));
+			p.moveTo(funCoordinateX(5), funCoordinateY(2));
+			p.lineTo(funCoordinateX(3), funCoordinateY(0));
+			
+			p.stroke();
+			p.closePath();
 		</script>
 	</body>
 
