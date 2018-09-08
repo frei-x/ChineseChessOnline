@@ -181,9 +181,20 @@
 			p.lineTo(funCoordinateX(5), funCoordinateY(0));
 			p.moveTo(funCoordinateX(5), funCoordinateY(2));
 			p.lineTo(funCoordinateX(3), funCoordinateY(0));
-			
 			p.stroke();
 			p.closePath();
+			
+			p.fillStyle='#000';
+			p.font='0.45rem STxingkai';
+	        p.beginPath();
+	        p.fillText('楚河',funCoordinateX(1.5),funCoordinateX(4.6));
+	        p.fillText('汉界',funCoordinateX(5.5),funCoordinateX(4.6));
+	        p.closePath();
+	        
+			p.beginPath();
+			p.arc(funCoordinateX(2),funCoordinateY(6),w/2.5,0,360*Math.PI/180);
+			p.fillStyle="#DEB887";
+			p.fill();
 		</script>
 	</body>
 
