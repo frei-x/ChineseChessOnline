@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,minimal-ui">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<title>云象棋</title>
+		<style>
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			
+			#box {
+				width: 100vw;
+				height: 100vh;
+				position: relative;
+				top: 0;
+				left: 0;
+				text-align: center;
+			}
+			
+			#map {
+				position: absolute;
+				left: 50%;
+				top: 46%;
+				border: 0.05rem solid darkgoldenrod;
+			}
+		</style>
+		<script>
+			(function() {
+				var userFontSize = parseFloat(getComputedStyle(document.documentElement, false)['fontSize']);
+				var ratio = 16 / userFontSize;
+				var fontSize = (innerWidth / 1536 * 0.625) * 10 * ratio;
+				document.documentElement.style.fontSize = fontSize + "rem";
+//				window.onresize = function() {
+//					fontSize = (innerWidth / 1536 * 0.625) * 10 * ratio;
+//					document.documentElement.style.fontSize = fontSize + "rem";
+//				}
+			})();
+		</script>
+		<!--<script src="http://livejs.com/live.js"></script>-->
+	</head>
+
+	<body>
+		<div id="box">
+			<canvas id="map"></canvas>
+		</div>
+
+		<script>
+			"use strict"
+			let map = document.getElementById("map");
+			let box = document.getElementById("box");
+			//选择宽高中最小长度 计算比例  
+			let mapSize = innerWidth > innerHeight ? {
+				width: Math.floor(innerHeight * 0.81),
+				height: Math.floor(innerHeight * 0.9)
+			} : {
+				width: Math.floor(innerWidth * 0.9),
+				height: Math.floor(innerWidth * 1)
+			};
+			//保证为整数  方便线条完整分割棋盘  并且不出现需要+0.5的毛边	
+			mapSize.width = mapSize.width % 8 == 0 ? mapSize.width : mapSize.width - mapSize.width % 8;
+			mapSize.height = mapSize.height % 9 == 0 ? mapSize.height : mapSize.height - mapSize.height % 9;
+			console.table(mapSize);
+			map.style.marginLeft = -mapSize.width / 2 -10 + 'px';
+			map.style.marginTop = -mapSize.height / 2 + 'px';
+			map.width = mapSize.width * 1.03;
+			map.height = mapSize.height * 1.03;
+			let w = Math.floor(mapSize.width / 8);
+			let h = Math.floor(mapSize.height / 9);
+			console.log(w);
+			let p = map.getContext('2d');
+			p.beginPath();
+			p.strokeStyle = "#000";
+			p.lineWidth = 1;
+			//棋盘 竖线
+			console.log(mapSize.width)
+			//初始画点(线宽为1 最左边  最上边的线只显示一半)增加w/10  ,h/10
+			//分割两岸  从 0 画到4, 4~5为楚河汉界,从5 画到9
+			for(let i = 0; i < 9; i++) {
+				p.moveTo(w * i + w / 8 + 0.5, h / 9 + 0.5);
+				p.lineTo(w * i + w / 8 + 0.5, (mapSize.height) / 9 * 4 + h / 9 + 0.5);
+				p.moveTo(w * i + w / 8 + 0.5, (mapSize.height) / 9 * 5 + h / 9 + 0.5);
+				p.lineTo(w * i + w / 8 + 0.5, (mapSize.height) / 9 * 9 + h / 9 + 0.5);
+				//第一条和最后一条竖线不分割
+				if(i == 0 || i == 8) {
+					p.moveTo(w * i + w / 8 + 0.5, (mapSize.height) / 9 * 4 + h / 9 + 0.5);
+					p.lineTo(w * i + w / 8 + 0.5, (mapSize.height) / 9 * 5 + h / 9 + 0.5);
+				}
+			}
+			p.stroke();
+			p.closePath();
+			//棋盘横线
+			p.beginPath();
+			for(let i = 0; i < 10; i++) {
+				p.moveTo(w / 8 + 0.5, h * i + h / 9 + 0.5);
+				p.lineTo(mapSize.width + w / 8 + 0.5, h * i + h / 9 + 0.5);
+			}
+			p.stroke();
+			p.closePath();
+			//兵位 炮位
+			function DrawPost(){
+				p.beginPath();
+				p.strokeStyle = "#000";
+				p.lineWidth = 1;
+				p.moveTo(w * 0 + w / 8 + 0.5+5, (mapSize.height) / 9 * 6 + h / 9 + 0.5 -2);
+				p.lineTo(w * 0 + w / 8 + 0.5+2, (mapSize.height) / 9 * 6 + h / 9 + 0.5);
+				p.stroke();
+				p.closePath();
+			}
+		
+			
+		</script>
+	</body>
+
+</html>
