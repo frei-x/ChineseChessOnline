@@ -15,8 +15,11 @@
 			}
 			
 			#box {
+				font-family: 'xingkai';
 				width: 100vw;
 				height: 100vh;
+				margin: 0;
+				padding: 0;
 				position: relative;
 				top: 0;
 				left: 0;
@@ -26,8 +29,11 @@
 			#map {
 				position: absolute;
 				left: 50%;
-				top: 46%;
-				border: 0.05rem solid darkgoldenrod;
+				top: 47%;
+				padding: 0px;
+				margin: 0;
+				border: 0.06rem solid darkgoldenrod;
+				background: rgba(249, 216, 162, 1);
 			}
 		</style>
 		<script>
@@ -37,10 +43,10 @@
 				var ratio = 16 / userFontSize;
 				var fontSize = (innerWidth / 1536 * 0.625) * 10 * ratio;
 				document.documentElement.style.fontSize = fontSize + "rem";
-//				window.onresize = function() {
-//					fontSize = (innerWidth / 1536 * 0.625) * 10 * ratio;
-//					document.documentElement.style.fontSize = fontSize + "rem";
-//				}
+				//				window.onresize = function() {
+				//					fontSize = (innerWidth / 1536 * 0.625) * 10 * ratio;
+				//					document.documentElement.style.fontSize = fontSize + "rem";
+				//				}
 			})();
 		</script>
 		<script src="http://livejs.com/live.js"></script>
@@ -52,52 +58,71 @@
 		</div>
 
 		<script>
+			/*
+						 canvas出现毛边  一个是0.5px问题  一个是扩大canvas的宽高(提高分辨率)  再css设置进行缩放
+						 * */
 			"use strict"
 			let map = document.getElementById("map");
 			let box = document.getElementById("box");
+			//1rem=html根字体大小(px) ,getComputedStyle取出换算后 实际的px大小
+
+			let Root = {
+				fontSize: parseFloat(getComputedStyle(document.documentElement, false)['fontSize']),
+			}
 			//选择宽高中最小长度 计算比例  
 			let mapSize = innerWidth > innerHeight ? {
-				width: Math.floor(innerHeight * 0.81),
-				height: Math.floor(innerHeight * 0.9)
+				width: Math.floor(innerHeight * 0.81 * 2),
+				height: Math.floor(innerHeight * 0.9 * 2)
 			} : {
-				width: Math.floor(innerWidth * 0.9),
-				height: Math.floor(innerWidth * 1)
+				width: Math.floor(innerWidth * 0.98 * 4),
+				height: Math.floor(innerWidth * 1.1111 * 4)
 			};
 			//保证为整数  方便线条完整分割棋盘  并且不出现需要+0.5的毛边	
 			mapSize.width = mapSize.width % 8 == 0 ? mapSize.width : mapSize.width - mapSize.width % 8;
 			mapSize.height = mapSize.height % 9 == 0 ? mapSize.height : mapSize.height - mapSize.height % 9;
 			console.table(mapSize);
-			map.style.marginLeft = -mapSize.width / 2 -10 + 'px';
-			map.style.marginTop = -mapSize.height / 2 + 'px';
-			map.width = mapSize.width * 1.03;
-			map.height = mapSize.height * 1.03;
+			map.width = mapSize.width * 1.15;
+			map.height = mapSize.height * 1.15;
 			//map.height = map.width * window.devicePixelRatio;
-            //map.width = map.height * window.devicePixelRatio;
+			//map.width = map.height * window.devicePixelRatio;
 			let w = Math.floor(mapSize.width / 8);
 			let h = Math.floor(mapSize.height / 9);
 			console.log(w);
 			let p = map.getContext('2d');
+			if(innerWidth <= 700 && innerHeight > innerWidth) {
+				map.style.cssText = "width: " + mapSize.width / 4 + "px;height:" + mapSize.height / 4 + "px;border: 0.16rem solid darkgoldenrod;"
+				p.lineWidth = 3;
+
+			} else {
+				p.lineWidth = 2;
+				map.style.cssText = "width: " + mapSize.width / 2 + "px;height:" + mapSize.height / 2 + "px;"
+			}
+			map.style.marginLeft = -parseFloat(map.style.width) / 2 - 4 + 'px';
+			map.style.marginTop = -parseFloat(map.style.height) / 2 + 'px'
 			/**
 			 * x坐标转换函数
 			 * @param {Number} x
 			 */
-			function funCoordinateX(x){
+			function funCoordinateX(x) {
 				return w * x + w / 8 + 0.5;
 			}
-			
+
 			/**
 			 * y坐标转换函数
 			 * @param {Number} y
 			 */
-			function funCoordinateY(y){
-				return (mapSize.height) / 9 * y + h / 9 + 0.5
+			function funCoordinateY(y) {
+				return(mapSize.height) / 9 * y + h / 9 + 0.5
 			}
-         //   p.scale(window.devicePixelRatio, window.devicePixelRatio);
+			//   p.scale(window.devicePixelRatio, window.devicePixelRatio);
+			//绘制棋盘
+			p.fillStyle = 'rgba(249,216,162,1)';
+			p.fillRect(0, 0, map.width, map.height);
 			p.beginPath();
 			p.strokeStyle = "#000";
-			p.lineWidth = 1;
+			p.translate(mapSize.width * (0.12 / 2), mapSize.height * (0.12 / 2))
 			//棋盘 竖线
-			console.log(mapSize.width)
+			console.log(mapSize.width);
 			//初始画点(线宽为1 最左边  最上边的线只显示一半)增加w/10  ,h/10
 			//分割两岸  从 0 画到4, 4~5为楚河汉界,从5 画到9
 			for(let i = 0; i < 9; i++) {
@@ -122,51 +147,56 @@
 			p.stroke();
 			p.closePath();
 			//绘制棋盘兵位 炮位的函数
-			function DrawPost(x,y){
+			function DrawPost(x, y) {
 				p.beginPath();
 				p.strokeStyle = "#000";
-				p.lineWidth = 1;
-				
-					//右
-					if(x!=8){
-						//右上角
-						p.moveTo(w * x + w / 8 +w*0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 -w*0.2);
-						p.lineTo(w * x + w / 8 +w*0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 -w*0.08);
-						p.lineTo(w * x + w / 8 +w*0.25, (mapSize.height) / 9 * y + h / 9 + 0.5 -w*0.08);
-						//右下角
-						p.moveTo(w * x + w / 8 +w*0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 +w*0.2);
-						p.lineTo(w * x + w / 8 +w*0.08, (mapSize.height) / 9 * y+ h / 9 + 0.5 +w*0.08);
-						p.lineTo(w * x + w / 8 +w*0.25, (mapSize.height) / 9 * y + h / 9 + 0.5 +w*0.08);
-					}else{
-						//空
-					}
-					//左 
-					if(x==0){
-						//空
-					}else{
-						//左上角
-						p.moveTo(w * x + w / 8 -w*0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 +w*0.2);
-						p.lineTo(w * x + w / 8 -w*0.08, (mapSize.height) / 9 * y+ h / 9 + 0.5 +w*0.08);
-						p.lineTo(w * x + w / 8 -w*0.25, (mapSize.height) / 9 * y + h / 9 + 0.5 +w*0.08);
-						//左下角
-						p.moveTo(w * x + w / 8 -w*0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 -w*0.2);
-						p.lineTo(w * x + w / 8 -w*0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 -w*0.08);
-						p.lineTo(w * x + w / 8 -w*0.25, (mapSize.height) / 9 * y + h / 9 + 0.5 -w*0.08);
-						
-					}
-					p.stroke();
-					p.closePath();
+				//设置棋子字体大小 0.5rem  小平1rem
+				if(innerWidth <= 700 && innerHeight > innerWidth) {
+					p.lineWidth = 3;
+					//map.style.marginTop = -(map.height)/2 + 'px';
+				} else {
+					p.lineWidth = 2;
+				}
+				//右
+				if(x != 8) {
+					//右上角
+					p.moveTo(w * x + w / 8 + w * 0.08 + 0.5, (mapSize.height) / 9 * y + h / 9 + 0.5 - w * 0.2);
+					p.lineTo(w * x + w / 8 + w * 0.08 + 0.5, (mapSize.height) / 9 * y + h / 9 + 0.5 - w * 0.08);
+					p.lineTo(w * x + w / 8 + w * 0.25, (mapSize.height) / 9 * y + h / 9 + 0.5 - w * 0.08);
+					//右下角
+					p.moveTo(w * x + w / 8 + w * 0.08 + 0.5, (mapSize.height) / 9 * y + h / 9 + 0.5 + w * 0.2);
+					p.lineTo(w * x + w / 8 + w * 0.08 + 0.5, (mapSize.height) / 9 * y + h / 9 + 0.5 + w * 0.08);
+					p.lineTo(w * x + w / 8 + w * 0.25 + 0.5, (mapSize.height) / 9 * y + h / 9 + 0.5 + w * 0.08);
+				} else {
+					//空
+				}
+				//左 
+				if(x == 0) {
+					//空
+				} else {
+					//左上角
+					p.moveTo(w * x + w / 8 - w * 0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 + w * 0.2);
+					p.lineTo(w * x + w / 8 - w * 0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 + w * 0.08);
+					p.lineTo(w * x + w / 8 - w * 0.25, (mapSize.height) / 9 * y + h / 9 + 0.5 + w * 0.08);
+					//左下角
+					p.moveTo(w * x + w / 8 - w * 0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 - w * 0.2);
+					p.lineTo(w * x + w / 8 - w * 0.08, (mapSize.height) / 9 * y + h / 9 + 0.5 - w * 0.08);
+					p.lineTo(w * x + w / 8 - w * 0.25, (mapSize.height) / 9 * y + h / 9 + 0.5 - w * 0.08);
+
+				}
+				p.stroke();
+				p.closePath();
 			}
 			//绘制兵位  炮位
 			//坐标从0开始 为偶数时 循环执行3行和6行兵位 ,为1、7绘制2、7行炮位
-			for(let i=0;i<9;i++){
-				if(i%2==0){
-					DrawPost(i,6);
-					DrawPost(i,3);
-				}else if(i==1||i==7){
-					DrawPost(i,2);
-					DrawPost(i,7);
-				}else{
+			for(let i = 0; i < 9; i++) {
+				if(i % 2 == 0) {
+					DrawPost(i, 6);
+					DrawPost(i, 3);
+				} else if(i == 1 || i == 7) {
+					DrawPost(i, 2);
+					DrawPost(i, 7);
+				} else {
 					//空
 				}
 			}
@@ -176,25 +206,170 @@
 			p.lineTo(funCoordinateX(5), funCoordinateY(9));
 			p.moveTo(funCoordinateX(5), funCoordinateY(7));
 			p.lineTo(funCoordinateX(3), funCoordinateY(9));
-			
+
 			p.moveTo(funCoordinateX(3), funCoordinateY(2));
 			p.lineTo(funCoordinateX(5), funCoordinateY(0));
 			p.moveTo(funCoordinateX(5), funCoordinateY(2));
 			p.lineTo(funCoordinateX(3), funCoordinateY(0));
 			p.stroke();
 			p.closePath();
-			
-			p.fillStyle='#000';
-			p.font='0.45rem STxingkai';
-	        p.beginPath();
-	        p.fillText('楚河',funCoordinateX(1.5),funCoordinateX(4.6));
-	        p.fillText('汉界',funCoordinateX(5.5),funCoordinateX(4.6));
-	        p.closePath();
-	        
+			p.fillStyle = '#000';
+			//宽度小于700px 且竖屏 
+			if(innerWidth <= 700 && innerHeight > innerWidth) {
+				map.style.top = '45%';
+				p.font = '4rem STxingkai';
+				map.style.marginTop = -(map.height) / 8 + 'px';
+			} else {
+				p.font = '1rem STxingkai';
+			}
 			p.beginPath();
-			p.arc(funCoordinateX(2),funCoordinateY(6),w/2.5,0,360*Math.PI/180);
-			p.fillStyle="#DEB887";
-			p.fill();
+			p.fillText('楚河', funCoordinateX(1), funCoordinateY(4.7));
+			p.fillText('汉界', funCoordinateX(6), funCoordinateY(4.7));
+			p.closePath();
+
+			function PutChess() {
+				let arrChessName = {
+					red: [
+						['兵', [0, 6]],
+						['炮', [1, 7]],
+						['車', [0, 9]],
+						['馬', [1, 9]],
+						['相', [2, 9]],
+						['士', [3, 9]],
+						['帥', [4, 9]]
+					],
+					black: [
+						['卒', [0, 3]],
+						['砲', [1, 2]],
+						['車', [0, 0]],
+						['馬', [1, 0]],
+						['象', [2, 0]],
+						['仕', [3, 0]],
+						['將', [4, 0]]
+					]
+				}
+				if(innerWidth <= 700 && innerHeight > innerWidth) {
+					p.font = 'bold 4.5rem 楷体';
+					//map.style.marginTop = -(map.height)/2 + 'px';
+				} else {
+					p.font = 'bold 1rem 楷体';
+				}
+
+				//				p.arc(funCoordinateX(0),funCoordinateY(6),w/2.5*1.1,0,360*Math.PI/180);
+				//				p.arc(funCoordinateX(2),funCoordinateY(6),w/2.5*1.1,0,360*Math.PI/180);
+				//				p.arc(funCoordinateX(4),funCoordinateY(6),w/2.5*1.1,0,360*Math.PI/180);
+				//				p.arc(funCoordinateX(6),funCoordinateY(6),w/2.5*1.1,0,360*Math.PI/180);
+				//				p.arc(funCoordinateX(8),funCoordinateY(6),w/2.5*1.1,0,360*Math.PI/180);
+				//	p.fill();
+				//p.closePath();
+				//p.beginPath();
+
+				//fillText坐标在左下角, 设置在中心点: 字体大小为0.5rem *0.5 再取半  行高微调(弃用  用内置textAlign方法)
+				//绘制棋子:
+				function drawChess(chess) {
+					//绘制棋子(圆与文字)  传入x y
+					function chessStyle(name,x,y){
+							//圆
+							p.beginPath();
+							p.shadowColor = 'rgba(0, 0, 0, 0.8)';
+							p.shadowOffsetX = 3;
+							p.shadowOffsetY = 2;
+							p.shadowBlur = 10;
+							if(y<=4){
+								p.fillStyle = 'rgba(226,171,84)';
+							}else{
+								p.fillStyle = "rgba(255,160,122,1)";
+							}
+							
+							p.arc(funCoordinateX(x), funCoordinateY(y), w / 2.5 * 1.1, 0, 360 * Math.PI / 180);
+							p.fill();
+							p.closePath();
+							//文字
+							p.beginPath();
+							if(y<=4){
+								p.fillStyle = '#000';
+							}else{
+								p.fillStyle = '#f00';
+							}
+							
+							p.textAlign = 'center';
+							p.textBaseline = 'middle';
+							p.shadowColor = 'rgba(255, 255, 255, 0.8)';
+							p.shadowOffsetX = -10;
+							p.shadowOffsetY = -10;
+							p.shadowBlur = 40;
+							p.fillText(name, funCoordinateX(x), funCoordinateY(y));
+							p.closePath();
+					}
+					for(let i = 0; i < 7; i++) {
+						switch(chess[i][0]) {
+							case '兵':
+								for(let c = 0; c < 9; c += 2) {
+									chessStyle('兵',c,6);
+								}
+								break;
+							case '卒':
+								for(let c = 0; c < 9; c += 2) {
+									chessStyle('卒',c,3);
+								}
+								break;
+							case '炮':
+								for(let c=1;c<8;c+=6){
+									chessStyle('炮',c,7);
+								}
+								break;
+							case '砲':
+								for(let c=1;c<8;c+=6){
+									chessStyle('砲',c,2);
+								}
+								break;
+							case '車':
+								for(let c=0;c<10;c+=8){
+									chessStyle('車',c,0);
+									chessStyle('車',c,9);
+								}
+								break;
+							case '馬':
+								for(let c=1;c<10;c+=6){
+									chessStyle('馬',c,0);
+									chessStyle('馬',c,9);
+								}
+								break;
+							case '相':
+								for(let c=2;c<8;c+=4){
+									chessStyle('象',c,0);
+									chessStyle('相',c,9);
+								}
+								break;
+							case '士':
+								for(let c=3;c<8;c+=2){
+									chessStyle('仕',c,0);
+									chessStyle('士',c,9);
+								}
+								break;
+							case '帥':
+									chessStyle('將',4,0);
+									chessStyle('帥',4,9);
+								break;
+							default:
+								break;
+						}
+					}
+				}
+				drawChess(arrChessName.red);
+				drawChess(arrChessName.black);
+				//				p.fillText('兵',funCoordinateX(0),funCoordinateY(6));
+				//				p.fillText('兵',funCoordinateX(2),funCoordinateY(6));
+				//				p.fillText('兵',funCoordinateX(4),funCoordinateY(6));
+				//				p.fillText('兵',funCoordinateX(6),funCoordinateY(6));
+				//				p.fillText('兵',funCoordinateX(8),funCoordinateY(6));
+				//p.strokeText('兵',funCoordinateX(2)-Root.fontSize*0.25,funCoordinateY(6)+Root.fontSize*0.18)
+
+			}
+
+			window.onload = function() {
+				PutChess();
+			}
 		</script>
 	</body>
 
