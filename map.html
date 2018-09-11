@@ -32,7 +32,7 @@
 				top: 47%;
 				padding: 0px;
 				margin: 0;
-				border: 0.06rem solid darkgoldenrod;
+				/*border: 0.06rem solid darkgoldenrod;*/
 				background: rgba(249, 216, 162, 1);
 			}
 		</style>
@@ -65,7 +65,10 @@
 			let map = document.getElementById("map");
 			let box = document.getElementById("box");
 			//1rem=html根字体大小(px) ,getComputedStyle取出换算后 实际的px大小
-			//n:name,xy:转换后的坐标,t:red方或black方
+			//n:name,xy:转换后的坐标,t:red方或black方   
+			//地图数组下标 i换算坐标,每行9个(0开始 一行数组长度为8 ): 9y + x = i,其中y为i除以9 取整,x为i除以9 的余数
+			//													列 x = i-9y
+			//													行 y = (i-x)/9
 			let Root = {
 				fontSize: parseFloat(getComputedStyle(document.documentElement, false)['fontSize']),
 				arrMap: [
@@ -93,6 +96,7 @@
 			mapSize.width = mapSize.width % 8 == 0 ? mapSize.width : mapSize.width - mapSize.width % 8;
 			mapSize.height = mapSize.height % 9 == 0 ? mapSize.height : mapSize.height - mapSize.height % 9;
 			console.table(mapSize);
+			//由于棋盘大小需要   边界棋子不移出棋盘  扩大0.15倍
 			map.width = mapSize.width * 1.15;
 			map.height = mapSize.height * 1.15;
 			//map.height = map.width * window.devicePixelRatio;
@@ -101,22 +105,28 @@
 			let h = Math.floor(mapSize.height / 9);
 			console.log(w);
 			let p = map.getContext('2d');
+			/*
+			 canvas真实尺寸与style尺寸比例不为2:1或者移动端的4:1,由于棋盘大小需要  下面的style尺寸大小为未扩大0.15倍前
+			 * 
+			 * */
 			if(innerWidth <= 700 && innerHeight > innerWidth) {
-				map.style.cssText = "width: " + mapSize.width / 4 + "px;height:" + mapSize.height / 4 + "px;border: 0.16rem solid darkgoldenrod;"
+				map.style.cssText = "width: " + mapSize.width / 4 + "px;height:" + mapSize.height / 4 + "px;border: 0.16rem solid darkgoldenrod;";
 				p.lineWidth = 3;
-
 			} else {
 				p.lineWidth = 2;
-				map.style.cssText = "width: " + mapSize.width / 2 + "px;height:" + mapSize.height / 2 + "px;"
+				map.style.cssText = "width: " + mapSize.width / 2 + "px;height:" + mapSize.height / 2 + "px;";
 			}
 			map.style.marginLeft = -parseFloat(map.style.width) / 2 - 4 + 'px';
-			map.style.marginTop = -parseFloat(map.style.height) / 2 + 'px'
+			map.style.marginTop = -parseFloat(map.style.height) / 2 + 'px';
+			//canvas真实大小与屏幕显示大小比例(缩放倍数)
+			Root.canvasAndScreenRatioWidth = map.width/parseFloat(map.style.width);
+			Root.canvasAndScreenRatioHeight = map.height/parseFloat(map.style.height);
 			/**
 			 * x坐标转换函数:把棋子虚拟坐标转换为canvas真实坐标
 			 * @param {Number} x
 			 */
 			function funCoordinateX(x) {
-				return w * x + w / 8 + 0.5;
+				return mapSize.width / 8 * x + w/8 +0.5;
 			}
 
 			/**
@@ -124,7 +134,7 @@
 			 * @param {Number} y
 			 */
 			function funCoordinateY(y) {
-				return(mapSize.height) / 9 * y + h / 9 + 0.5
+				return(mapSize.height) / 9 * y +h/9 +0.5 ;
 			}
 			//   p.scale(window.devicePixelRatio, window.devicePixelRatio);
 			//绘制棋盘
@@ -241,7 +251,7 @@
 			//放置棋子
 			function PutChess(){
 				if(innerWidth <= 700 && innerHeight > innerWidth) {
-					p.font = 'bold 4.5rem 楷体';
+					p.font = 'bold 5rem 楷体';
 					//map.style.marginTop = -(map.height)/2 + 'px';
 				} else {
 					p.font = 'bold 1rem 楷体';
@@ -298,24 +308,76 @@
 			window.onload = function() {
 				//放置棋子
 				PutChess();
+				
+				//当前 选中的棋子
+				let nowSelectedChess = null;
 				map.addEventListener('click', function(e) {
-					let eVent = e || event;
-					let x = eVent.layerX;
-					let y = eVent.layerY;
+					let eVent = e || event;//, mapSize.height * (0.12 / 2)
+					//存储空的棋盘位置(索引 i)
+					let arrEmptyMap = [];
+					/*layerX是相对于当前对象(canvas)的坐标,和canvas显示坐标(屏幕像素)吻合,
+					 *为了提高图像质量,棋盘与棋子实际大小被扩大,显示大小被缩小(canvas宽高与canvas的style宽高)
+					 * 因为canvas宽高被扩大数倍,其内部坐标也被扩大了,而layerX是屏幕像素的坐标,所以下面需要再次换算下比例
+					 * Root.canvasAndScreenRatio已赋值为 canvas真实大小与canvas屏幕显示大小比例(缩放倍数)
+					 * funCoordinateX换算的值 是直接从左上角車位开始的 ,坐标(0,0)  所以eVent.layerX坐标系统也需要与其吻合
+					 * mapSize.width * (0.12 / 2)为translate平移后偏移的坐标   w/8-0.5为初始绘制偏移的坐标  
+					 */
+					let x = eVent.layerX*Root.canvasAndScreenRatioWidth - mapSize.width * (0.12 / 2) - w/8-0.5;
+					let y = eVent.layerY*Root.canvasAndScreenRatioHeight - mapSize.height * (0.12 / 2) - h/9 -0.5;
+					//alert(funCoordinateX(0))
+					//alert(funCoordinateX(Root.arrMap[2].xy[0])+','+x)
+					console.log(`点击X${x}点击y${y}实际${funCoordinateX(Root.arrMap[0].xy[0])}实际Y${funCoordinateY(Root.arrMap[0].xy[1])}`);
 					for(let i=0;i<Root.arrMap.length;i++){
+						//如果存在棋子信息  说明有棋子  对其进行操作
 						if(Object.keys(Root.arrMap[i]).length!==0){
 							let chessX = funCoordinateX(Root.arrMap[i].xy[0]);
-							let chessY = funCoordinateX(Root.arrMap[i].xy[1])
-							if (Math.pow(x-chessX, 2) + Math.pow(y-chessY, 2)<Math.pow(w/2.5 * 1.1,2)){
-								alert(JSON.stringify(Root.arrMap[i]));
-								return 0;
+							let chessY = funCoordinateY(Root.arrMap[i].xy[1]);
+							
+							//点到圆心的距离 小于等于半径 说明点击到了圆形棋子内或圆形棋子上
+							if (Math.pow(x-chessX, 2)+Math.pow(y-chessY, 2)<=Math.pow(w/2.5*1.1,2)){
+								console.log(JSON.stringify(Root.arrMap[i])+'位置:'+i);
+								//找到了  就把它赋给一个变量  且终止循环
+								//多次点击都有棋子  也覆盖  保持只选中一个
+								nowSelectedChess = Root.arrMap[i];
+								console.log(nowSelectedChess)
+								break;
+							}else{
+								//console.log('棋盘上')
 							}
 						}else{
-							//没有棋子
+							//棋盘空位  
+							//如果有 棋子被选中  就移动到空位置
+							arrEmptyMap.push(i);
+							console.log(nowSelectedChess)
+							if(nowSelectedChess!=null){
+								//循环出之前存下的所有空位的下标i
+								//根据其下标 计算出空位坐标  x,y(每行9个位置  把数组转换为行列)
+								for(let iEmpty=0;iEmpty<arrEmptyMap.length;iEmpty++){
+									let iRowX =Math.floor(arrEmptyMap[iEmpty]/9);  
+									let iColY =arrEmptyMap[iEmpty]%9; 
+									funCoordinateX(iRowX);
+									//nowSelectedChess.xy[0];
+									//nowSelectedChess.xy[1];
+									console.log(arrEmptyMap);
+									//当前点击坐标附近的空位  
+									//同样  判断点击区域 是否在某个空位中心为坐标 w/2.5*1.1为半径构成的为圆形的范围内
+									if (Math.pow(x-chessX, 2)+Math.pow(y-chessY, 2)<=Math.pow(w/2.5*1.1,2)){
+										console(i);
+										break;
+									}else{
+										//console.log('棋盘其他空位')
+									}
+								}
+							
+							}else{
+								//alert(nowSelectedChess)
+								//console.log('点击了棋盘空位,但还未选中棋子'+i);
+							}
+							
 						}
 					}
-					console.log(eVent.layerX + ',' + eVent.layerY);
-					console.log(funCoordinateX(0) + ',' + funCoordinateY(0));
+					//console.log(eVent.layerX + ',' + eVent.layerY);
+					//console.log(funCoordinateX(0) + ',' + funCoordinateY(0));
 					//alert(p.isPointInPath(20,50))
 					//选中棋子(坐标)
 //					function ChoiceXY() {
