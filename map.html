@@ -59,18 +59,30 @@
 
 		<script>
 			/*
-						 canvas出现毛边  一个是0.5px问题  一个是扩大canvas的宽高(提高分辨率)  再css设置进行缩放
-						 * */
+									 canvas出现毛边  一个是0.5px问题  一个是扩大canvas的宽高(提高分辨率)  再css设置进行缩放
+									 * */
 			"use strict"
 			let map = document.getElementById("map");
 			let box = document.getElementById("box");
 			//1rem=html根字体大小(px) ,getComputedStyle取出换算后 实际的px大小
-
+			//n:name,xy:转换后的坐标,t:red方或black方
 			let Root = {
 				fontSize: parseFloat(getComputedStyle(document.documentElement, false)['fontSize']),
+				arrMap: [
+				{n:'車',xy:[0,0],t:'b'},{n:'馬',xy:[1,0],t:'b'},{n:'象',xy:[2,0],t:'b'},{n:'仕',xy:[3,0],t:'b'},{n:'將',xy:[4,0],t:'b'},{n:'仕',xy:[5,0],t:'b'},{n:'象',xy:[6,0],t:'b'},{n:'馬',xy:[7,0],t:'b'},{n:'車',xy:[8,0],t:'b'},
+				{},{},{},{},{},{},{},{},{},
+				{},{n:'砲',xy:[1,2],t:'b'},{},{},{},{},{},{n:'砲',xy:[7,2],t:'b'},{},
+				{n:'卒',xy:[0,3],t:'b'},{},{n:'卒',xy:[2,3],t:'b'},{},{n:'卒',xy:[4,3],t:'b'},{},{n:'卒',xy:[6,3],t:'b'},{},{n:'卒',xy:[8,3],t:'b'},
+				{},{},{},{},{},{},{},{},{},
+				{},{},{},{},{},{},{},{},{},
+				{n:'兵',xy:[0,6],t:'r'},{},{n:'兵',xy:[2,6],t:'r'},{},{n:'兵',xy:[4,6],t:'r'},{},{n:'兵',xy:[6,6],t:'r'},{},{n:'兵',xy:[8,6],t:'r'},				
+				{},{n:'炮',xy:[1,7],t:'r'},{},{},{},{},{},{n:'炮',xy:[7,7],t:'r'},{},
+				{},{},{},{},{},{},{},{},{},
+				{n:'車',xy:[0,9],t:'r'},{n:'馬',xy:[1,9],t:'r'},{n:'相',xy:[2,9],t:'r'},{n:'士',xy:[3,9],t:'r'},{n:'帥',xy:[4,9],t:'r'},{n:'士',xy:[5,9],t:'r'},{n:'相',xy:[6,9],t:'r'},{n:'馬',xy:[7,9],t:'r'},{n:'車',xy:[8,9],t:'r'},
+				]
 			}
 			//选择宽高中最小长度 计算比例  
-			let mapSize = innerWidth > innerHeight ? {
+			let mapSize = innerWidth >= innerHeight ? {
 				width: Math.floor(innerHeight * 0.81 * 2),
 				height: Math.floor(innerHeight * 0.9 * 2)
 			} : {
@@ -100,7 +112,7 @@
 			map.style.marginLeft = -parseFloat(map.style.width) / 2 - 4 + 'px';
 			map.style.marginTop = -parseFloat(map.style.height) / 2 + 'px'
 			/**
-			 * x坐标转换函数
+			 * x坐标转换函数:把棋子虚拟坐标转换为canvas真实坐标
 			 * @param {Number} x
 			 */
 			function funCoordinateX(x) {
@@ -226,149 +238,94 @@
 			p.fillText('楚河', funCoordinateX(1), funCoordinateY(4.7));
 			p.fillText('汉界', funCoordinateX(6), funCoordinateY(4.7));
 			p.closePath();
-
-			function PutChess() {
-				let arrChessName = {
-					red: [
-						['兵', [0, 6]],
-						['炮', [1, 7]],
-						['車', [0, 9]],
-						['馬', [1, 9]],
-						['相', [2, 9]],
-						['士', [3, 9]],
-						['帥', [4, 9]]
-					],
-					black: [
-						['卒', [0, 3]],
-						['砲', [1, 2]],
-						['車', [0, 0]],
-						['馬', [1, 0]],
-						['象', [2, 0]],
-						['仕', [3, 0]],
-						['將', [4, 0]]
-					]
-				}
+			//放置棋子
+			function PutChess(){
 				if(innerWidth <= 700 && innerHeight > innerWidth) {
 					p.font = 'bold 4.5rem 楷体';
 					//map.style.marginTop = -(map.height)/2 + 'px';
 				} else {
 					p.font = 'bold 1rem 楷体';
 				}
-
-				//				p.arc(funCoordinateX(0),funCoordinateY(6),w/2.5*1.1,0,360*Math.PI/180);
-				//				p.arc(funCoordinateX(2),funCoordinateY(6),w/2.5*1.1,0,360*Math.PI/180);
-				//				p.arc(funCoordinateX(4),funCoordinateY(6),w/2.5*1.1,0,360*Math.PI/180);
-				//				p.arc(funCoordinateX(6),funCoordinateY(6),w/2.5*1.1,0,360*Math.PI/180);
-				//				p.arc(funCoordinateX(8),funCoordinateY(6),w/2.5*1.1,0,360*Math.PI/180);
-				//	p.fill();
-				//p.closePath();
-				//p.beginPath();
-
 				//fillText坐标在左下角, 设置在中心点: 字体大小为0.5rem *0.5 再取半  行高微调(弃用  用内置textAlign方法)
+				
 				//绘制棋子:
-				function drawChess(chess) {
-					//绘制棋子(圆与文字)  传入x y
-					function chessStyle(name,x,y){
-							//圆
-							p.beginPath();
-							p.shadowColor = 'rgba(0, 0, 0, 0.8)';
-							p.shadowOffsetX = 3;
-							p.shadowOffsetY = 2;
-							p.shadowBlur = 10;
-							if(y<=4){
-								p.fillStyle = 'rgba(226,171,84)';
+				function drawChess() {
+					//绘制棋子(圆与文字)
+						for(let i=0;i<Root.arrMap.length;i++){
+							if(Object.keys(Root.arrMap[i]).length!==0){
+								//圆
+								p.beginPath();
+								p.shadowColor = 'rgba(0, 0, 0, 1)';
+								p.shadowOffsetX = 4;
+								p.shadowOffsetY = 3;
+								p.shadowBlur = 10;
+								if(Root.arrMap[i].t==='b') {
+									p.fillStyle = 'rgba(226,171,84,1)';
+								}else if(Root.arrMap[i].t==='r'){
+									p.fillStyle = "rgba(255,160,122,1)";
+								}else{
+									//不存在的棋子
+								}
+								p.arc(funCoordinateX(Root.arrMap[i].xy[0]), funCoordinateY(Root.arrMap[i].xy[1]), w / 2.5 * 1.1, 0, 360 * Math.PI / 180);
+								p.fill();
+								p.closePath();
+								//文字
+								p.beginPath();
+								if(Root.arrMap[i].t==='b') {
+									p.fillStyle = '#000';
+								}else if(Root.arrMap[i].t==='r'){
+									p.fillStyle = '#f00';
+								}else{
+									//不存在的棋子
+								}
+								p.textAlign = 'center';
+								p.textBaseline = 'middle';
+								p.shadowColor = 'rgba(255, 255, 255, 0.8)';
+								p.shadowOffsetX = -10;
+								p.shadowOffsetY = -10;
+								p.shadowBlur = 40;
+								p.fillText(Root.arrMap[i].n, funCoordinateX(Root.arrMap[i].xy[0]), funCoordinateY(Root.arrMap[i].xy[1]));
+								p.closePath();
 							}else{
-								p.fillStyle = "rgba(255,160,122,1)";
+								//没有棋子
 							}
-							
-							p.arc(funCoordinateX(x), funCoordinateY(y), w / 2.5 * 1.1, 0, 360 * Math.PI / 180);
-							p.fill();
-							p.closePath();
-							//文字
-							p.beginPath();
-							if(y<=4){
-								p.fillStyle = '#000';
-							}else{
-								p.fillStyle = '#f00';
-							}
-							
-							p.textAlign = 'center';
-							p.textBaseline = 'middle';
-							p.shadowColor = 'rgba(255, 255, 255, 0.8)';
-							p.shadowOffsetX = -10;
-							p.shadowOffsetY = -10;
-							p.shadowBlur = 40;
-							p.fillText(name, funCoordinateX(x), funCoordinateY(y));
-							p.closePath();
-					}
-					for(let i = 0; i < 7; i++) {
-						switch(chess[i][0]) {
-							case '兵':
-								for(let c = 0; c < 9; c += 2) {
-									chessStyle('兵',c,6);
-								}
-								break;
-							case '卒':
-								for(let c = 0; c < 9; c += 2) {
-									chessStyle('卒',c,3);
-								}
-								break;
-							case '炮':
-								for(let c=1;c<8;c+=6){
-									chessStyle('炮',c,7);
-								}
-								break;
-							case '砲':
-								for(let c=1;c<8;c+=6){
-									chessStyle('砲',c,2);
-								}
-								break;
-							case '車':
-								for(let c=0;c<10;c+=8){
-									chessStyle('車',c,0);
-									chessStyle('車',c,9);
-								}
-								break;
-							case '馬':
-								for(let c=1;c<10;c+=6){
-									chessStyle('馬',c,0);
-									chessStyle('馬',c,9);
-								}
-								break;
-							case '相':
-								for(let c=2;c<8;c+=4){
-									chessStyle('象',c,0);
-									chessStyle('相',c,9);
-								}
-								break;
-							case '士':
-								for(let c=3;c<8;c+=2){
-									chessStyle('仕',c,0);
-									chessStyle('士',c,9);
-								}
-								break;
-							case '帥':
-									chessStyle('將',4,0);
-									chessStyle('帥',4,9);
-								break;
-							default:
-								break;
 						}
-					}
-				}
-				drawChess(arrChessName.red);
-				drawChess(arrChessName.black);
-				//				p.fillText('兵',funCoordinateX(0),funCoordinateY(6));
-				//				p.fillText('兵',funCoordinateX(2),funCoordinateY(6));
-				//				p.fillText('兵',funCoordinateX(4),funCoordinateY(6));
-				//				p.fillText('兵',funCoordinateX(6),funCoordinateY(6));
-				//				p.fillText('兵',funCoordinateX(8),funCoordinateY(6));
-				//p.strokeText('兵',funCoordinateX(2)-Root.fontSize*0.25,funCoordinateY(6)+Root.fontSize*0.18)
 
+				}
+				drawChess();
 			}
 
 			window.onload = function() {
+				//放置棋子
 				PutChess();
+				map.addEventListener('click', function(e) {
+					let eVent = e || event;
+					let x = eVent.layerX;
+					let y = eVent.layerY;
+					for(let i=0;i<Root.arrMap.length;i++){
+						if(Object.keys(Root.arrMap[i]).length!==0){
+							let chessX = funCoordinateX(Root.arrMap[i].xy[0]);
+							let chessY = funCoordinateX(Root.arrMap[i].xy[1])
+							if (Math.pow(x-chessX, 2) + Math.pow(y-chessY, 2)<Math.pow(w/2.5 * 1.1,2)){
+								alert(JSON.stringify(Root.arrMap[i]));
+								return 0;
+							}
+						}else{
+							//没有棋子
+						}
+					}
+					console.log(eVent.layerX + ',' + eVent.layerY);
+					console.log(funCoordinateX(0) + ',' + funCoordinateY(0));
+					//alert(p.isPointInPath(20,50))
+					//选中棋子(坐标)
+//					function ChoiceXY() {
+//						
+//						if(eVent.layerX <  - w / 2.5 * 1.1) {
+//
+//						}
+//					}
+
+				});
 			}
 		</script>
 	</body>
