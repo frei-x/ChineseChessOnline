@@ -161,7 +161,7 @@ let Root = {
 	]
 }
 //Root.arrMap的副本,供属性拦截器用
-Root.arrMapCopy = Root.arrMap;
+//Root.arrMapCopy = Root.arrMap;
 //选择宽高中最小长度 计算比例  
 let mapSize = innerWidth >= innerHeight ? {
 	width: Math.floor(innerHeight * 0.81 * 2),
@@ -348,7 +348,7 @@ function funPutChess() {
 	//绘制棋子:
 	function drawChess() {
 		//绘制棋子(圆与文字)
-		console.table(Root)
+		//console.table(Root)
 		for(let i = 0; i < Root.arrMap.length; i++) {
 			if(Object.keys(Root.arrMap[i]).length !== 0) {
 				//圆
@@ -396,10 +396,12 @@ function funPutChess() {
 Root.arrReDraw.push(funDrawMap,funPutChess);
 //清除画布 重绘(重调所有绘图函数)
 Root.funReDraw=function(){
-	p.clearRect(-mapSize.width * (0.12 / 2), -mapSize.height * (0.12 / 2),map.width,map.height);
+	console.time('移动重绘');
+	p.clearRect(-mapSize.width * (0.12 / 2), -mapSize.height * (0.12 / 2),map.width,map.height);	
 	for(let i=0;i<Root.arrReDraw.length;i++){
-		Root.arrReDraw[i].apply(null,null);
+		Root.arrReDraw[i]();
 	}
+	console.timeEnd('移动重绘');
 }
 //拦截对象属性时  enumerable可枚举属性最好定义上,否则:
 /**
@@ -449,7 +451,6 @@ window.onload = function() {
 		//alert(funCoordinateX(0))
 		//alert(funCoordinateX(Root.arrMap[2].xy[0])+','+x)
 		//console.log(`点击X${x}点击y${y}实际${funCoordinateX(Root.arrMap[0].xy[0])}实际Y${funCoordinateY(Root.arrMap[0].xy[1])}`);
-		
 		for(let i = 0; i < Root.arrMap.length; i++) {
 			//如果存在棋子信息  说明有棋子  对其进行操作
 			if(Object.keys(Root.arrMap[i]).length !== 0) {
@@ -473,7 +474,7 @@ window.onload = function() {
 							nowSelectedChess = Root.arrMap[i];
 						}
 					}
-					console.log(nowSelectedChess);
+					//console.log(nowSelectedChess);
 					break;
 				} else {
 					//console.log('棋盘上')
@@ -507,13 +508,34 @@ window.onload = function() {
 					//alert(Root.arrMap.indexOf(nowSelectedChess));
 					//目标位置xy 给之前被选中的棋子的xy
 					//同时把棋子移动到数组相应索引位置
-					nowSelectedChess.xy = target.xy;
-					Root.arrMap[target.index] = nowSelectedChess;
+					let nSCX = nowSelectedChess.xy[0];
+					let nSCY = nowSelectedChess.xy[1];
+					let diffX = iRowX - nSCX;
+					let diffY = iColY - nSCY;
+					let count = 10;
+					let nowCount = 1;
+					function moveAnimation(){
+						
+						//清空选中
+						if(nowCount>count){
+							nowSelectedChess = null;
+						}else{
+							console.log(nowSelectedChess)
+							nowSelectedChess.xy = [nSCX+diffX*(nowCount/count),nSCY+diffY*(nowCount/count)];
+						//	alert((diffY/count)*(nowCount/count))
+							Root.arrMap[target.index] = nowSelectedChess;
+							Root.funReDraw();
+							requestAnimationFrame(moveAnimation);
+							
+							nowCount++;
+						}
+					}
+					moveAnimation();
 					console.log('移动到'+JSON.stringify(target));
-					//清空选中
-					nowSelectedChess = null;
-					Root.funReDraw();
-					console.log(Root.arrMap);
+
+					
+					//Root.funReDraw();
+					//console.log(Root.arrMap);
 					break;
 				} else {
 					//console.log('棋盘其他空位')
@@ -527,6 +549,7 @@ window.onload = function() {
 			//alert(nowSelectedChess)
 			//console.log('点击了棋盘空位,但还未选中棋子'+i);
 		}
-	});
+		
+	},false);
 	console.timeEnd('耗时');
 }
