@@ -225,7 +225,7 @@ function funDrawMap(){
 	p.beginPath();
 	p.strokeStyle = "#000";
 	//棋盘 竖线
-	console.log(mapSize.width);
+	//console.log(mapSize.width);
 	//初始画点(线宽为1 最左边  最上边的线只显示一半)增加w/10  ,h/10
 	//分割两岸  从 0 画到4, 4~5为楚河汉界,从5 画到9
 	for(let i = 0; i < 9; i++) {
@@ -388,7 +388,6 @@ function funPutChess() {
 				//没有棋子
 			}
 		}
-
 	}
 	drawChess();
 }
@@ -430,6 +429,8 @@ window.onload = function() {
 
 	//当前 选中的棋子
 	let nowSelectedChess = null;
+	//当前游戏状态 0:和棋,1:红行棋,2:黑行棋,10:红胜,20:黑胜
+	let nowGameState = 1 ;
 	map.addEventListener('click', function(e) {
 		let eVent = e || event; //, mapSize.height * (0.12 / 2)
 		//存储空的棋盘位置(索引 i)
@@ -467,8 +468,8 @@ window.onload = function() {
 						nowSelectedChess = Root.arrMap[i];
 					}else{
 						if(nowSelectedChess.t!=Root.arrMap[i].t){
-							//不属于己方阵营  就不覆盖上次选中的棋子
-							alert('不属于己方')
+							//不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉
+							alert('不属于己方'+Root.arrMap[i].t)
 						}else{
 							//同阵营棋子,继续覆盖选中
 							nowSelectedChess = Root.arrMap[i];
@@ -515,7 +516,6 @@ window.onload = function() {
 					let count = 10;
 					let nowCount = 1;
 					function moveAnimation(){
-						
 						//清空选中
 						if(nowCount>count){
 							nowSelectedChess = null;
@@ -526,14 +526,11 @@ window.onload = function() {
 							Root.arrMap[target.index] = nowSelectedChess;
 							Root.funReDraw();
 							requestAnimationFrame(moveAnimation);
-							
 							nowCount++;
 						}
 					}
 					moveAnimation();
 					console.log('移动到'+JSON.stringify(target));
-
-					
 					//Root.funReDraw();
 					//console.log(Root.arrMap);
 					break;
