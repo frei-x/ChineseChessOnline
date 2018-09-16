@@ -13,13 +13,14 @@ let box = document.getElementById("box");
  *地图数组下标 i换算坐标,每行9个(0开始 一行数组长度为8 ): 9y + x = i,其中y为i除以9 取整,x为i除以9 的余数
  *													列 x = i-9y
  *													行 y = (i-x)/9
- * 
+ * funRules 棋子走法规则
  */
 let Root = {
 	fontSize: parseFloat(getComputedStyle(document.documentElement, false)['fontSize']),
 	chessR:null,
 	funReDraw:null,
 	arrReDraw:[],
+	funRules:null,
 	arrMap: [{
 			n: '車',
 			xy: [0, 0],
@@ -402,6 +403,12 @@ Root.funReDraw=function(){
 	}
 	console.timeEnd('移动重绘');
 }
+//棋子走法规则描述,传入当前棋子信息 结合整个棋盘信息判断
+Root.funRules=function(oNowSelectChess){
+	if(oNowSelectChess){
+		
+	}
+}
 //拦截对象属性时  enumerable可枚举属性最好定义上,否则:
 /**
  *  for..in循环
@@ -460,32 +467,61 @@ window.onload = function() {
 
 				//点到圆心的距离 小于等于半径 说明点击到了圆形棋子内或圆形棋子上
 				if(Math.pow(x - chessX, 2) + Math.pow(y - chessY, 2) <= Math.pow(w / 2.5 * 1.1, 2)) {
+					// 1 红棋 走子  2黑棋走子
+					if(nowGameState==1){
+						if(nowSelectedChess==null){
+							if(Root.arrMap[i].t==='r'){
+								nowSelectedChess = Root.arrMap[i];
+							}else{
+								//不为红棋
+							}
+						}else{
+							if(nowSelectedChess.t!='r'){
+								//不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉
+								alert('不属于己方1'+Root.arrMap[i].t)
+							}else{
+								//同阵营棋子,继续覆盖选中
+								nowSelectedChess = Root.arrMap[i];
+							}
+						}	
+						//console.log(nowSelectedChess);
+						
+						break;
+					}else if(nowGameState==2){
+						if(nowSelectedChess==null){
+							if(Root.arrMap[i].t==='b'){
+								nowSelectedChess = Root.arrMap[i];
+							}else{
+								//不为黑棋
+							}
+						}else{
+							if(nowSelectedChess.t!='b'){
+								//不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉
+								alert('不属于己方2'+Root.arrMap[i].t)
+							}else{
+								//同阵营棋子,继续覆盖选中
+								nowSelectedChess = Root.arrMap[i];
+							}
+						}	
+						break;
+					}
 					console.log(JSON.stringify(Root.arrMap[i]) + '位置:' + i);
 					//找到了  就把它赋给一个变量  且终止循环
 					//多次点击都有棋子  也覆盖  保持只选中一个
 					//棋子为空  就选中,如果已选中 就判断已选中的的棋子与即将选中的棋子阵营是否属于己方
-					if(nowSelectedChess==null){
-						nowSelectedChess = Root.arrMap[i];
-					}else{
-						if(nowSelectedChess.t!=Root.arrMap[i].t){
-							//不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉
-							alert('不属于己方'+Root.arrMap[i].t)
-						}else{
-							//同阵营棋子,继续覆盖选中
-							nowSelectedChess = Root.arrMap[i];
-						}
-					}
-					//console.log(nowSelectedChess);
-					break;
+
 				} else {
-					//console.log('棋盘上')
+					//console.log('非空位  但未点击到棋子上')
 				}
 			} else {
 				//棋盘所有空位  
-				arrEmptyMap.push(i);
+				//arrEmptyMap.push(i);
 				//console.log(nowSelectedChess)
 			}
+			arrEmptyMap.push(i);
 		}
+		
+		console.log(nowSelectedChess)
 		// 如果有 棋子被选中  就移动到空位置
 		if(nowSelectedChess != null) {
 			//循环出之前存下的所有空位的下标i
@@ -516,8 +552,21 @@ window.onload = function() {
 					let count = 10;
 					let nowCount = 1;
 					function moveAnimation(){
-						//清空选中
+						//  如果不满足条件 棋子 继续移动(动画), 满足条件:切换行棋/游戏状态  , 清空选中
 						if(nowCount>count){
+							if(nowSelectedChess.t==='r'){
+								nowGameState = 2;
+							}else if(nowSelectedChess.t==='b'){
+								nowGameState = 1;
+							}else if(nowGameState==0){
+								//和棋
+							}else if(nowGameState==10){
+								//红胜
+							}else if(nowGameState==20){
+								//黑胜
+							}else{
+								//非法修改
+							}
 							nowSelectedChess = null;
 						}else{
 							console.log(nowSelectedChess)
