@@ -483,12 +483,13 @@ window.onload = function() {
 								nowSelectedChess = Root.arrMap[i];
 							}else{
 								//不为红棋
-								alert('不是红棋')
+								console.error('不是红棋')
 							}
 						}else{
 							if(Root.arrMap[i].t!='r'){
 								//不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉
-								alert('不属于己方1'+Root.arrMap[i].t)
+								//alert('不属于己方1'+Root.arrMap[i].t);
+								funMoveChess(Root.arrMap[i]);
 							}else{
 								//同阵营棋子,继续覆盖选中
 								nowSelectedChess = Root.arrMap[i];
@@ -503,12 +504,13 @@ window.onload = function() {
 								nowSelectedChess = Root.arrMap[i];
 							}else{
 								//不为黑棋
-								alert('不是黑棋')
+								console.error('不是黑棋')
 							}
 						}else{
 							if(Root.arrMap[i].t!='b'){
 								//不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉
-								alert('不属于己方2'+Root.arrMap[i].t)
+								//alert('不属于己方2'+Root.arrMap[i].t)
+								funMoveChess(Root.arrMap[i]);
 							}else{
 								//同阵营棋子,继续覆盖选中
 								nowSelectedChess = Root.arrMap[i];
@@ -532,20 +534,28 @@ window.onload = function() {
 			}
 			//arrEmptyMap.push(i);
 		}
+		//↑ Root.arrMap.length循环结束
 //		for(let a=0;a<90;a++){
 //			arrEmptyMap.push(a);
 //		}
-		 alert(arrEmptyMap)
 		console.log(nowSelectedChess)
-		// 如果有 棋子被选中  就移动到空位置
-		function funMoveChess(){
+		// 如果有 棋子被选中  就移动到空位置  //吃子时 传入目标不传入目标为空棋盘(供前面选子时 不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉)
+		function funMoveChess(tagerChess){
 			if(nowSelectedChess != null) {
 				//循环出之前存下的所有空位的下标i
-				//根据其下标 计算出空位坐标  x,y(每行9个位置  把数组转换为行列)
-				for(let iEmpty = 0; iEmpty < arrEmptyMap.length; iEmpty++) {
+				//根据其下标 计算出空位坐标  x,y(每行9个位置  把数组转换为行列)  90 次 遍历棋盘每个位置
+				for(let iEmpty = 0; iEmpty < 90; iEmpty++) {
 					// 排错发现行列赋值反了...  除取整为行  (y),取余为列(x)
-					let iRowX = arrEmptyMap[iEmpty] % 9;
-					let iColY = Math.floor(arrEmptyMap[iEmpty] / 9);
+					let iRowX;
+					let iColY;
+					if(tagerChess){
+						iRowX = tagerChess.xy[0];	
+						iColY =tagerChess.xy[1];
+					}else{
+						iRowX = arrEmptyMap[iEmpty] % 9;	
+						iColY = Math.floor(arrEmptyMap[iEmpty] / 9);
+					}
+					
 					//nowSelectedChess.xy[0];
 					//nowSelectedChess.xy[1];
 				
@@ -554,8 +564,14 @@ window.onload = function() {
 					//同样  判断点击区域 是否在某个空位中心为坐标 w/2.5*1.1为半径构成的为圆形的范围内
 					if(Math.pow(x - funCoordinateX(iRowX), 2) + Math.pow(y - funCoordinateY(iColY), 2) <= Math.pow(w / 2.5 * 1.1, 2)) {
 						//存入目标位置信息:
-						target.xy = [iRowX,iColY];
-						target.index =arrEmptyMap[iEmpty];
+						if(tagerChess){
+							target.xy = [tagerChess.xy[0],tagerChess.xy[1]];
+							target.index = Root.arrMap.indexOf(tagerChess);	
+						}else{
+							target.xy = [iRowX,iColY];
+							target.index =arrEmptyMap[iEmpty];							
+						}
+
 						//之前的棋子对象清空,在Root.arrMap中找到原来棋子的索引
 						Root.arrMap[Root.arrMap.indexOf(nowSelectedChess)] = {};
 						//alert(Root.arrMap.indexOf(nowSelectedChess));
@@ -581,11 +597,11 @@ window.onload = function() {
 								}else if(nowGameState==20){
 									//黑胜
 								}else{
-									//非法修改
+									//异常数据
 								}
 								nowSelectedChess = null;
 							}else{
-								console.log(nowSelectedChess)
+								console.log(nowSelectedChess);
 								nowSelectedChess.xy = [nSCX+diffX*(nowCount/count),nSCY+diffY*(nowCount/count)];
 							//	alert((diffY/count)*(nowCount/count))
 								Root.arrMap[target.index] = nowSelectedChess;
