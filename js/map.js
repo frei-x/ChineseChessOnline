@@ -354,14 +354,14 @@ function funPutChess() {
 			if(Object.keys(Root.arrMap[i]).length !== 0) {
 				//圆
 				p.beginPath();
-				if(innerWidth<750){
-					//
-				}else{
-					p.shadowColor = 'rgba(0, 0, 0, 1)';
-					p.shadowOffsetX = 4;
-					p.shadowOffsetY = 3;
-					p.shadowBlur = 10;					
-				}
+//				if(innerWidth<750){
+//					//
+//				}else{
+//					p.shadowColor = 'rgba(0, 0, 0, 1)';
+//					p.shadowOffsetX = 4;
+//					p.shadowOffsetY = 3;
+//					p.shadowBlur = 10;					
+//				}
 				if(Root.arrMap[i].t === 'b') {
 					p.fillStyle = 'rgba(226,171,84,1)';
 				} else if(Root.arrMap[i].t === 'r') {
@@ -383,14 +383,14 @@ function funPutChess() {
 				}
 				p.textAlign = 'center';
 				p.textBaseline = 'middle';
-				if(innerWidth<750){
-					//
-				}else{
-					p.shadowColor = 'rgba(255, 255, 255, 0.8)';
-					p.shadowOffsetX = -10;
-					p.shadowOffsetY = -10;
-					p.shadowBlur = 40;
-				}
+//				if(innerWidth<750){
+//					//
+//				}else{
+//					p.shadowColor = 'rgba(255, 255, 255, 0.8)';
+//					p.shadowOffsetX = -10;
+//					p.shadowOffsetY = -10;
+//					p.shadowBlur = 40;
+//				}
 
 				p.fillText(Root.arrMap[i].n, funCoordinateX(Root.arrMap[i].xy[0]), funCoordinateY(Root.arrMap[i].xy[1]));
 				p.closePath();
@@ -412,11 +412,51 @@ Root.funReDraw=function(){
 	}
 	console.timeEnd('移动重绘');
 }
-//棋子走法规则描述,传入当前棋子信息 结合整个棋盘信息判断
-Root.funRules=function(oNowSelectChess){
-	if(oNowSelectChess){
-		
+/**
+ * 棋子走法规则描述,传入当前棋子信息与目标位置信息  结合整个棋盘信息判断是否能够通行
+ * 行棋时 判断目标位置是否在可行范围内(可行坐标存入数组) 通过返回true 否则false
+ */
+Root.funRules=function(oNowSelectChess,oTager){
+	//合并棋子兵种 (部分棋子走法相同 ).
+	let oChess = oNowSelectChess;
+	//验证
+	let Verification = false;
+	let 
+	//棋子兵种判断  统一改为红棋名字,具体判断oNowSelectChess时 再判断其属于红方或黑方
+	if(oNowSelectChess.t=='相'||oNowSelectChess.t=='象'){
+		oChess.t='相';
+	}else if(oNowSelectChess.t=='士'||oNowSelectChess.t=='仕'){
+		oChess.t='士';
+	}else if(oNowSelectChess.t=='帥'||oNowSelectChess.t=='将'){
+		oChess.t='帥';
+	}else if(oNowSelectChess.t=='炮'||oNowSelectChess.t=='砲'){
+		oChess.t='炮';
+	}else if(oNowSelectChess.t=='兵'||oNowSelectChess.t=='卒'){
+		oChess.t='兵';
+	}else{
+		//其他不作处理(车马)	
 	}
+	switch (oChess.t){
+		case '车':
+					(function(){
+						//横向
+						for(let x=1;x<10;x++){
+							 oChess.xy[0]+x
+						}
+					})();
+			break;
+		case '馬':
+			break;
+		case '相':
+			break;
+		case '士':
+			break;
+		case '车':
+			break;
+
+	}
+	
+	console.log(oNowSelectChess);
 }
 //拦截对象属性时  enumerable可枚举属性最好定义上,否则:
 /**
@@ -504,7 +544,7 @@ window.onload = function() {
 								nowSelectedChess = Root.arrMap[i];
 							}else{
 								//不为黑棋
-								console.error('不是黑棋')
+								console.error('不是黑棋');
 							}
 						}else{
 							if(Root.arrMap[i].t!='b'){
@@ -550,7 +590,7 @@ window.onload = function() {
 					let iColY;
 					if(tagerChess){
 						iRowX = tagerChess.xy[0];	
-						iColY =tagerChess.xy[1];
+						iColY = tagerChess.xy[1];
 					}else{
 						iRowX = arrEmptyMap[iEmpty] % 9;	
 						iColY = Math.floor(arrEmptyMap[iEmpty] / 9);
@@ -571,50 +611,55 @@ window.onload = function() {
 							target.xy = [iRowX,iColY];
 							target.index =arrEmptyMap[iEmpty];							
 						}
-
-						//之前的棋子对象清空,在Root.arrMap中找到原来棋子的索引
-						Root.arrMap[Root.arrMap.indexOf(nowSelectedChess)] = {};
-						//alert(Root.arrMap.indexOf(nowSelectedChess));
-						//目标位置xy 给之前被选中的棋子的xy
-						//同时把棋子移动到数组相应索引位置
-						let nSCX = nowSelectedChess.xy[0];
-						let nSCY = nowSelectedChess.xy[1];
-						let diffX = iRowX - nSCX;
-						let diffY = iColY - nSCY;
-						let count = 10;
-						let nowCount = 1;
-						function moveAnimation(){
-							//  如果不满足条件 棋子 继续移动(动画), 满足条件:切换行棋/游戏状态  , 清空选中
-							if(nowCount>count){
-								if(nowSelectedChess.t==='r'){
-									nowGameState = 2;
-								}else if(nowSelectedChess.t==='b'){
-									nowGameState = 1;
-								}else if(nowGameState==0){
-									//和棋
-								}else if(nowGameState==10){
-									//红胜
-								}else if(nowGameState==20){
-									//黑胜
+						if(!Root.funRules(nowSelectedChess,target)){
+							console.error('棋子走法不符合规则');
+						}else{
+							//合乎规则,走法在可行范围
+							//之前的棋子对象清空,在Root.arrMap中找到原来棋子的索引
+							Root.arrMap[Root.arrMap.indexOf(nowSelectedChess)] = {};
+							//alert(Root.arrMap.indexOf(nowSelectedChess));
+							//目标位置xy 给之前被选中的棋子的xy
+							//同时把棋子移动到数组相应索引位置
+							let nSCX = nowSelectedChess.xy[0];
+							let nSCY = nowSelectedChess.xy[1];
+							let diffX = iRowX - nSCX;
+							let diffY = iColY - nSCY;
+							let count = 10;
+							let nowCount = 1;
+							function moveAnimation(){
+								//  如果不满足条件 棋子 继续移动(动画), 满足条件:切换行棋/游戏状态  , 清空选中
+								if(nowCount>count){
+									if(nowSelectedChess.t==='r'){
+										nowGameState = 2;
+									}else if(nowSelectedChess.t==='b'){
+										nowGameState = 1;
+									}else if(nowGameState==0){
+										//和棋
+									}else if(nowGameState==10){
+										//红胜
+									}else if(nowGameState==20){
+										//黑胜
+									}else{
+										//异常数据
+									}
+									nowSelectedChess = null;
 								}else{
-									//异常数据
+									console.log(nowSelectedChess);
+									nowSelectedChess.xy = [nSCX+diffX*(nowCount/count),nSCY+diffY*(nowCount/count)];
+								//	alert((diffY/count)*(nowCount/count))
+									Root.arrMap[target.index] = nowSelectedChess;
+									Root.funReDraw();
+									requestAnimationFrame(moveAnimation);
+									nowCount++;
 								}
-								nowSelectedChess = null;
-							}else{
-								console.log(nowSelectedChess);
-								nowSelectedChess.xy = [nSCX+diffX*(nowCount/count),nSCY+diffY*(nowCount/count)];
-							//	alert((diffY/count)*(nowCount/count))
-								Root.arrMap[target.index] = nowSelectedChess;
-								Root.funReDraw();
-								requestAnimationFrame(moveAnimation);
-								nowCount++;
 							}
+							moveAnimation();
+							console.log('移动到'+JSON.stringify(target));
+							//Root.funReDraw();
+							//console.log(Root.arrMap);
+							break;
 						}
-						moveAnimation();
-						console.log('移动到'+JSON.stringify(target));
-						//Root.funReDraw();
-						//console.log(Root.arrMap);
-						break;
+
 					} else {
 						//console.log('棋盘其他空位')
 					}
