@@ -415,34 +415,135 @@ Root.funReDraw=function(){
 /**
  * 棋子走法规则描述,传入当前棋子信息与目标位置信息  结合整个棋盘信息判断是否能够通行
  * 行棋时 判断目标位置是否在可行范围内(可行坐标存入数组) 通过返回true 否则false
+ * 返回可行坐标 arrPracticable
+ * {
+ * 	bVerification:bVerification,
+ * 	arrPracticable:arrPracticable
+ * }
+ * 
  */
 Root.funRules=function(oNowSelectChess,oTager){
 	//合并棋子兵种 (部分棋子走法相同 ).
 	let oChess = oNowSelectChess;
-	//验证
-	let Verification = false;
-	let 
+	//验证(布尔值)
+	let bVerification = false;
+	//可行坐标
+	let arrPracticable = [];
 	//棋子兵种判断  统一改为红棋名字,具体判断oNowSelectChess时 再判断其属于红方或黑方
-	if(oNowSelectChess.t=='相'||oNowSelectChess.t=='象'){
+	if(oNowSelectChess.n=='相'||oNowSelectChess.n=='象'){
 		oChess.t='相';
-	}else if(oNowSelectChess.t=='士'||oNowSelectChess.t=='仕'){
+	}else if(oNowSelectChess.n=='士'||oNowSelectChess.n=='仕'){
 		oChess.t='士';
-	}else if(oNowSelectChess.t=='帥'||oNowSelectChess.t=='将'){
+	}else if(oNowSelectChess.n=='帥'||oNowSelectChess.n=='将'){
 		oChess.t='帥';
-	}else if(oNowSelectChess.t=='炮'||oNowSelectChess.t=='砲'){
+	}else if(oNowSelectChess.n=='炮'||oNowSelectChess.n=='砲'){
 		oChess.t='炮';
-	}else if(oNowSelectChess.t=='兵'||oNowSelectChess.t=='卒'){
+	}else if(oNowSelectChess.n=='兵'||oNowSelectChess.n=='卒'){
 		oChess.t='兵';
 	}else{
 		//其他不作处理(车马)	
 	}
-	switch (oChess.t){
-		case '车':
+	switch (oChess.n){
+		case '車':
 					(function(){
-						//横向
-						for(let x=1;x<10;x++){
-							 oChess.xy[0]+x
+						//横向与纵向 循环棋盘最大跨度
+						//x+方向  y不变
+						for(let x=1;x<9;x++){
+							if(oChess.xy[0]+x<=8&&oChess.xy[0]+x>=0){
+								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+								//有棋子
+								if(Root.arrMap[oChess.xy[0]+x+oChess.xy[1]*9].xy){
+									//类型不同  允许该坐标添加到可行
+									if(Root.arrMap[oChess.xy[0]+x+oChess.xy[1]*9].t!=oChess.t){
+										arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
+										//有棋子 停止后续添加
+										break;
+									}else{
+										break;
+									}
+								}else{
+									//空位置
+									arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
+								}
+							}
+							
 						}
+						//x-方向
+						for(let x=1;x<9;x++){
+							if(oChess.xy[0]-x<=8&&oChess.xy[0]-x>=0){
+								if(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].xy){
+									//类型不同  允许该坐标添加到可行
+									//alert(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].t+','+oChess.t)
+									if(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].t!=oChess.t){
+										arrPracticable.push([oChess.xy[0]-x,oChess.xy[1]]);
+										//有棋子 停止后续添加
+										break;
+									}else{
+										break;
+									}
+								}else{
+									//空位置
+									arrPracticable.push([oChess.xy[0]-x,oChess.xy[1]]);
+								}
+							}
+							
+						}
+						//y+方向  , x轴不变
+						for(let y=1;y<=9;y++){
+							if(oChess.xy[1]+y<=9&&oChess.xy[1]+y>=0){
+								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+								//有棋子
+								if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].xy){
+									//类型不同  允许该坐标添加到可行
+									if(Root.arrMap[oChess.xy[0]+oChess.xy[1]*9].t!=oChess.t){
+										arrPracticable.push([oChess.xy[0],oChess.xy[1]+y]);
+										//不同阵营棋子 添加该位置后停止后续添加(可吃该棋子)
+										break;
+										//同阵营棋子,直接终止
+									}else{
+										break;
+									}
+								}else{
+									//空位置
+									arrPracticable.push([oChess.xy[0],oChess.xy[1]+y]);
+								}
+							}
+							
+						}
+						//y-方向  , x轴不变
+						for(let y=1;y<=9;y++){
+							
+							if(oChess.xy[1]-y<=9&&oChess.xy[1]-y>=0){
+								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+								//有棋子
+								if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].xy){
+									//类型不同  允许该坐标添加到可行
+									if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].t!=oChess.t){
+										arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
+										//不同阵营棋子 停止后续添加
+										break;
+										//同阵营棋子,直接终止
+									}else{
+										break;
+									}
+								}else{
+									//空位置
+									console.log(arrPracticable)
+									arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
+								}
+							}
+							
+						}
+						//检测目标位置是否在可行坐标中,判断数组相等
+						arrPracticable.forEach(function(item,index){
+							if(item[0]==oTager.xy[0]&&item[1]==oTager.xy[1]){
+								bVerification = true;
+							}else{
+								//没找到
+							}
+						});
+						console.log(arrPracticable);
+						console.log(bVerification);
 					})();
 			break;
 		case '馬':
@@ -456,7 +557,10 @@ Root.funRules=function(oNowSelectChess,oTager){
 
 	}
 	
-	console.log(oNowSelectChess);
+		return {
+			bVerification:bVerification,
+			arrPracticable:arrPracticable		
+		}
 }
 //拦截对象属性时  enumerable可枚举属性最好定义上,否则:
 /**
@@ -611,7 +715,7 @@ window.onload = function() {
 							target.xy = [iRowX,iColY];
 							target.index =arrEmptyMap[iEmpty];							
 						}
-						if(!Root.funRules(nowSelectedChess,target)){
+						if(!Root.funRules(nowSelectedChess,target).bVerification){
 							console.error('棋子走法不符合规则');
 						}else{
 							//合乎规则,走法在可行范围
