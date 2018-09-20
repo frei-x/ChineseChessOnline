@@ -548,12 +548,45 @@ Root.funRules=function(oNowSelectChess,oTager){
 					})();
 			break;
 		case '馬':
+				//验证马蹩脚,传入调用所在区域的x或y(绝对值大的那一个),蹩脚返回false;
+				function funPoor(x,y,fun){
+					let towardsX =  Math.abs(x);
+					let towardsY =  Math.abs(y);
+					//马的朝向,大的那一个
+					if(towardsX>towardsY){
+						//x轴右移进一格或左移一格,y不变
+						if(x==-2){
+							//验证该点是否有棋子阻挡
+							if(Root.arrMap[(oChess.xy[0]-1)+(oChess.xy[1]*9)].xy){
+								fun();
+							}else{
+								
+							}
+						}else if(x==2){
+							if(Root.arrMap[(oChess.xy[0]-1)+(oChess.xy[1]*9)].xy){
+								fun();
+							}else{
+								
+							}
+						}
+						
+					}else{
+						
+					}
+					let towards = x>y?x:y;
+					
+				};
 				(function(){
-					//x或y只能有一个加2或减2,另一个加1或减1 ,共8个方向   +2的方向验证蹩脚
-					//x+2 
+					//x或y只能有一个加2或减2,另一个加1或减1 ,共8个方向   跨度为2的方向验证蹩脚
+					//x+2
 					function funVerify(x,y){
 						if(oChess.xy[1]+x<=9&&oChess.xy[1]+y>=0){
 							if(x==2){
+								if(y==1){
+									Root.arrMap[(oChess.xy[0]-1)+(oChess.xy[1]*9)].xy
+								}else if(y==-1){
+									
+								}
 								Root.arrMap(oChess.xy[1]+x<=9&&oChess.xy[1]+y);
 							}else if(x==-2){
 								
