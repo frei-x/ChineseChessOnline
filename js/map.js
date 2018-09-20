@@ -182,7 +182,6 @@ map.height = mapSize.height * 1.15;
 //map.width = map.height * window.devicePixelRatio;
 let w = Math.floor(mapSize.width / 8);
 let h = Math.floor(mapSize.height / 9);
-console.log(w);
 let p = map.getContext('2d');
 /*
  canvas真实尺寸与style尺寸比例不为2:1或者移动端的4:1,由于棋盘大小需要  下面的style尺寸大小为未扩大0.15倍前
@@ -431,15 +430,15 @@ Root.funRules=function(oNowSelectChess,oTager){
 	let arrPracticable = [];
 	//棋子兵种判断  统一改为红棋名字,具体判断oNowSelectChess时 再判断其属于红方或黑方
 	if(oNowSelectChess.n=='相'||oNowSelectChess.n=='象'){
-		oChess.t='相';
+		oChess.n='相';
 	}else if(oNowSelectChess.n=='士'||oNowSelectChess.n=='仕'){
-		oChess.t='士';
+		oChess.n='士';
 	}else if(oNowSelectChess.n=='帥'||oNowSelectChess.n=='将'){
-		oChess.t='帥';
+		oChess.n='帥';
 	}else if(oNowSelectChess.n=='炮'||oNowSelectChess.n=='砲'){
-		oChess.t='炮';
+		oChess.n='炮';
 	}else if(oNowSelectChess.n=='兵'||oNowSelectChess.n=='卒'){
-		oChess.t='兵';
+		oChess.n='兵';
 	}else{
 		//其他不作处理(车马)	
 	}
@@ -495,7 +494,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 								//有棋子
 								if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].xy){
 									//类型不同  允许该坐标添加到可行
-									if(Root.arrMap[oChess.xy[0]+oChess.xy[1]*9].t!=oChess.t){
+									if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].t!=oChess.t){
 										arrPracticable.push([oChess.xy[0],oChess.xy[1]+y]);
 										//不同阵营棋子 添加该位置后停止后续添加(可吃该棋子)
 										break;
@@ -512,7 +511,6 @@ Root.funRules=function(oNowSelectChess,oTager){
 						}
 						//y-方向  , x轴不变
 						for(let y=1;y<=9;y++){
-							
 							if(oChess.xy[1]-y<=9&&oChess.xy[1]-y>=0){
 								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
 								//有棋子
@@ -528,7 +526,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 									}
 								}else{
 									//空位置
-									console.log(arrPracticable)
+									//console.log(arrPracticable)
 									arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
 								}
 							}
@@ -542,19 +540,53 @@ Root.funRules=function(oNowSelectChess,oTager){
 								//没找到
 							}
 						});
+						console.log('可行位置:');
 						console.log(arrPracticable);
-						console.log(bVerification);
+						console.log('验证通过?:'+bVerification);
+						console.log('全局信息:');
+						console.log(Root.arrMap);
 					})();
 			break;
 		case '馬':
+				(function(){
+					//x或y只能有一个加2或减2,另一个加1或减1 ,共8个方向   +2的方向验证蹩脚
+					//x+2 
+					function funVerify(x,y){
+						if(oChess.xy[1]+x<=9&&oChess.xy[1]+y>=0){
+							if(x==2){
+								Root.arrMap(oChess.xy[1]+x<=9&&oChess.xy[1]+y);
+							}else if(x==-2){
+								
+							}else{
+								//
+							}
+							if(y==2){
+								
+							}else if(y==-2){
+								
+							}else{
+								//
+							}
+							arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]+y]);
+						}
+					}
+					
+					
+					
+				})();
 			break;
 		case '相':
 			break;
 		case '士':
 			break;
-		case '车':
+		case '帥':
 			break;
-
+		case '炮':
+			break;
+		case '兵':
+			break;
+		default:console.error('棋子兵种异常');
+			break;
 	}
 	
 		return {
@@ -682,7 +714,6 @@ window.onload = function() {
 //		for(let a=0;a<90;a++){
 //			arrEmptyMap.push(a);
 //		}
-		console.log(nowSelectedChess)
 		// 如果有 棋子被选中  就移动到空位置  //吃子时 传入目标不传入目标为空棋盘(供前面选子时 不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉)
 		function funMoveChess(tagerChess){
 			if(nowSelectedChess != null) {
@@ -720,7 +751,10 @@ window.onload = function() {
 						}else{
 							//合乎规则,走法在可行范围
 							//之前的棋子对象清空,在Root.arrMap中找到原来棋子的索引
-							Root.arrMap[Root.arrMap.indexOf(nowSelectedChess)] = {};
+							//Root.arrMap[Root.arrMap.indexOf(nowSelectedChess)] = {};!!! indexOf可以查数组中的对象,二维数组却不行 
+							//console.log(JSON.stringify(Root.arrMap[nowSelectedChess.xy[0]+nowSelectedChess.xy[1]*9]));
+							Root.arrMap[nowSelectedChess.xy[0]+nowSelectedChess.xy[1]*9] = {};
+							//console.log(JSON.stringify(Root.arrMap[nowSelectedChess.xy[0]+nowSelectedChess.xy[1]*9]));
 							//alert(Root.arrMap.indexOf(nowSelectedChess));
 							//目标位置xy 给之前被选中的棋子的xy
 							//同时把棋子移动到数组相应索引位置
@@ -748,7 +782,7 @@ window.onload = function() {
 									}
 									nowSelectedChess = null;
 								}else{
-									console.log(nowSelectedChess);
+									//console.log(nowSelectedChess);
 									nowSelectedChess.xy = [nSCX+diffX*(nowCount/count),nSCY+diffY*(nowCount/count)];
 								//	alert((diffY/count)*(nowCount/count))
 									Root.arrMap[target.index] = nowSelectedChess;
