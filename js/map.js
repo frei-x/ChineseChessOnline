@@ -623,7 +623,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 	}
 	
 		return {
-			bVerification:bVerification,
+			bVerification:true,
 			arrPracticable:arrPracticable		
 		}
 }
