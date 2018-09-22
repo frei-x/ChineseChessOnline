@@ -563,13 +563,24 @@ Root.funRules=function(oNowSelectChess,oTager){
 								
 							}
 						}else if(x==2){
-							if(Root.arrMap[(oChess.xy[0]-1)+(oChess.xy[1]*9)].xy){
+							if(Root.arrMap[(oChess.xy[0]+1)+(oChess.xy[1]*9)].xy){
+								fun();
+							}else{
+								
+							}
+						}else if(y==-2){
+							if(Root.arrMap[(oChess.xy[0])+(oChess.xy[1]-1)*9].xy){
+								fun();
+							}else{
+								
+							}
+						}else if(y==2){
+							if(Root.arrMap[(oChess.xy[0])+(oChess.xy[1]+1)*9].xy){
 								fun();
 							}else{
 								
 							}
 						}
-						
 					}else{
 						
 					}
@@ -623,7 +634,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 	}
 	
 		return {
-			bVerification:bVerification,
+			bVerification:true,
 			arrPracticable:arrPracticable		
 		}
 }
