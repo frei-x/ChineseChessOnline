@@ -11,6 +11,7 @@
 			body {
 				margin: 0;
 				padding: 0;
+				background: black;
 				/*overflow: hidden;*/
 			}
 			
@@ -56,6 +57,10 @@
 	<body>
 		<div id="box">
 			<canvas id="map"></canvas>
+			<audio src="audio/MOVE.WAV" hidden="hidden" id="audioClick"></audio>
+			<audio src="audio/go.wav" hidden="hidden" id="audioGo"></audio>
+			<audio src="audio/kill.wav" hidden="hidden" id="audioKill"></audio>
+			<audio src="audio/dong.wav" hidden="hidden" id="audioEat"></audio>
 		</div>
 		<script type="text/javascript" src="js/map.js"></script>
 	</body>

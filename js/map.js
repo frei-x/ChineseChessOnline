@@ -5,6 +5,11 @@ console.time('耗时');
 "use strict"
 let map = document.getElementById("map");
 let box = document.getElementById("box");
+let audioClick = document.getElementById("audioClick");
+let audioGo = document.getElementById("audioGo");
+let audioKill = document.getElementById("audioKill");
+let audioEat = document.getElementById("audioEat");
+
 /*
  *1rem=html根字体大小(px) ,getComputedStyle取出换算后 实际的px大小
  *chessR  棋子半径
@@ -731,6 +736,7 @@ window.onload = function() {
 			xy:null,
 			index:null,
 		};
+	
 		/*layerX是相对于当前对象(canvas)的坐标,和canvas显示坐标(屏幕像素)吻合,
 		 *为了提高图像质量,棋盘与棋子实际大小被扩大,显示大小被缩小(canvas宽高与canvas的style宽高)
 		 * 因为canvas宽高被扩大数倍,其内部坐标也被扩大了,而layerX是屏幕像素的坐标,所以下面需要再次换算下比例
@@ -751,6 +757,7 @@ window.onload = function() {
 
 				//点到圆心的距离 小于等于半径 说明点击到了圆形棋子内或圆形棋子上
 				if(Math.pow(x - chessX, 2) + Math.pow(y - chessY, 2) <= Math.pow(w / 2.5 * 1.1, 2)) {
+						audioClick.play();
 					// 1 红棋 走子  2黑棋走子
 					if(nowGameState==1){
 						if(nowSelectedChess==null){
@@ -765,13 +772,14 @@ window.onload = function() {
 								//不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉
 								//alert('不属于己方1'+Root.arrMap[i].t);
 								funMoveChess(Root.arrMap[i]);
+								audioEat.play();
+								
 							}else{
 								//同阵营棋子,继续覆盖选中
 								nowSelectedChess = Root.arrMap[i];
 							}
 						}	
 						//console.log(nowSelectedChess);
-						
 						break;
 					}else if(nowGameState==2){
 						if(nowSelectedChess==null){
@@ -786,18 +794,20 @@ window.onload = function() {
 								//不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉
 								//alert('不属于己方2'+Root.arrMap[i].t)
 								funMoveChess(Root.arrMap[i]);
+								audioEat.play();
 							}else{
 								//同阵营棋子,继续覆盖选中
 								nowSelectedChess = Root.arrMap[i];
 							}
-						}	
+						}
+						
 						break;
 					}
 					console.log(JSON.stringify(Root.arrMap[i]) + '位置:' + i);
 					//找到了  就把它赋给一个变量  且终止循环
 					//多次点击都有棋子  也覆盖  保持只选中一个
 					//棋子为空  就选中,如果已选中 就判断已选中的的棋子与即将选中的棋子阵营是否属于己方
-
+					
 				} else {
 					//console.log('非空位  但未点击到棋子上')
 				}
@@ -816,6 +826,8 @@ window.onload = function() {
 		// 如果有 棋子被选中  就移动到空位置  //吃子时 传入目标不传入目标为空棋盘(供前面选子时 不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉)
 		function funMoveChess(tagerChess){
 			if(nowSelectedChess != null) {
+				
+				//audioMove.play();
 				//循环出之前存下的所有空位的下标i
 				//根据其下标 计算出空位坐标  x,y(每行9个位置  把数组转换为行列)  90 次 遍历棋盘每个位置
 				for(let iEmpty = 0; iEmpty < 90; iEmpty++) {
@@ -882,6 +894,7 @@ window.onload = function() {
 									}else{
 										//异常数据
 									}
+									audioGo.play();
 									nowSelectedChess = null;
 								}else{
 									//console.log(nowSelectedChess);
