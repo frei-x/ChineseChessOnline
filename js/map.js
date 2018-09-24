@@ -441,6 +441,16 @@ Root.funRules=function(oNowSelectChess,oTager){
 		oChess.n='兵';
 	}else{
 		//其他不作处理(车马)	
+	};
+	//验证目标是否包含在可行范围
+	function funComprise(practicable,tager){
+		practicable.forEach(function(item,index){
+			if(item[0]==tager.xy[0]&&item[1]==tager.xy[1]){
+				bVerification = true;
+			}else{
+				//没找到
+			}
+		});							
 	}
 	switch (oChess.n){
 		case '車':
@@ -533,95 +543,136 @@ Root.funRules=function(oNowSelectChess,oTager){
 							
 						}
 						//检测目标位置是否在可行坐标中,判断数组相等
-						arrPracticable.forEach(function(item,index){
-							if(item[0]==oTager.xy[0]&&item[1]==oTager.xy[1]){
-								bVerification = true;
-							}else{
-								//没找到
-							}
-						});
-						console.log('可行位置:');
-						console.log(arrPracticable);
-						console.log('验证通过?:'+bVerification);
-						console.log('全局信息:');
-						console.log(Root.arrMap);
+						funComprise(arrPracticable,oTager);
 					})();
 			break;
 		case '馬':
-				//验证马蹩脚,传入调用所在区域的x或y(绝对值大的那一个),蹩脚返回false;
-				function funPoor(x,y,fun){
-					let towardsX =  Math.abs(x);
-					let towardsY =  Math.abs(y);
+				//验证马蹩脚,传入主方向的x或y,存入撇脚位置;
+				let arrPoor = [];
+				function funPoor(x,y){
+					
 					//马的朝向,大的那一个
-					if(towardsX>towardsY){
 						//x轴右移进一格或左移一格,y不变
-						if(x==-2){
-							//验证该点是否有棋子阻挡
-							if(Root.arrMap[(oChess.xy[0]-1)+(oChess.xy[1]*9)].xy){
-								fun();
-							}else{
-								
-							}
-						}else if(x==2){
-							if(Root.arrMap[(oChess.xy[0]+1)+(oChess.xy[1]*9)].xy){
-								fun();
-							}else{
-								
-							}
-						}else if(y==-2){
-							if(Root.arrMap[(oChess.xy[0])+(oChess.xy[1]-1)*9].xy){
-								fun();
-							}else{
-								
-							}
-						}else if(y==2){
-							if(Root.arrMap[(oChess.xy[0])+(oChess.xy[1]+1)*9].xy){
-								fun();
-							}else{
-								
-							}
+						//+1  -1超范围判断必须分开... 否则影响另一组坐标的push
+					if(x==-2&&oChess.xy[0]-2>=0){
+						//转换为数组下标 验证该点是否有棋子阻挡,加入可行数组arrPracticable时 直接加x和y(两种)
+						if(Root.arrMap[oChess.xy[0]-1+(oChess.xy[1]*9)].xy){
+							arrPoor.push(Root.arrMap[oChess.xy[0]-1+(oChess.xy[1]*9)]);
+						}else{
+							//x-2方向   有y+1  y-1两种可能
+							oChess.xy[1]-1>=0?arrPracticable.push([oChess.xy[0]-2,oChess.xy[1]-1]):null;
+							oChess.xy[1]+1<=9?arrPracticable.push([oChess.xy[0]-2,oChess.xy[1]+1]):null;
+							
 						}
-					}else{
+					}else if(x==2&&oChess.xy[0]+2<=8){
+						if(Root.arrMap[(oChess.xy[0]+1)+(oChess.xy[1]*9)].xy){
+							arrPoor.push(Root.arrMap[(oChess.xy[0]+1)+(oChess.xy[1]*9)]);
+						}else{
+							oChess.xy[1]-1>=0?arrPracticable.push([oChess.xy[0]+2,oChess.xy[1]-1]):null;
+							oChess.xy[1]+1<=9?arrPracticable.push([oChess.xy[0]+2,oChess.xy[1]+1]):null;
+						}
+					}else if(y==-2&&oChess.xy[1]-2>=0){
+						if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-1)*9].xy){
+							arrPoor.push(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-1)*9]);
+						}else{
+							oChess.xy[0]-1>=0?arrPracticable.push([oChess.xy[0]-1,oChess.xy[1]-2]):null;
+							oChess.xy[0]+1<=8?arrPracticable.push([oChess.xy[0]+1,oChess.xy[1]-2]):null;
+						}
+					}else if(y==2&&oChess.xy[1]+2<=9){
+						if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+1)*9].xy){
+							arrPoor.push(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+1)*9]);
+						}else{
+							oChess.xy[0]-1>=0?arrPracticable.push([oChess.xy[0]-1,oChess.xy[1]+2]):null;
+							oChess.xy[0]+1<=8?arrPracticable.push([oChess.xy[0]+1,oChess.xy[1]+2]):null;
+						}
+					}
 						
-					}
-					let towards = x>y?x:y;
-					
 				};
-				(function(){
+
+				//(function(){
 					//x或y只能有一个加2或减2,另一个加1或减1 ,共8个方向   跨度为2的方向验证蹩脚
-					//x+2
-					function funVerify(x,y){
-						if(oChess.xy[1]+x<=9&&oChess.xy[1]+y>=0){
-							if(x==2){
-								if(y==1){
-									Root.arrMap[(oChess.xy[0]-1)+(oChess.xy[1]*9)].xy
-								}else if(y==-1){
-									
-								}
-								Root.arrMap(oChess.xy[1]+x<=9&&oChess.xy[1]+y);
-							}else if(x==-2){
-								
-							}else{
-								//
-							}
-							if(y==2){
-								
-							}else if(y==-2){
-								
-							}else{
-								//
-							}
-							arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]+y]);
-						}
-					}
+					//let arrTowards = [-2,2]
+					//四个主方向 (0仅为了占位)
+						funPoor(2,0);
+						funPoor(-2,0);
+						funPoor(0,2);
+						funPoor(0,-2);
+					//arrPracticable可行坐标中范围可能超出棋盘 ,将超出的和同阵营棋子过滤
+					//console.log(arrPracticable);
+					arrPracticable=arrPracticable.filter(function(item,index,arr){
+							return item[0]>=0&&item[0]<=8&&item[1]>=0&&item[1]<=9&&Root.arrMap[item[0]+item[1]*9].t!=oChess.t;
+					});
+					funComprise(arrPracticable,oTager);
+					if(arrPoor.length==0){
+						
+					}else{
+						console.error('马被以下位置撇脚:');
+						console.log(arrPoor);
+					};
 					
-					
-					
-				})();
+				//})();
 			break;
 		case '相':
+				(function(){
+					let arrPoor = [];
+					let arr = [[2,2],[2,-2],[-2,-2],[-2,2]];
+					for(let i=0;i<arr.length;i++){
+						// 当前棋子与可行位差值x y相加不得超出棋盘
+						if(oChess.xy[0]+arr[i][0]<=8&&oChess.xy[0]+arr[i][0]>=0&&oChess.xy[1]+arr[i][1]<=9&&oChess.xy[1]+arr[i][1]>=0){
+							//塞象眼
+							if(Root.arrMap[oChess.xy[0]+arr[i][0]/2+(oChess.xy[1]+arr[i][1]/2)*9].xy){
+								arrPoor.push([parseInt(arr[i][0]/2)+oChess.xy[0],parseInt(arr[i][1]/2)+oChess.xy[1]]);
+							}else{
+								//可行位置,原棋子位置+arr偏差(!!!下面数组数字类型怎么被转字符串了?)
+								arrPracticable.push([oChess.xy[0]+arr[i][0],oChess.xy[1]+arr[i][1]]);
+							}
+						}else{
+							//超出棋盘
+						}
+					}
+					//过滤同阵营棋子位置/判断Y(item[1])不允许过河 
+					arrPracticable=arrPracticable.filter(function(item,index,arr){
+						if(oChess.t=='r'){
+							return item[1]<=9&&item[1]>=5&&Root.arrMap[item[0]+item[1]*9].t!=oChess.t
+						}else if(oChess.t=='b'){
+							return item[1]<=4&&item[1]>=0&&Root.arrMap[item[0]+item[1]*9].t!=oChess.t
+						}else{
+							//未知数据
+						}
+					});
+					funComprise(arrPracticable,oTager);
+					if(arrPoor.length==0){
+						
+					}else{
+						console.error('象被以下位置撇脚:');
+						console.log(arrPoor);
+					};
+				})();
 			break;
 		case '士':
+					(function(){
+						let arr = [[1,1],[1,-1],[-1,-1],[-1,1]];
+						for(let i=0;i<arr.length;i++){
+							if(oChess.xy[0]+arr[i][0]<=5&&oChess.xy[0]+arr[i][0]>=3){
+									if(oChess.t=='r'){
+										oChess.xy[1]+arr[i][1]<=9&&oChess.xy[1]+arr[i][1]>=7?arrPracticable.push([oChess.xy[0]+arr[i][0],oChess.xy[1]+arr[i][1]]):null;
+									}else if(oChess.t=='b'){
+										oChess.xy[1]+arr[i][1]<=2&&oChess.xy[1]+arr[i][1]>=0?arrPracticable.push([oChess.xy[0]+arr[i][0],oChess.xy[1]+arr[i][1]]):null;
+									}else{
+										//未知数据
+									}	
+
+							}else{
+								//x方向超出
+							}
+						}
+					//移除同阵营棋子位置
+					arrPracticable=arrPracticable.filter(function(item,index,arr){
+						return Root.arrMap[item[0]+item[1]*9].t!=oChess.t;
+					});
+						
+						funComprise(arrPracticable,oTager);
+					})();
 			break;
 		case '帥':
 			break;
@@ -632,9 +683,13 @@ Root.funRules=function(oNowSelectChess,oTager){
 		default:console.error('棋子兵种异常');
 			break;
 	}
-	
+		console.log('可行位置:');
+		console.log(arrPracticable);
+		console.log('验证通过?:'+bVerification);
+		console.log('全局信息:');
+		console.log(Root.arrMap);
 		return {
-			bVerification:true,
+			bVerification:bVerification,
 			arrPracticable:arrPracticable		
 		}
 }
@@ -792,6 +847,9 @@ window.onload = function() {
 						}
 						if(!Root.funRules(nowSelectedChess,target).bVerification){
 							console.error('棋子走法不符合规则');
+							//置空选中
+							nowSelectedChess=null;
+							break;
 						}else{
 							//合乎规则,走法在可行范围
 							//之前的棋子对象清空,在Root.arrMap中找到原来棋子的索引
