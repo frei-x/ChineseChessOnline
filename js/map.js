@@ -85,7 +85,7 @@ let Root = {
 			n: '卒',
 			xy: [4, 3],
 			t: 'b'
-		}, {}, {
+			}, {}, {
 			n: '卒',
 			xy: [6, 3],
 			t: 'b'
@@ -431,33 +431,40 @@ Root.funRules=function(oNowSelectChess,oTager){
 	let oChess = oNowSelectChess;
 	//验证(布尔值)
 	let bVerification = false;
+	let chessType = '';
 	//可行坐标
 	let arrPracticable = [];
 	//棋子兵种判断  统一改为红棋名字,具体判断oNowSelectChess时 再判断其属于红方或黑方
-	if(oNowSelectChess.n=='相'||oNowSelectChess.n=='象'){
-		oChess.n='相';
-	}else if(oNowSelectChess.n=='士'||oNowSelectChess.n=='仕'){
-		oChess.n='士';
-	}else if(oNowSelectChess.n=='帥'||oNowSelectChess.n=='将'){
-		oChess.n='帥';
-	}else if(oNowSelectChess.n=='炮'||oNowSelectChess.n=='砲'){
-		oChess.n='炮';
-	}else if(oNowSelectChess.n=='兵'||oNowSelectChess.n=='卒'){
-		oChess.n='兵';
-	}else{
-		//其他不作处理(车马)	
-	};
+	if(oChess.n=='相'||oChess.n=='象'){
+		chessType='相';
+	}else if(oChess.n=='士'||oChess.n=='仕'){
+		chessType='士';
+	}else if(oChess.n=='帥'||oChess.n=='將'){
+		chessType='帥';
+	}else if(oChess.n=='炮'||oChess.n=='砲'){
+		chessType='炮';
+	}else if(oChess.n=='兵'||oChess.n=='卒'){
+		chessType='兵';
+	}else if(oChess.n=='車'){
+		chessType='車';
+	}else if(oChess.n=='馬'){
+		chessType='馬';
+	}
 	//验证目标是否包含在可行范围
 	function funComprise(practicable,tager){
-		practicable.forEach(function(item,index){
-			if(item[0]==tager.xy[0]&&item[1]==tager.xy[1]){
-				bVerification = true;
-			}else{
-				//没找到
-			}
-		});							
-	}
-	switch (oChess.n){
+		if(oTager){
+			practicable.forEach(function(item,index){
+				if(item[0]==tager.xy[0]&&item[1]==tager.xy[1]){
+						bVerification = true;
+					}else{
+					//没找到
+					}
+				});		
+		}else{
+			//未传入目标
+		}
+	};
+	switch (chessType){
 		case '車':
 					(function(){
 						//横向与纵向 循环棋盘最大跨度
@@ -680,6 +687,72 @@ Root.funRules=function(oNowSelectChess,oTager){
 					})();
 			break;
 		case '帥':
+					//统一验证x范围,再验证y 
+					(function(){
+						oChess.xy[0]+1<=5?arrPracticable.push([oChess.xy[0]+1,oChess.xy[1]]):null;
+						oChess.xy[0]-1>=3?arrPracticable.push([oChess.xy[0]-1,oChess.xy[1]]):null;
+							//if(oTager.xy[0]==oNowSelectChess.xy[0]){
+								if(oNowSelectChess.t=='r'){
+									for(let y=1;y<=9;y++){
+										if(oChess.xy[1]-y<=9&&oChess.xy[1]-y>=0){
+										//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+										//有棋子
+											if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].n=='將'){
+												//类型不同  允许该坐标添加到可行
+													arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
+													//不同阵营棋子 停止后续添加
+													break;
+													//同阵营棋子,直接终止
+											}else{
+												if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].xy){
+													break;
+												}
+												//非將位置
+												//console.log(arrPracticable)
+												//arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
+											}
+										}
+									}
+								}else if(oNowSelectChess.t=='b'){
+									for(let y=1;y<=9;y++){
+										if(oChess.xy[1]+y<=9&&oChess.xy[1]+y>=0){
+											if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].n=='帥'){
+												//类型不同  允许该坐标添加到可行
+													arrPracticable.push([oChess.xy[0],oChess.xy[1]+y]);
+													//不同阵营棋子 停止后续添加
+													break;
+													//同阵营棋子,直接终止
+											}else{
+												//有棋子才终止循环,没棋子继续循环找到 对方将帥
+												if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].xy){
+													break;
+												}
+												//非將位置
+												//console.log(arrPracticable)
+												//arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
+											}
+										}
+									}									
+								}else{
+									//未知阵营
+								}
+							//};
+								if(oChess.t=='r'){
+									oChess.xy[1]+1<=9?arrPracticable.push([oChess.xy[0],oChess.xy[1]+1]):null;
+									oChess.xy[1]-1>=7?arrPracticable.push([oChess.xy[0],oChess.xy[1]-1]):null;
+								}else if(oChess.t=='b'){
+									oChess.xy[1]-1>=0?arrPracticable.push([oChess.xy[0],oChess.xy[1]-1]):null;
+									oChess.xy[1]+1<=2?arrPracticable.push([oChess.xy[0],oChess.xy[1]+1]):null;
+								}else{
+									//未知数据
+								};
+					arrPracticable=arrPracticable.filter(function(item,index,arr){
+						if(Root.arrMap[item[0]+item[1]*9]){
+							return Root.arrMap[item[0]+item[1]*9].t!=oChess.t;
+						}
+					});
+						funComprise(arrPracticable,oTager);
+					})();
 			break;
 		case '炮':
 			break;
