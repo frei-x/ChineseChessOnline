@@ -474,7 +474,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
 								//有棋子
 								if(Root.arrMap[oChess.xy[0]+x+oChess.xy[1]*9].xy){
-									//类型不同  允许该坐标添加到可行
+									//类型不同  允许该坐标添加
 									if(Root.arrMap[oChess.xy[0]+x+oChess.xy[1]*9].t!=oChess.t){
 										arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
 										//有棋子 停止后续添加
@@ -493,7 +493,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 						for(let x=1;x<9;x++){
 							if(oChess.xy[0]-x<=8&&oChess.xy[0]-x>=0){
 								if(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].xy){
-									//类型不同  允许该坐标添加到可行
+									//类型不同  允许该坐标添加
 									//alert(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].t+','+oChess.t)
 									if(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].t!=oChess.t){
 										arrPracticable.push([oChess.xy[0]-x,oChess.xy[1]]);
@@ -515,7 +515,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
 								//有棋子
 								if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].xy){
-									//类型不同  允许该坐标添加到可行
+									//类型不同  允许该坐标添加
 									if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].t!=oChess.t){
 										arrPracticable.push([oChess.xy[0],oChess.xy[1]+y]);
 										//不同阵营棋子 添加该位置后停止后续添加(可吃该棋子)
@@ -537,7 +537,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
 								//有棋子
 								if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].xy){
-									//类型不同  允许该坐标添加到可行
+									//类型不同  允许该坐标添加
 									if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].t!=oChess.t){
 										arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
 										//不同阵营棋子 停止后续添加
@@ -755,6 +755,127 @@ Root.funRules=function(oNowSelectChess,oTager){
 					})();
 			break;
 		case '炮':
+					(function(){
+						//横向与纵向 循环棋盘最大跨度
+						//x+方向  y不变,bEat 可以吃子了  跳过越子这一次循环
+						//各方向是否越子
+						let bEat = {
+							XPlush:false,
+							XReduce:false,
+							YPlush:false,
+							YReduce:false
+						};
+						for(let x=1;x<9;x++){
+							if(oChess.xy[0]+x<=8&&oChess.xy[0]+x>=0){
+								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+								//有棋子
+								if(Root.arrMap[oChess.xy[0]+x+oChess.xy[1]*9].xy){
+									
+										
+										//arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
+										//仅在有棋子 且已越过子停止这一次后续添加,没越子设置为越子
+										if(!bEat.XPlush){
+											bEat.XPlush = true;
+											continue;
+										}
+										
+								
+								}else{
+									//空位置 , 未越子时才添加到可行,越子后不能添加空位置
+									if(!bEat.XPlush){
+										arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
+									}else{
+										//越子了  不能再走空位
+									}
+								}
+								//如果 越子,可以开始吃子了
+								if(bEat.XPlush){
+									//不是空的位置(发现棋子):
+									if(Root.arrMap[oChess.xy[0]+x+oChess.xy[1]*9].xy){
+										//不是同阵营  添加到可行位置数组
+										 if(Root.arrMap[oChess.xy[0]+x+oChess.xy[1]*9].t!=oChess.t){
+										 	 arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
+										 	 break;
+										 }else{
+										 	//同阵营
+										 }
+										 //不管是不是同阵营棋子 都停止搜索
+										break;
+									}
+								}else{
+									//未越子 不能开始吃子
+								}
+							}
+							
+						}
+						//x-方向
+						for(let x=1;x<9;x++){
+							if(oChess.xy[0]-x<=8&&oChess.xy[0]-x>=0){
+								if(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].xy){
+									//类型不同  允许该坐标添加
+									//alert(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].t+','+oChess.t)
+									if(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].t!=oChess.t){
+										arrPracticable.push([oChess.xy[0]-x,oChess.xy[1]]);
+										//有棋子 停止后续添加
+										break;
+									}else{
+										break;
+									}
+								}else{
+									//空位置
+									arrPracticable.push([oChess.xy[0]-x,oChess.xy[1]]);
+								}
+							}
+							
+						}
+						//y+方向  , x轴不变
+						for(let y=1;y<=9;y++){
+							if(oChess.xy[1]+y<=9&&oChess.xy[1]+y>=0){
+								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+								//有棋子
+								if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].xy){
+									//类型不同  允许该坐标添加
+									if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].t!=oChess.t){
+										arrPracticable.push([oChess.xy[0],oChess.xy[1]+y]);
+										//不同阵营棋子 添加该位置后停止后续添加(可吃该棋子)
+										break;
+										//同阵营棋子,直接终止
+									}else{
+										break;
+									}
+								}else{
+									//空位置
+									arrPracticable.push([oChess.xy[0],oChess.xy[1]+y]);
+								}
+							}
+							
+						}
+						//y-方向  , x轴不变
+						for(let y=1;y<=9;y++){
+							if(oChess.xy[1]-y<=9&&oChess.xy[1]-y>=0){
+								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+								//有棋子
+								if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].xy){
+									//类型不同  允许该坐标添加
+									if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].t!=oChess.t){
+										arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
+										//不同阵营棋子 停止后续添加
+										break;
+										//同阵营棋子,直接终止
+									}else{
+										break;
+									}
+								}else{
+									//空位置
+									//console.log(arrPracticable)
+									arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
+								}
+							}
+							
+						}
+						//检测目标位置是否在可行坐标中,判断数组相等
+						funComprise(arrPracticable,oTager);
+					})();
 			break;
 		case '兵':
 			break;
