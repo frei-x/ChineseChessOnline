@@ -946,7 +946,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 		case '兵':
 					(function(){
 						if(oChess.t=='r'){
-							//前进方向（不是否过河，都可以前进）
+							//前进方向（不管是否过河，都可以前进）
 							oChess.xy[1]-1>=0?arrPracticable.push([oChess.xy[0],oChess.xy[1]-1]):null;
 							//过河
 							if(oChess.xy[1]>=0&&oChess.xy[1]<=4){
@@ -956,7 +956,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 								//未过河 不能左右
 							}
 						}else if(oChess.t=='b'){
-							//前进方向（不是否过河，都可以前进）
+							//前进方向（不管是否过河，都可以前进）
 							oChess.xy[1]+1<=9?arrPracticable.push([oChess.xy[0],oChess.xy[1]+1]):null;
 							//过河
 							if(oChess.xy[1]>=5&&oChess.xy[1]<=9){
@@ -1003,6 +1003,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 // 	enumerable:true
 // });
 window.onload = function() {
+	let socket = io();
 	//绘制棋盘
 	//funDrawMap();
 	//放置棋子
