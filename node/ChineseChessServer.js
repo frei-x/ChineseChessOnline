@@ -5,6 +5,14 @@ exp.get('/',function(req,res){
     res.send('aaa');
     console.log('有人来了');
 });
+exp.get('/register',function(req,res){
+    res.send('注册');
+    console.log('有人来了');
+});
+exp.get('/login',function(req,res){
+    res.send('登录');
+    console.log('有人来了');
+});
 let info = {
     onlineNum:0,
 };
