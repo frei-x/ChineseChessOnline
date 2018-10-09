@@ -18,7 +18,7 @@ let audioEat = document.getElementById("audioEat");
  *地图数组下标 i换算坐标,每行9个(0开始 一行数组长度为8 ): 9y + x = i,其中y为i除以9 取整,x为i除以9 的余数
  *													列 x = i-9y
  *													行 y = (i-x)/9
- * funRules 棋子走法规则
+ * funRules 棋子走法规则,arrDead 已死亡棋子(被吃)
  */
 let Root = {
 	fontSize: parseFloat(getComputedStyle(document.documentElement, false)['fontSize']),
@@ -26,6 +26,7 @@ let Root = {
 	funReDraw:null,
 	arrReDraw:[],
 	funRules:null,
+	arrDead:[],
 	arrMap: [{
 			n: '車',
 			xy: [0, 0],
@@ -199,7 +200,8 @@ if(innerWidth <= 700 && innerHeight > innerWidth) {
 	p.lineWidth = 2;
 	map.style.cssText = "width: " + mapSize.width / 2 + "px;height:" + mapSize.height / 2 + "px;";
 }
-map.style.marginLeft = -parseFloat(map.style.width) / 2 - 4 + 'px';
+//计算borderWidth实际px大小
+map.style.marginLeft = -parseFloat(map.style.width) / 2 - parseFloat(getComputedStyle(map,null).borderWidth) + 'px';
 map.style.marginTop = -parseFloat(map.style.height) / 2 + 'px';
 //canvas真实大小与屏幕显示大小比例(缩放倍数)
 Root.canvasAndScreenRatioWidth = map.width / parseFloat(map.style.width);
@@ -450,7 +452,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 	}else if(oChess.n=='馬'){
 		chessType='馬';
 	}
-	//验证目标是否包含在可行范围
+	/*验证目标是否包含在可行范围*/
 	function funComprise(practicable,tager){
 		if(oTager){
 			practicable.forEach(function(item,index){
@@ -1023,7 +1025,6 @@ window.onload = function() {
 			xy:null,
 			index:null,
 		};
-	
 		/*layerX是相对于当前对象(canvas)的坐标,和canvas显示坐标(屏幕像素)吻合,
 		 *为了提高图像质量,棋盘与棋子实际大小被扩大,显示大小被缩小(canvas宽高与canvas的style宽高)
 		 * 因为canvas宽高被扩大数倍,其内部坐标也被扩大了,而layerX是屏幕像素的坐标,所以下面需要再次换算下比例
@@ -1101,7 +1102,6 @@ window.onload = function() {
 			} else {
 				//棋盘所有空位  
 				  arrEmptyMap.push(i);
-				
 				//console.log(nowSelectedChess)
 			}
 			//arrEmptyMap.push(i);
@@ -1113,7 +1113,6 @@ window.onload = function() {
 		// 如果有 棋子被选中  就移动到空位置  //吃子时 传入目标不传入目标为空棋盘(供前面选子时 不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉)
 		function funMoveChess(tagerChess){
 			if(nowSelectedChess != null) {
-				
 				//audioMove.play();
 				//循环出之前存下的所有空位的下标i
 				//根据其下标 计算出空位坐标  x,y(每行9个位置  把数组转换为行列)  90 次 遍历棋盘每个位置
@@ -1172,15 +1171,16 @@ window.onload = function() {
 										nowGameState = 2;
 									}else if(nowSelectedChess.t==='b'){
 										nowGameState = 1;
-									}else if(nowGameState==0){
-										//和棋
-									}else if(nowGameState==10){
-										//红胜
-									}else if(nowGameState==20){
-										//黑胜
-									}else{
-										//异常数据
 									}
+//									else if(nowGameState==0){
+//										//和棋
+//									}else if(nowGameState==10){
+//										//红胜
+//									}else if(nowGameState==20){
+//										//黑胜
+//									}else{
+//										//异常数据
+//									}
 									audioGo.play();
 									nowSelectedChess = null;
 								}else{
@@ -1193,6 +1193,19 @@ window.onload = function() {
 									nowCount++;
 								}
 							}
+							if(Object.keys(Root.arrMap[target.index]).length==0){
+								// 移动了 但未吃子(目标空对象)
+							}else{
+								//记录哪些棋子被吃
+								Root.arrDead.push(Root.arrMap[target.index]);
+								if(Root.arrDead[Root.arrDead.length-1].n=='帥'){
+									nowGameState = 20;
+								}else if(Root.arrDead[Root.arrDead.length-1].n=='將'){
+									nowGameState = 10;
+								}
+							}
+							console.log('以下棋子已阵亡:');
+							console.log(Root.arrDead);
 							moveAnimation();
 							console.log('移动到'+JSON.stringify(target));
 							//Root.funReDraw();

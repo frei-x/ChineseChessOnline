@@ -25,18 +25,20 @@
 				top: 0;
 				left: 0;
 				text-align: center;
+				font-size: 20px;
 			}
 			
 			#map {
 				position: absolute;
 				left: 50%;
-				top: 47%;
+				top: 50%;
 				padding: 0px;
 				margin: 0;
 				border: 0.06rem solid darkgoldenrod;
 				background: rgba(249, 216, 162, 1);
 			}
 		</style>
+		<link rel="stylesheet" type="text/css" href="./css/view.css"/>
 		<script>
 			(function() {
 				//rem 与屏幕/字体大小比例计算
@@ -44,6 +46,12 @@
 				var ratio = 16 / userFontSize;
 				var fontSize = (innerWidth / 1536 * 0.625) * 10 * ratio;
 				document.documentElement.style.fontSize = fontSize + "rem";
+//				if(innerWidth<=768){
+//					var userFontSize = parseFloat(getComputedStyle(document.documentElement, false)['fontSize']);
+//					var ratio = 16 / userFontSize;
+//					var fontSize = (innerWidth / 1536 * 0.625) * 10 * ratio;
+//					document.documentElement.style.fontSize = fontSize + "rem";
+//				}
 				//				window.onresize = function() {
 				//					fontSize = (innerWidth / 1536 * 0.625) * 10 * ratio;
 				//					document.documentElement.style.fontSize = fontSize + "rem";
@@ -61,6 +69,10 @@
 			<audio src="audio/go.wav" hidden="hidden" id="audioGo"></audio>
 			<audio src="audio/kill.wav" hidden="hidden" id="audioKill"></audio>
 			<audio src="audio/dong.wav" hidden="hidden" id="audioEat"></audio>
+			<div class="form">
+				<div class="inputPosition ">账号:<input type="text"  class="inputStyle" id="loginName" value="" maxlength="6"/></div>
+				<div class="inputPosition ">密码:<input type="text"  class="inputStyle" id="loginPassWord" value="" maxlength="18"/></div> 
+			</div>
 		</div>
 		<script type="text/javascript" src="js/map.js"></script>
 	</body>

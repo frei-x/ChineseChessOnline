@@ -1,0 +1,39 @@
+@charset "utf-8";
+/*登录 注册*/
+.form{
+	position:absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -48vmin;
+	margin-left: -45vmin;
+	width: 90vmin;
+	height: 95vmin;
+	border: 0.05rem solid darkgoldenrod;
+	background: rgba(249, 216, 162, 1);
+	opacity: 0.95;
+	z-index: 999;
+}
+.inputPosition{
+	position: absolute;
+	left: 50%;
+}
+.inputStyle{
+	display：inline-block;
+	font-size:16px;
+	width:40vmin;
+	margin-left: -20vmin;
+	outline: none;
+	border: none;
+	background: transparent;
+	border-bottom:2px solid darkgoldenrod;
+	transition: 0.3s;
+}
+.inputStyle:focus{
+	border-color:red;
+}
+#loginName{
+	top: 30vmin;
+}
+#loginPassWord{
+	top: 40vmin;
+}
