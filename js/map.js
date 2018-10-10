@@ -191,7 +191,7 @@ let h = Math.floor(mapSize.height / 9);
 let p = map.getContext('2d');
 /*
  canvas真实尺寸与style尺寸比例不为2:1或者移动端的4:1,由于棋盘大小需要  下面的style尺寸大小为未扩大0.15倍前
- * 
+ *
  * */
 if(innerWidth <= 700 && innerHeight > innerWidth) {
 	map.style.cssText = "width: " + mapSize.width / 4 + "px;height:" + mapSize.height / 4 + "px;border: 0.16rem solid darkgoldenrod;";
@@ -206,7 +206,20 @@ map.style.marginTop = -parseFloat(map.style.height) / 2 + 'px';
 //canvas真实大小与屏幕显示大小比例(缩放倍数)
 Root.canvasAndScreenRatioWidth = map.width / parseFloat(map.style.width);
 Root.canvasAndScreenRatioHeight = map.height / parseFloat(map.style.height);
-/*非canvas界面的样式自适应*/
+/*非canvas界面的交互*/
+function viewInteractive(){
+	let oBtnChangeForm = document.querySelectorAll('.btnBack,#regBtn,#youkeBtn,#forgetBtn');
+	let oFormView  = document.querySelectorAll('.form');
+	for(let i=0;i<oBtnChangeForm.length;i++){
+		oBtnChangeForm[i].addEventListener('click',function(){
+			for(let all=0;all<oBtnChangeForm.length;all++){
+				oFormView[all].style.transform='translateX(-100vw)';
+			}
+			oFormView[i].style.transform='translateX(0vw)';
+		},false);
+	}
+}
+viewInteractive();
 
 /**
  * x坐标转换函数:把棋子虚拟坐标转换为canvas真实坐标
@@ -333,7 +346,7 @@ function funDrawMap(){
 	if(innerWidth <= 700 && innerHeight > innerWidth) {
 		//				map.style.top = '45%';
 		p.font = `${w/2.5*1.5}px STxingkai`;
-		map.style.marginTop = -(map.height) / 8 + 'px';
+//		map.style.marginTop = -(map.height) / 8 + 'px';
 	} else {
 		p.font = `${w/2.5*1.6}px STxingkai`;
 	}
@@ -341,8 +354,7 @@ function funDrawMap(){
 	p.fillText('汉界', funCoordinateX(6), funCoordinateY(4.7));
 	p.save();
 	p.closePath();
-
-}
+}	
 //绘制棋盘 结束
 //放置棋子
 function funPutChess() {

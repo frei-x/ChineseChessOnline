@@ -70,9 +70,22 @@
 			<audio src="audio/go.wav" hidden="hidden" id="audioGo"></audio>
 			<audio src="audio/kill.wav" hidden="hidden" id="audioKill"></audio>
 			<audio src="audio/dong.wav" hidden="hidden" id="audioEat"></audio>
-			<form class="form">
-				<div class="inputPosition" id="loginName"><span>账 号:</span><input type="text"  class="inputStyle"  value="" maxlength="6" autocomplete="on"/></div>
-				<div class="inputPosition" id="loginPassWord"><span>密 码:</span><input type="password"  class="inputStyle" value="" maxlength="18" autocomplete="on"/></div> 
+			<form class="form" id="login">
+				<div class="inputPosition" id="loginName"><span>账 号:</span><input type="text"  class="inputStyle"  value="" maxlength="6" autocomplete="on" placeholder="请输入账号"/></div>
+				<div class="inputPosition" id="loginPassWord"><span>密 码:</span><input type="password"  class="inputStyle" value="" maxlength="18" autocomplete="on" placeholder="请输入密码"/></div> 
+				<div id="loginBtn" class="formBtn">登录</div>
+				<div id="regBtn" class="formBtn">注册</div>
+				<div id="youkeBtn" class="formBtn">游客</div>
+				<div id="forgetBtn" class="formBtn">忘记密码</div>
+			</form>
+			<form class="form" id="reg">
+				<div id="youkeBtn" class="formBtn btnBack">注册</div>
+			</form>
+			<form class="form" id="forgetPassword">
+				忘记密码
+			</form>
+			<form class="form" id="youke">
+				游客
 			</form>
 		</div>
 		<script type="text/javascript" src="js/map.js"></script>

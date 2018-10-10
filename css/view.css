@@ -1,53 +1,166 @@
 @charset "utf-8";
-/*登录 注册*/
-.form{
-	position:absolute;
-	top: 50%;
-	left: 50%;
-	margin-top: -38vmin;
-	margin-left: -36vmin;
-	width: 72vmin;
-	height: 76vmin;
-	border: 0.05rem solid darkgoldenrod;
-	background: rgba(249, 216, 162, 1);
-	opacity: 0.95;
-	z-index: 999;
-}
-.inputPosition{
-	position: absolute;
-	left: 50%;
-	width:30vmin;
-	margin-left: -15vmin;
-}
-.inputStyle{
-	width:30vmin;
-	font:3vmin "宋体" ;
-	margin: 0;
-	padding: 0;
-	outline: none;
-	border: none;
-	background: transparent;
-	border-bottom:2px solid darkgoldenrod;
-	transition: 0.3s;
-}
-.inputStyle:focus{
-	border-color:red;
-}
-#loginName{
-	top: 24vmin;
-}
-#loginPassWord{
-	top: 32vmin;
-}
-.inputPosition span{
+/*登录 注册*/	
+@media (min-width: 800px) {
+	.form{
+		width: 70vmin;
+		height: 80vmin;
+		position:absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -40vmin;
+		margin-left: -35vmin;
+		border: 0.05rem solid darkgoldenrod;
+		background: rgba(249, 216, 162, 1);
+		opacity: 0.95;
+		transform: translateX(0);
+		transition: 1.2s ease;
+		z-index: 999;
+		box-shadow: 1px 1px 0px 50vw rgba(0,0,0,0.6);
+	}
+	#reg{
+		transform: translateX(-100vw);
+	}
+	#forgetPassword{
+		transform: translateX(-100vw);
+	}
+	#youke{
+		transform: translateX(-100vw);
+	}
+	.inputPosition{
+		position: absolute;
+		left: 50%;
+		width:30vmin;
+		margin-left: -18vmin;
+	}
+	.inputStyle{
+		width:20vmin;
+		height: 5vmin;
+		font:2.5vmin "宋体" ;
+		margin: 0;
+		margin-top: -5vmin;
+		padding: 0;
+		outline: none;
+		border: none;
+		background: transparent;
+		border-bottom:2px solid darkgoldenrod;
+		transition: 0.3s;
+	}
+	.inputStyle:focus{
+		border-color:red;
+	}
+	#loginName{
+		top: 24vmin;
+	}
+	#loginPassWord{
+		top: 32vmin;
+	}
+	.inputPosition span{
 		min-width:10vmin;
 		float: left;
-		margin-left: -10vmin;
-		line-height: 2.5vmin;
+		margin-left: 0vmin;
+		line-height: 3.5vmin;
 		display: inline-block;
-		text-indent: -0.2rem;
+		text-indent: 0vmin;
+	}
+	.formBtn{
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-webkit-user-select: none;
+		/*border-radius: 8%;*/
+		width: 8vmin;
+		height: 4vmin;
+		cursor: pointer;
+		font-family:"微软雅黑";
+		font-size: 2vmin;
+		margin: 0;
+		padding: 0.2vmin;
+		border: none;
+		outline: none;
+		color: white;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, .3);
+		background: darkgoldenrod;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		line-height: 4vmin;
+		text-align: center;
+		opacity: 0.9;
+	}
+	.formBtn:hover{
+		background: orange;
+		opacity: 1;
+		transition:0.5s all;
+		border-radius:20%/40%;
+	}
+	.formBtn:active{
+		transition: 0.1s box-shadow;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, .3) inset;
+	}
+	#loginBtn{
+		margin-left:-20vmin;
+	}
+	#regBtn{
+		margin-left:-10vmin;
+	}
+	#youkeBtn{
+		margin-left:0vmin;
+	}
+	#forgetBtn{
+		margin-left:10vmin;
+	}
+.inputStyle::-webkit-input-placeholder {
+	text-indent: .05rem;
+	color: gray;
+	transition: .5s;
+	transform-origin: left top;
 }
-@media (max-width: 768px) {
+
+.inputStyle:-moz-placeholder {
+	text-indent: .05rem;
+	transition: .5s;
+	transform-origin: left top;
+}
+.inputStyle:-ms-input-placeholder {
+	text-indent: .05rem;
+	-ms-transition: .5s;
+	transform-origin: left top;
+}
+.inputStyle:focus::-webkit-input-placeholder {
+	transform: scale(0.7) translateY(-1vmin);
+	color: red;
+}
+
+.inputStyle:focus::-moz-placeholder {
+	transform: scale(0.7) translateY(-1vmin);
+	color: red;
+}
+
+.inputStyle:focus:-ms-input-placeholder {
+	transform: scale(0.7) translateY(-1vmin);
+	color: red;
+}
+
+}
+
+@media (max-width: 800px) {
+	.inputPosition{
+		position: absolute;
+		left: 50%;
+		width:30vmin;
+		margin-left: -15vmin;
+	}
+	.inputStyle{
+		width:30vmin;
+		height: 5vmin;
+		font:3vmin "宋体" ;
+		margin: 0;
+		padding: 0;
+		outline: none;
+		border: none;
+		background: transparent;
+		border-bottom:2px solid darkgoldenrod;
+		transition: 0.3s;
+	}
 	.form{
 		position:absolute;
 		top: 50%;
@@ -60,6 +173,7 @@
 		background: rgba(249, 216, 162, 1);
 		opacity: 0.95;
 		z-index: 999;
+		box-shadow: 1px 1px 0px 100vw rgba(0,0,0,0.4);
 	}
 	#loginName{
 		top: 27vmin;
@@ -68,10 +182,10 @@
 		top: 36vmin;
 	}
 	.inputPosition span{
-		min-width:1vmin;
 		float: left;
-		margin-left: -10vmin;
-		margin-top: 2vmin;
+		margin-left: -1.5rem;
+		line-height: 4vmin;
 		display: inline-block;
+		text-indent: 0vmin;
 	}
 }
