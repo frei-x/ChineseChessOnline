@@ -206,6 +206,8 @@ map.style.marginTop = -parseFloat(map.style.height) / 2 + 'px';
 //canvas真实大小与屏幕显示大小比例(缩放倍数)
 Root.canvasAndScreenRatioWidth = map.width / parseFloat(map.style.width);
 Root.canvasAndScreenRatioHeight = map.height / parseFloat(map.style.height);
+/*非canvas界面的样式自适应*/
+
 /**
  * x坐标转换函数:把棋子虚拟坐标转换为canvas真实坐标
  * @param {Number} x

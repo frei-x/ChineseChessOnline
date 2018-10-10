@@ -4,10 +4,10 @@
 	position:absolute;
 	top: 50%;
 	left: 50%;
-	margin-top: -48vmin;
-	margin-left: -45vmin;
-	width: 90vmin;
-	height: 95vmin;
+	margin-top: -38vmin;
+	margin-left: -36vmin;
+	width: 72vmin;
+	height: 76vmin;
 	border: 0.05rem solid darkgoldenrod;
 	background: rgba(249, 216, 162, 1);
 	opacity: 0.95;
@@ -16,12 +16,14 @@
 .inputPosition{
 	position: absolute;
 	left: 50%;
+	width:30vmin;
+	margin-left: -15vmin;
 }
 .inputStyle{
-	display：inline-block;
-	font-size:16px;
-	width:40vmin;
-	margin-left: -20vmin;
+	width:30vmin;
+	font:3vmin "宋体" ;
+	margin: 0;
+	padding: 0;
 	outline: none;
 	border: none;
 	background: transparent;
@@ -32,8 +34,44 @@
 	border-color:red;
 }
 #loginName{
-	top: 30vmin;
+	top: 24vmin;
 }
 #loginPassWord{
-	top: 40vmin;
+	top: 32vmin;
+}
+.inputPosition span{
+		min-width:10vmin;
+		float: left;
+		margin-left: -10vmin;
+		line-height: 2.5vmin;
+		display: inline-block;
+		text-indent: -0.2rem;
+}
+@media (max-width: 768px) {
+	.form{
+		position:absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -48vmin;
+		margin-left: -45vmin;
+		width: 90vmin;
+		height: 96vmin;
+		border: 0.05rem solid darkgoldenrod;
+		background: rgba(249, 216, 162, 1);
+		opacity: 0.95;
+		z-index: 999;
+	}
+	#loginName{
+		top: 27vmin;
+	}
+	#loginPassWord{
+		top: 36vmin;
+	}
+	.inputPosition span{
+		min-width:1vmin;
+		float: left;
+		margin-left: -10vmin;
+		margin-top: 2vmin;
+		display: inline-block;
+	}
 }
