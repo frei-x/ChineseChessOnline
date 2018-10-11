@@ -208,14 +208,15 @@ Root.canvasAndScreenRatioWidth = map.width / parseFloat(map.style.width);
 Root.canvasAndScreenRatioHeight = map.height / parseFloat(map.style.height);
 /*非canvas界面的交互*/
 function viewInteractive(){
-	let oBtnChangeForm = document.querySelectorAll('.btnBack,#regBtn,#youkeBtn,#forgetBtn');
+	let oBtnChangeForm = document.querySelectorAll('#regBtn,#youkeBtn,#forgetBtn');
 	let oFormView  = document.querySelectorAll('.form');
+	let oFormView3= [...oFormView].slice(1,oFormView.length);
 	for(let i=0;i<oBtnChangeForm.length;i++){
 		oBtnChangeForm[i].addEventListener('click',function(){
 			for(let all=0;all<oBtnChangeForm.length;all++){
-				oFormView[all].style.transform='translateX(-100vw)';
+				oFormView3[all].style.transform='translateX(-100vw)';
 			}
-			oFormView[i].style.transform='translateX(0vw)';
+			oFormView3[i].style.transform='translateX(0vw)';
 		},false);
 	}
 }

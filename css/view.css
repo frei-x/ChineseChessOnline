@@ -15,7 +15,7 @@
 		transform: translateX(0);
 		transition: 1.2s ease;
 		z-index: 999;
-		box-shadow: 1px 1px 0px 50vw rgba(0,0,0,0.6);
+		box-shadow: 1px 1px 0px 30vw rgba(0,0,0,0.6);
 	}
 	#reg{
 		transform: translateX(-100vw);
