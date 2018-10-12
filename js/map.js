@@ -1026,7 +1026,27 @@ window.onload = function() {
 	//放置棋子
 	//funPutChess();
 	Root.funReDraw();
-
+	//dom view 交互
+	(function(){
+		let btnLogin = document.getElementById("loginBtn");
+		
+		btnLogin.addEventListener('click',function(){
+			axios.post('/node/chessLogin', {
+			    userName: 'Fred',
+			    passWord: 'Flintstone'
+			  })
+			  .then(function (response) {
+				if (response.status == 200) {
+		            console.log(response.data);//登录成功
+		        } else {
+		            console.log('http状态非200');
+		        }
+			  })
+			  .catch(function (error) {
+			    console.log(error);
+			  });
+			});
+	})();
 	//当前 选中的棋子
 	let nowSelectedChess = null;
 	//当前游戏状态 0:和棋,1:红行棋,2:黑行棋,10:红胜,20:黑胜
