@@ -1,0 +1,11 @@
+function DB(err,success){
+    db.query('select userName from chess_user where userName=?',['root'],(err,data)=>{
+        if(err){
+                console.log(err.code);
+                err();
+        }else{
+                let data1 =JSON.stringify(data);
+                success(JSON.parse(data1));
+        }
+    });
+}

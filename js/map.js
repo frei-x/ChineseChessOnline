@@ -219,6 +219,7 @@ function viewInteractive(){
 			oFormView3[i].style.transform='translateX(0vw)';
 		},false);
 	}
+	let login
 }
 viewInteractive();
 
@@ -1029,15 +1030,16 @@ window.onload = function() {
 	//dom view 交互
 	(function(){
 		let btnLogin = document.getElementById("loginBtn");
-		
+		let oLoginName = document.querySelector('#loginName input');
+		let oLoginPassword = document.querySelector("#loginPassWord input");
 		btnLogin.addEventListener('click',function(){
 			axios.post('/node/chessLogin', {
-			    userName: 'Fred',
-			    passWord: 'Flintstone'
+			    userName: oLoginName.value,
+			    passWord: oLoginPassword.value
 			  })
-			  .then(function (response) {
-				if (response.status == 200) {
-		            console.log(response.data);//登录成功
+			  .then(function (res) {
+				if (res.status == 200) {
+		            console.log(res.data);//登录成功
 		        } else {
 		            console.log('http状态非200');
 		        }
@@ -1046,6 +1048,20 @@ window.onload = function() {
 			    console.log(error);
 			  });
 			});
+			//自动登录
+			axios.post('/node/autoLogin', {
+			    auto: '',//所有请求都自带发送cookie
+			  })
+			  .then(function (res) {
+				if (res.status == 200) {
+		            console.log('自动登录成功',res.data);
+		        } else {
+		            console.log('http状态非200');
+		        }
+			  })
+			  .catch(function (error) {
+			    console.log(error);
+			  });
 	})();
 	//当前 选中的棋子
 	let nowSelectedChess = null;

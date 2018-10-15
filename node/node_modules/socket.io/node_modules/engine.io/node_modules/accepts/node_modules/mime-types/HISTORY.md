@@ -1,3 +1,21 @@
+2.1.20 / 2018-08-26
+===================
+
+  * deps: mime-db@~1.36.0
+    - Add Apple file extensions from IANA
+    - Add extensions from IANA for `image/*` types
+    - Add new upstream MIME types
+
+2.1.19 / 2018-07-17
+===================
+
+  * deps: mime-db@~1.35.0
+    - Add extension `.csl` to `application/vnd.citationstyles.style+xml`
+    - Add extension `.es` to `application/ecmascript`
+    - Add extension `.owl` to `application/rdf+xml`
+    - Add new upstream MIME types
+    - Add UTF-8 as default charset for `text/turtle`
+
 2.1.18 / 2018-02-16
 ===================
 
