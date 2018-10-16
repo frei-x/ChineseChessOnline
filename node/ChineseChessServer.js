@@ -17,24 +17,41 @@ exp.use(bodyParser.json());
 exp.use(cookieParser('dada11_ad4ADADA5aAf_lIoqO4444_a1__99a'));
 exp.use(cookieSession({
     name: 'un',
-    keys: ['dada11_ad4ADADA5aAf_lIoqO4444_a1__99a'+Math.random(),Math.random()+'4444_fafhahuakdsfjks','45f88sdf451dg4_df75g5dfg12d4',Math.random()+9919*Math.random()+'aq'],
-    maxAge: 240*3600*1000
+    keys: ['dada11_ad4ADADA5aAf_lIoqO4444_a1__99a',Math.random()+'4444_fafhahuakdsfjks','45f88sdf451dg4_df75g5dfg12d4',Math.random()+9919*Math.random()+'aq'],
+    maxAge: 365*3600*1000*24
 }));
 // 自动登录/node/autoLogin
 exp.use('/node',function(req,res,next){
-    console.log(req.body);
+    //console.log(req.body);
     //session无需考虑多用户,存当前就行,每次加载中间件(cookie-session)都会自动的另外开辟内存,无需思考太复杂
+    //每一个req.session附带的cookie都不同所以不同浏览器req.session['loginTrue']不同,代码里只需要判断固定的然后赋值就行
     if(req.session['loginTrue']){ //过滤器验证登录
-        console.log(req.session['loginTrue']);
-        console.log('自动登录成功');
-        next();
+        console.log(req.session);
+        DB('select * from chess_user where ID=? and userName=?',[req.session.loginTrue[0].ID,req.session.loginTrue[0].userName],function(err){
+            console.log(err.code);
+            res.send('数据库错误'+err.code);
+            res.end();
+        },function(data){
+            if(data.length==1){
+                //不发送密码
+                data[0].password=null;
+                req.session['loginTrue'] = data;
+                res.send(data);
+                console.log('自动登录成功');
+                //不应该发送session保存的数据 应该重新查询,否则 如果数据已更新但发送的数据依旧是上次登录的session中的
+               // console.log(req.session['loginTrue']);
+            }else{
+                next();
+                //console.log(req.session['admin']);
+            } 
+        });
       }else{
         next();
     }
-//    res.cookie('user', 'blue', {signed: true});
-    console.log(req.session);
-    console.log('签名cookie：', req.signedCookies)
-    console.log('无签名cookie：', req.cookies);
+//  res.cookie('user', 'blue', {signed: true});
+    //console.log(req.session);
+    //console.log('签名cookie：', req.signedCookies)
+    //console.log('无签名cookie：', req.cookies);
    // next();
 });
 exp.get('/',function(req,res){
@@ -53,9 +70,12 @@ exp.post('/node/chessLogin',function(req,res){
     },function(data){
         //设置req.session,后面的send会自动设置并发送cookie
         if(data.length==1){
+            //不发送密码
+            data[0].password=null;
             req.session['loginTrue'] = data;
             res.send(data);
             console.log(req.session['loginTrue']);
+           // req.session['loginTrue']=null;
         }else{
             res.send('用户名或密码错误');
             //console.log(req.session['admin']);
@@ -67,14 +87,20 @@ exp.post('/node/chessLogin',function(req,res){
 let info = {
     onlineNum:0,
 };
-io.on('connection', function (socket){
-    info.onlineNum++;
-    io.emit('onlineNum',info.onlineNum);
-    socket.on('disconnect', function(){//连接断开事件
-        info.onlineNum--;   
-         io.emit('onlineNum',info.onlineNum);
-     });
-});
+let funSocket = {
+    build:()=>{
+        io.on('connection', function (socket){
+            info.onlineNum++;
+            io.emit('onlineNum',info.onlineNum);
+            socket.on('disconnect', function(){//连接断开事件
+                info.onlineNum--;   
+                 io.emit('onlineNum',info.onlineNum);
+             });
+        });
+    },
+
+}
+funSocket.build();
 http.listen(8090,function () {
   
 });

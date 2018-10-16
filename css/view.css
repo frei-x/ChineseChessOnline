@@ -12,10 +12,74 @@
 		border: 0.05rem solid darkgoldenrod;
 		background: rgba(249, 216, 162, 1);
 		opacity: 0.95;
+		backface-visibility: hidden;
 		transform: translateX(0);
-		transition: 1.2s ease;
+		transition: 1s ease;
 		z-index: 999;
-		box-shadow: 1px 1px 0px 30vw rgba(0,0,0,0.6);
+	}
+	/*登录成功后 游戏主菜单*/
+	#gameMainMenu{
+		transform: translate3d(0, 0, 0);
+		opacity: 0.96;
+		width: 70vmin;
+		height: 80vmin;
+		position:absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -40vmin;
+		margin-left: -35vmin;
+		border: 0.05rem solid darkgoldenrod;
+		background: rgba(249, 216, 162, 1);
+		transform-style: preserve-3d;
+		transform: perspective(16rem) rotateY(180deg);
+		transform-origin: 50% 50%;
+		transition: 1s  transform ease;
+		backface-visibility: hidden;
+		z-index: 999;
+	}
+	#gameMainMenu>div{
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-webkit-user-select: none;
+		/*border-radius: 8%;*/
+		width: 25vmin;
+		height: 5vmin;
+		cursor: pointer;
+		font-family:"微软雅黑";
+		font-size: 2.2vmin;
+		margin: 1vmin;
+		margin-left: -11.5vmin;
+		margin-top: 2.5vmin;
+		border: none;
+		outline: none;
+		color: white;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, .3);
+		background: darkgoldenrod;
+		position: relative;
+		left: 50%;
+		top: 20%;
+		line-height: 5vmin;
+		text-align: center;
+		opacity: 0.9;
+	}
+	#gameMainMenu>div:hover{
+		background: orange;
+		opacity: 1;
+		transition:0.5s all;
+	}
+	#gameMainMenu>div:active{
+		transition: 0.1s box-shadow;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, .3) inset;
+	}
+	#login{
+		transform: translate3d(0, 0, 0);
+		position: absolute;
+		transform-style: preserve-3d;
+		transform: perspective(16rem) rotateY(0deg);
+		transform-origin: 50% 50%;
+		transition: 1s  transform ease;
+		backface-visibility: hidden;
+		box-shadow: 1px 1px 0px 50vmin rgba(0,0,0,0.4);
 	}
 	#reg{
 		transform: translateX(-100vw);

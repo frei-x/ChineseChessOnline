@@ -174,8 +174,8 @@ let mapSize = innerWidth >= innerHeight ? {
 	width: Math.floor(innerHeight * 0.81 * 2),
 	height: Math.floor(innerHeight * 0.9 * 2)
 } : {
-	width: Math.floor(innerWidth * 0.98 * 4),
-	height: Math.floor(innerWidth * 1.1111 * 4)
+	width: Math.floor(innerWidth * 0.98 * 1),
+	height: Math.floor(innerWidth * 1.1111 * 1)
 };
 //保证为整数  方便线条完整分割棋盘  并且不出现需要+0.5的毛边	
 mapSize.width = mapSize.width % 8 == 0 ? mapSize.width : mapSize.width - mapSize.width % 8;
@@ -194,14 +194,18 @@ let p = map.getContext('2d');
  *
  * */
 if(innerWidth <= 700 && innerHeight > innerWidth) {
-	map.style.cssText = "width: " + mapSize.width / 4 + "px;height:" + mapSize.height / 4 + "px;border: 0.16rem solid darkgoldenrod;";
-	p.lineWidth = 3;
+	map.style.cssText = "width: " + mapSize.width / 1 + "px;height:" + mapSize.height / 1 + "px;border: 0.16rem solid darkgoldenrod;";
+	p.lineWidth = 2;
 } else {
 	p.lineWidth = 2;
 	map.style.cssText = "width: " + mapSize.width / 2 + "px;height:" + mapSize.height / 2 + "px;";
 }
 //计算borderWidth实际px大小
 map.style.marginLeft = -parseFloat(map.style.width) / 2 - parseFloat(getComputedStyle(map,null).borderWidth) + 'px';
+//获取取不出getComputedStyle中borderWidth,可以使用borderLeftWidth(火狐  语法更严谨)
+if(!getComputedStyle(map,null).borderWidth){
+	map.style.marginLeft = -parseFloat(map.style.width) / 2 - parseFloat(getComputedStyle(map,null).borderLeftWidth) + 'px';
+}
 map.style.marginTop = -parseFloat(map.style.height) / 2 + 'px';
 //canvas真实大小与屏幕显示大小比例(缩放倍数)
 Root.canvasAndScreenRatioWidth = map.width / parseFloat(map.style.width);
@@ -1032,6 +1036,20 @@ window.onload = function() {
 		let btnLogin = document.getElementById("loginBtn");
 		let oLoginName = document.querySelector('#loginName input');
 		let oLoginPassword = document.querySelector("#loginPassWord input");
+		//登录表单:
+		let oLogin = document.getElementById("login");
+		//主菜单
+		let oGameMainMenu = document.getElementById("gameMainMenu");
+		let oFun={
+			loginSuccess:()=>{
+				oLogin.style.transform='perspective(16rem) rotateY(-180deg)';
+				oLogin.style.boxShadow='0px 0px 0px 0vw rgba(0,0,0,0)';
+				oGameMainMenu.style.transform='perspective(16rem) rotateY(0deg)';
+			},
+			loginFail:()=>{
+				
+			}
+		}
 		btnLogin.addEventListener('click',function(){
 			axios.post('/node/chessLogin', {
 			    userName: oLoginName.value,
@@ -1040,12 +1058,13 @@ window.onload = function() {
 			  .then(function (res) {
 				if (res.status == 200) {
 		            console.log(res.data);//登录成功
+		              oFun.loginSuccess();
 		        } else {
 		            console.log('http状态非200');
 		        }
 			  })
 			  .catch(function (error) {
-			    console.log(error);
+			    console.log('error');
 			  });
 			});
 			//自动登录
@@ -1055,12 +1074,13 @@ window.onload = function() {
 			  .then(function (res) {
 				if (res.status == 200) {
 		            console.log('自动登录成功',res.data);
+		            oFun.loginSuccess();
 		        } else {
 		            console.log('http状态非200');
 		        }
 			  })
 			  .catch(function (error) {
-			    console.log(error);
+			    console.log('认证失效,自动登录失败',error);
 			  });
 	})();
 	//当前 选中的棋子
@@ -1161,7 +1181,7 @@ window.onload = function() {
 //		for(let a=0;a<90;a++){
 //			arrEmptyMap.push(a);
 //		}
-		// 如果有 棋子被选中  就移动到空位置  //吃子时 传入目标不传入目标为空棋盘(供前面选子时 不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉)
+		// 如果有 棋子被选中  就移动到空位置  //吃子时 传入目标 不传入目标为空棋盘(供前面选子时 不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉)
 		function funMoveChess(tagerChess){
 			if(nowSelectedChess != null) {
 				//audioMove.play();

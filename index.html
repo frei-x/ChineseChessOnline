@@ -12,7 +12,19 @@
 				margin: 0;
 				padding: 0;
 				background: black;
-				/*overflow: hidden;*/
+				overflow: hidden;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				-webkit-user-select: none;
+				-webkit-transform: translate3d(0, 0, 0);
+				-moz-transform: translate3d(0, 0, 0);
+				-ms-transform: translate3d(0, 0, 0);
+				-o-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+				-webkit-backface-visibility: hidden;
+				-moz-backface-visibility: hidden;
+				-ms-backface-visibility: hidden;
+				backface-visibility: hidden;
 			}
 			
 			#box {
@@ -55,7 +67,7 @@
 				//				window.onresize = function() {
 				//					fontSize = (innerWidth / 1536 * 0.625) * 10 * ratio;
 				//					document.documentElement.style.fontSize = fontSize + "rem";
-				//				}
+				//}
 			})();
 		</script>
 		<!--<script src="http://livejs.com/live.js"></script>-->
@@ -79,6 +91,14 @@
 				<div id="youkeBtn" class="formBtn">游客</div>
 				<div id="forgetBtn" class="formBtn">忘记密码</div>
 			</form>
+			<div id="gameMainMenu">
+				<div id="btnMenuChat">聊天室</div>
+				<div id="btnMenuPlay">在线匹配</div>
+				<div id="btnMenuJoinRoom">加入房间</div>
+				<div id="btnMenuWatch">观战</div>
+				<div id="btnMenuChessRecord">棋谱</div>
+				<div id="btnMenuUserInfo">用户信息</div>
+			</div>
 			<form class="form" id="reg">
 				注册
 				<div id="youkeBtn111" class="formBtn btnBack">注册</div>
