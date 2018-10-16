@@ -2,6 +2,7 @@
 /*登录 注册*/	
 @media (min-width: 800px) {
 	.form{
+		display: none !important;
 		width: 70vmin;
 		height: 80vmin;
 		position:absolute;
@@ -226,6 +227,7 @@
 		transition: 0.3s;
 	}
 	.form{
+		display: none !important;
 		position:absolute;
 		top: 50%;
 		left: 50%;
