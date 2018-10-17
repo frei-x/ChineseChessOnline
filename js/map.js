@@ -170,12 +170,13 @@ let Root = {
 //Root.arrMap的副本,供属性拦截器用
 //Root.arrMapCopy = Root.arrMap;
 //选择宽高中最小长度 计算比例  
+// * 扩大倍数(Root.canvasAndScreenRatioWidth),相应的缩小数倍. 倍数越大越清晰,但显卡和内存要求更高
 let mapSize = innerWidth >= innerHeight ? {
 	width: Math.floor(innerHeight * 0.81 * 2),
 	height: Math.floor(innerHeight * 0.9 * 2)
 } : {
-	width: Math.floor(innerWidth * 0.98 * 1),
-	height: Math.floor(innerWidth * 1.1111 * 1)
+	width: Math.floor(innerWidth * 0.98 * 2),
+	height: Math.floor(innerWidth * 1.1111 * 2)
 };
 //保证为整数  方便线条完整分割棋盘  并且不出现需要+0.5的毛边	
 mapSize.width = mapSize.width % 8 == 0 ? mapSize.width : mapSize.width - mapSize.width % 8;
@@ -194,8 +195,8 @@ let p = map.getContext('2d');
  *
  * */
 if(innerWidth <= 700 && innerHeight > innerWidth) {
-	map.style.cssText = "width: " + mapSize.width / 1 + "px;height:" + mapSize.height / 1 + "px;border: 0.16rem solid darkgoldenrod;";
-	p.lineWidth = 2;
+	map.style.cssText = "width: " + mapSize.width / 2 + "px;height:" + mapSize.height /2  + "px;border: 0.16rem solid darkgoldenrod;";
+	p.lineWidth = 3;
 } else {
 	p.lineWidth = 2;
 	map.style.cssText = "width: " + mapSize.width / 2 + "px;height:" + mapSize.height / 2 + "px;";
@@ -1025,7 +1026,7 @@ Root.funRules=function(oNowSelectChess,oTager){
 // 	enumerable:true
 // });
 window.onload = function() {
-	let socket = io();
+	let socket;
 	//绘制棋盘
 	//funDrawMap();
 	//放置棋子
@@ -1040,6 +1041,8 @@ window.onload = function() {
 		let oLogin = document.getElementById("login");
 		//主菜单
 		let oGameMainMenu = document.getElementById("gameMainMenu");
+		let btnMenuPlay = document.getElementById("btnMenuPlay");
+		
 		let oFun={
 			loginSuccess:()=>{
 				oLogin.style.transform='perspective(16rem) rotateY(-180deg)';
@@ -1048,7 +1051,15 @@ window.onload = function() {
 			},
 			loginFail:()=>{
 				
-			}
+			},
+			socketOn:(id)=>{
+				socket.on(id, function(receiveData){
+					
+				});
+			},
+			socketEmit:(id,sendData,callBackData)=>{
+				socket.emit(id,sendData,callBackData);
+			},
 		}
 		btnLogin.addEventListener('click',function(){
 			axios.post('/node/chessLogin', {
@@ -1057,14 +1068,23 @@ window.onload = function() {
 			  })
 			  .then(function (res) {
 				if (res.status == 200) {
-		            console.log(res.data);//登录成功
+					if(res.data[0].ID){
+					  console.log(res.data);//登录成功
 		              oFun.loginSuccess();
+			          if(!socket){
+			           	socket = io();
+			          }
+					}else{
+						//
+						console.log(res.data);
+					}
+		            
 		        } else {
 		            console.log('http状态非200');
 		        }
 			  })
 			  .catch(function (error) {
-			    console.log('error');
+			    console.log(error);
 			  });
 			});
 			//自动登录
@@ -1075,6 +1095,9 @@ window.onload = function() {
 				if (res.status == 200) {
 		            console.log('自动登录成功',res.data);
 		            oFun.loginSuccess();
+			        if(!socket){
+			          socket = io();
+			        }		            
 		        } else {
 		            console.log('http状态非200');
 		        }
@@ -1082,6 +1105,34 @@ window.onload = function() {
 			  .catch(function (error) {
 			    console.log('认证失效,自动登录失败',error);
 			  });
+			 //在线匹配
+			 btnMenuPlay.addEventListener('click',function(){
+			 	axios.post('/node/play', {
+			    auto: '',//所有请求都自带发送cookie
+			  })
+			  .then(function (res) {
+				if (res.status == 200) {
+		            console.log('验证通过',res.data);
+		            if(!socket){
+			          socket = io();
+			        }
+		            oFun.socketEmit('1000','测试一下',function(data){
+		            //	console.log('验证通过',res.data);
+		            	console.log(data);
+		            	if(data=='ok'){
+		            		console.log('发送成功');
+		            	}
+		            });
+		            
+		        } else {
+		            console.log('http状态非200');
+		        }
+			  })
+			  .catch(function (error) {
+			    console.log('认证失效,自动登录失败',error);
+			    window.location.reload();
+			  });
+			 },false);
 	})();
 	//当前 选中的棋子
 	let nowSelectedChess = null;
@@ -1233,7 +1284,7 @@ window.onload = function() {
 							let nSCY = nowSelectedChess.xy[1];
 							let diffX = iRowX - nSCX;
 							let diffY = iColY - nSCY;
-							let count = 10;
+							let count = 20;
 							let nowCount = 1;
 							function moveAnimation(){
 								//  如果不满足条件 棋子 继续移动(动画), 满足条件:切换行棋/游戏状态  , 清空选中

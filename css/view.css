@@ -2,7 +2,6 @@
 /*登录 注册*/	
 @media (min-width: 800px) {
 	.form{
-		display: none !important;
 		width: 70vmin;
 		height: 80vmin;
 		position:absolute;
@@ -58,10 +57,11 @@
 		background: darkgoldenrod;
 		position: relative;
 		left: 50%;
-		top: 20%;
+		top: 12%;
 		line-height: 5vmin;
 		text-align: center;
 		opacity: 0.9;
+		transition: 0.6s;
 	}
 	#gameMainMenu>div:hover{
 		background: orange;
