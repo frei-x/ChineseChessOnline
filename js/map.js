@@ -1,6 +1,7 @@
 console.time('耗时');
 /**
  *canvas出现毛边  一个是0.5px问题  一个是扩大canvas的宽高(提高分辨率)  再设置css进行缩放
+ * indexOf在数组中能找到通过变量定义的对象,却不能直接找对象
  **/
 "use strict"
 let map = document.getElementById("map");
@@ -22,11 +23,11 @@ let audioEat = document.getElementById("audioEat");
  */
 let Root = {
 	fontSize: parseFloat(getComputedStyle(document.documentElement, false)['fontSize']),
-	chessR:null,
-	funReDraw:null,
-	arrReDraw:[],
-	funRules:null,
-	arrDead:[],
+	chessR: null,
+	funReDraw: null,
+	arrReDraw: [],
+	funRules: null,
+	arrDead: [],
 	arrMap: [{
 			n: '車',
 			xy: [0, 0],
@@ -86,7 +87,7 @@ let Root = {
 			n: '卒',
 			xy: [4, 3],
 			t: 'b'
-			}, {}, {
+		}, {}, {
 			n: '卒',
 			xy: [6, 3],
 			t: 'b'
@@ -195,34 +196,34 @@ let p = map.getContext('2d');
  *
  * */
 if(innerWidth <= 700 && innerHeight > innerWidth) {
-	map.style.cssText = "width: " + mapSize.width / 2 + "px;height:" + mapSize.height /2  + "px;border: 0.16rem solid darkgoldenrod;";
+	map.style.cssText = "width: " + mapSize.width / 2 + "px;height:" + mapSize.height / 2 + "px;border: 0.16rem solid darkgoldenrod;";
 	p.lineWidth = 3;
 } else {
 	p.lineWidth = 2;
 	map.style.cssText = "width: " + mapSize.width / 2 + "px;height:" + mapSize.height / 2 + "px;";
 }
 //计算borderWidth实际px大小
-map.style.marginLeft = -parseFloat(map.style.width) / 2 - parseFloat(getComputedStyle(map,null).borderWidth) + 'px';
+map.style.marginLeft = -parseFloat(map.style.width) / 2 - parseFloat(getComputedStyle(map, null).borderWidth) + 'px';
 //获取取不出getComputedStyle中borderWidth,可以使用borderLeftWidth(火狐  语法更严谨)
-if(!getComputedStyle(map,null).borderWidth){
-	map.style.marginLeft = -parseFloat(map.style.width) / 2 - parseFloat(getComputedStyle(map,null).borderLeftWidth) + 'px';
+if(!getComputedStyle(map, null).borderWidth) {
+	map.style.marginLeft = -parseFloat(map.style.width) / 2 - parseFloat(getComputedStyle(map, null).borderLeftWidth) + 'px';
 }
 map.style.marginTop = -parseFloat(map.style.height) / 2 + 'px';
 //canvas真实大小与屏幕显示大小比例(缩放倍数)
 Root.canvasAndScreenRatioWidth = map.width / parseFloat(map.style.width);
 Root.canvasAndScreenRatioHeight = map.height / parseFloat(map.style.height);
 /*非canvas界面的交互*/
-function viewInteractive(){
+function viewInteractive() {
 	let oBtnChangeForm = document.querySelectorAll('#regBtn,#youkeBtn,#forgetBtn');
-	let oFormView  = document.querySelectorAll('.form');
-	let oFormView3= [...oFormView].slice(1,oFormView.length);
-	for(let i=0;i<oBtnChangeForm.length;i++){
-		oBtnChangeForm[i].addEventListener('click',function(){
-			for(let all=0;all<oBtnChangeForm.length;all++){
-				oFormView3[all].style.transform='translateX(-100vw)';
+	let oFormView = document.querySelectorAll('.form');
+	let oFormView3 = [...oFormView].slice(1, oFormView.length);
+	for(let i = 0; i < oBtnChangeForm.length; i++) {
+		oBtnChangeForm[i].addEventListener('click', function() {
+			for(let all = 0; all < oBtnChangeForm.length; all++) {
+				oFormView3[all].style.transform = 'translateX(-100vw)';
 			}
-			oFormView3[i].style.transform='translateX(0vw)';
-		},false);
+			oFormView3[i].style.transform = 'translateX(0vw)';
+		}, false);
 	}
 	let login
 }
@@ -246,7 +247,8 @@ function funCoordinateY(y) {
 //   p.scale(window.devicePixelRatio, window.devicePixelRatio);
 //绘制棋盘
 p.translate(mapSize.width * (0.12 / 2), mapSize.height * (0.12 / 2))
-function funDrawMap(){
+
+function funDrawMap() {
 	p.beginPath();
 	p.fillStyle = 'rgba(249,216,162,1)';
 	p.fillRect(-mapSize.width * (0.12 / 2), -mapSize.height * (0.12 / 2), map.width, map.height);
@@ -353,7 +355,7 @@ function funDrawMap(){
 	if(innerWidth <= 700 && innerHeight > innerWidth) {
 		//				map.style.top = '45%';
 		p.font = `${w/2.5*1.5}px STxingkai`;
-//		map.style.marginTop = -(map.height) / 8 + 'px';
+		//		map.style.marginTop = -(map.height) / 8 + 'px';
 	} else {
 		p.font = `${w/2.5*1.6}px STxingkai`;
 	}
@@ -361,7 +363,7 @@ function funDrawMap(){
 	p.fillText('汉界', funCoordinateX(6), funCoordinateY(4.7));
 	p.save();
 	p.closePath();
-}	
+}
 //绘制棋盘 结束
 //放置棋子
 function funPutChess() {
@@ -381,14 +383,14 @@ function funPutChess() {
 			if(Object.keys(Root.arrMap[i]).length !== 0) {
 				//圆
 				p.beginPath();
-//				if(innerWidth<750){
-//					//
-//				}else{
-//					p.shadowColor = 'rgba(0, 0, 0, 1)';
-//					p.shadowOffsetX = 4;
-//					p.shadowOffsetY = 3;
-//					p.shadowBlur = 10;					
-//				}
+				//				if(innerWidth<750){
+				//					//
+				//				}else{
+				//					p.shadowColor = 'rgba(0, 0, 0, 1)';
+				//					p.shadowOffsetX = 4;
+				//					p.shadowOffsetY = 3;
+				//					p.shadowBlur = 10;					
+				//				}
 				if(Root.arrMap[i].t === 'b') {
 					p.fillStyle = 'rgba(226,171,84,1)';
 				} else if(Root.arrMap[i].t === 'r') {
@@ -410,14 +412,14 @@ function funPutChess() {
 				}
 				p.textAlign = 'center';
 				p.textBaseline = 'middle';
-//				if(innerWidth<750){
-//					//
-//				}else{
-//					p.shadowColor = 'rgba(255, 255, 255, 0.8)';
-//					p.shadowOffsetX = -10;
-//					p.shadowOffsetY = -10;
-//					p.shadowBlur = 40;
-//				}
+				//				if(innerWidth<750){
+				//					//
+				//				}else{
+				//					p.shadowColor = 'rgba(255, 255, 255, 0.8)';
+				//					p.shadowOffsetX = -10;
+				//					p.shadowOffsetY = -10;
+				//					p.shadowBlur = 40;
+				//				}
 
 				p.fillText(Root.arrMap[i].n, funCoordinateX(Root.arrMap[i].xy[0]), funCoordinateY(Root.arrMap[i].xy[1]));
 				p.closePath();
@@ -429,12 +431,12 @@ function funPutChess() {
 	drawChess();
 }
 //把所有绘制函数存入数组
-Root.arrReDraw.push(funDrawMap,funPutChess);
+Root.arrReDraw.push(funDrawMap, funPutChess);
 //清除画布 重绘(重调所有绘图函数)
-Root.funReDraw=function(){
+Root.funReDraw = function() {
 	console.time('移动重绘');
-	p.clearRect(-mapSize.width * (0.12 / 2), -mapSize.height * (0.12 / 2),map.width,map.height);	
-	for(let i=0;i<Root.arrReDraw.length;i++){
+	p.clearRect(-mapSize.width * (0.12 / 2), -mapSize.height * (0.12 / 2), map.width, map.height);
+	for(let i = 0; i < Root.arrReDraw.length; i++) {
 		Root.arrReDraw[i]();
 	}
 	console.timeEnd('移动重绘');
@@ -449,7 +451,7 @@ Root.funReDraw=function(){
  * }
  * 
  */
-Root.funRules=function(oNowSelectChess,oTager){
+Root.funRules = function(oNowSelectChess, oTager) {
 	//合并棋子兵种 (部分棋子走法相同 ).
 	let oChess = oNowSelectChess;
 	//验证(布尔值)
@@ -458,554 +460,558 @@ Root.funRules=function(oNowSelectChess,oTager){
 	//可行坐标
 	let arrPracticable = [];
 	//棋子兵种判断  统一改为红棋名字,具体判断oNowSelectChess时 再判断其属于红方或黑方
-	if(oChess.n=='相'||oChess.n=='象'){
-		chessType='相';
-	}else if(oChess.n=='士'||oChess.n=='仕'){
-		chessType='士';
-	}else if(oChess.n=='帥'||oChess.n=='將'){
-		chessType='帥';
-	}else if(oChess.n=='炮'||oChess.n=='砲'){
-		chessType='炮';
-	}else if(oChess.n=='兵'||oChess.n=='卒'){
-		chessType='兵';
-	}else if(oChess.n=='車'){
-		chessType='車';
-	}else if(oChess.n=='馬'){
-		chessType='馬';
+	if(oChess.n == '相' || oChess.n == '象') {
+		chessType = '相';
+	} else if(oChess.n == '士' || oChess.n == '仕') {
+		chessType = '士';
+	} else if(oChess.n == '帥' || oChess.n == '將') {
+		chessType = '帥';
+	} else if(oChess.n == '炮' || oChess.n == '砲') {
+		chessType = '炮';
+	} else if(oChess.n == '兵' || oChess.n == '卒') {
+		chessType = '兵';
+	} else if(oChess.n == '車') {
+		chessType = '車';
+	} else if(oChess.n == '馬') {
+		chessType = '馬';
 	}
 	/*验证目标是否包含在可行范围*/
-	function funComprise(practicable,tager){
-		if(oTager){
-			practicable.forEach(function(item,index){
-				if(item[0]==tager.xy[0]&&item[1]==tager.xy[1]){
-						bVerification = true;
-					}else{
+	function funComprise(practicable, tager) {
+		if(oTager) {
+			practicable.forEach(function(item, index) {
+				if(item[0] == tager.xy[0] && item[1] == tager.xy[1]) {
+					bVerification = true;
+				} else {
 					//没找到
-					}
-				});		
-		}else{
+				}
+			});
+		} else {
 			//未传入目标
 		}
 	};
-	switch (chessType){
+	switch(chessType) {
 		case '車':
-					(function(){
-						//横向与纵向 循环棋盘最大跨度
-						//x+方向  y不变
-						for(let x=1;x<9;x++){
-							if(oChess.xy[0]+x<=8&&oChess.xy[0]+x>=0){
-								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
-								//有棋子
-								if(Root.arrMap[oChess.xy[0]+x+oChess.xy[1]*9].xy){
-									//类型不同  允许该坐标添加
-									if(Root.arrMap[oChess.xy[0]+x+oChess.xy[1]*9].t!=oChess.t){
-										arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
-										//有棋子 停止后续添加
-										break;
-									}else{
-										break;
-									}
-								}else{
-									//空位置
-									arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
-								}
+			(function() {
+				//横向与纵向 循环棋盘最大跨度
+				//x+方向  y不变
+				for(let x = 1; x < 9; x++) {
+					if(oChess.xy[0] + x <= 8 && oChess.xy[0] + x >= 0) {
+						//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+						//有棋子
+						if(Root.arrMap[oChess.xy[0] + x + oChess.xy[1] * 9].xy) {
+							//类型不同  允许该坐标添加
+							if(Root.arrMap[oChess.xy[0] + x + oChess.xy[1] * 9].t != oChess.t) {
+								arrPracticable.push([oChess.xy[0] + x, oChess.xy[1]]);
+								//有棋子 停止后续添加
+								break;
+							} else {
+								break;
 							}
-							
+						} else {
+							//空位置
+							arrPracticable.push([oChess.xy[0] + x, oChess.xy[1]]);
 						}
-						//x-方向
-						for(let x=1;x<9;x++){
-							if(oChess.xy[0]-x<=8&&oChess.xy[0]-x>=0){
-								if(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].xy){
-									//类型不同  允许该坐标添加
-									//alert(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].t+','+oChess.t)
-									if(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].t!=oChess.t){
-										arrPracticable.push([oChess.xy[0]-x,oChess.xy[1]]);
-										//有棋子 停止后续添加
-										break;
-									}else{
-										break;
-									}
-								}else{
-									//空位置
-									arrPracticable.push([oChess.xy[0]-x,oChess.xy[1]]);
-								}
+					}
+
+				}
+				//x-方向
+				for(let x = 1; x < 9; x++) {
+					if(oChess.xy[0] - x <= 8 && oChess.xy[0] - x >= 0) {
+						if(Root.arrMap[oChess.xy[0] - x + oChess.xy[1] * 9].xy) {
+							//类型不同  允许该坐标添加
+							//alert(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].t+','+oChess.t)
+							if(Root.arrMap[oChess.xy[0] - x + oChess.xy[1] * 9].t != oChess.t) {
+								arrPracticable.push([oChess.xy[0] - x, oChess.xy[1]]);
+								//有棋子 停止后续添加
+								break;
+							} else {
+								break;
 							}
-							
+						} else {
+							//空位置
+							arrPracticable.push([oChess.xy[0] - x, oChess.xy[1]]);
 						}
-						//y+方向  , x轴不变
-						for(let y=1;y<=9;y++){
-							if(oChess.xy[1]+y<=9&&oChess.xy[1]+y>=0){
-								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
-								//有棋子
-								if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].xy){
-									//类型不同  允许该坐标添加
-									if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].t!=oChess.t){
-										arrPracticable.push([oChess.xy[0],oChess.xy[1]+y]);
-										//不同阵营棋子 添加该位置后停止后续添加(可吃该棋子)
-										break;
-										//同阵营棋子,直接终止
-									}else{
-										break;
-									}
-								}else{
-									//空位置
-									arrPracticable.push([oChess.xy[0],oChess.xy[1]+y]);
-								}
+					}
+
+				}
+				//y+方向  , x轴不变
+				for(let y = 1; y <= 9; y++) {
+					if(oChess.xy[1] + y <= 9 && oChess.xy[1] + y >= 0) {
+						//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+						//有棋子
+						if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] + y) * 9].xy) {
+							//类型不同  允许该坐标添加
+							if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] + y) * 9].t != oChess.t) {
+								arrPracticable.push([oChess.xy[0], oChess.xy[1] + y]);
+								//不同阵营棋子 添加该位置后停止后续添加(可吃该棋子)
+								break;
+								//同阵营棋子,直接终止
+							} else {
+								break;
 							}
-							
+						} else {
+							//空位置
+							arrPracticable.push([oChess.xy[0], oChess.xy[1] + y]);
 						}
-						//y-方向  , x轴不变
-						for(let y=1;y<=9;y++){
-							if(oChess.xy[1]-y<=9&&oChess.xy[1]-y>=0){
-								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
-								//有棋子
-								if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].xy){
-									//类型不同  允许该坐标添加
-									if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].t!=oChess.t){
-										arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
-										//不同阵营棋子 停止后续添加
-										break;
-										//同阵营棋子,直接终止
-									}else{
-										break;
-									}
-								}else{
-									//空位置
-									//console.log(arrPracticable)
-									arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
-								}
+					}
+
+				}
+				//y-方向  , x轴不变
+				for(let y = 1; y <= 9; y++) {
+					if(oChess.xy[1] - y <= 9 && oChess.xy[1] - y >= 0) {
+						//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+						//有棋子
+						if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] - y) * 9].xy) {
+							//类型不同  允许该坐标添加
+							if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] - y) * 9].t != oChess.t) {
+								arrPracticable.push([oChess.xy[0], oChess.xy[1] - y]);
+								//不同阵营棋子 停止后续添加
+								break;
+								//同阵营棋子,直接终止
+							} else {
+								break;
 							}
-							
+						} else {
+							//空位置
+							//console.log(arrPracticable)
+							arrPracticable.push([oChess.xy[0], oChess.xy[1] - y]);
 						}
-						//检测目标位置是否在可行坐标中,判断数组相等
-						funComprise(arrPracticable,oTager);
-					})();
+					}
+
+				}
+				//检测目标位置是否在可行坐标中,判断数组相等
+				funComprise(arrPracticable, oTager);
+			})();
 			break;
 		case '馬':
-				//验证马蹩脚,传入主方向的x或y,存入撇脚位置;
-				let arrPoor = [];
-				function funPoor(x,y){
-					
-					//马的朝向,大的那一个
-						//x轴右移进一格或左移一格,y不变
-						//+1  -1超范围判断必须分开... 否则影响另一组坐标的push
-					if(x==-2&&oChess.xy[0]-2>=0){
-						//转换为数组下标 验证该点是否有棋子阻挡,加入可行数组arrPracticable时 直接加x和y(两种)
-						if(Root.arrMap[oChess.xy[0]-1+(oChess.xy[1]*9)].xy){
-							arrPoor.push(Root.arrMap[oChess.xy[0]-1+(oChess.xy[1]*9)]);
-						}else{
-							//x-2方向   有y+1  y-1两种可能
-							oChess.xy[1]-1>=0?arrPracticable.push([oChess.xy[0]-2,oChess.xy[1]-1]):null;
-							oChess.xy[1]+1<=9?arrPracticable.push([oChess.xy[0]-2,oChess.xy[1]+1]):null;
-							
-						}
-					}else if(x==2&&oChess.xy[0]+2<=8){
-						if(Root.arrMap[(oChess.xy[0]+1)+(oChess.xy[1]*9)].xy){
-							arrPoor.push(Root.arrMap[(oChess.xy[0]+1)+(oChess.xy[1]*9)]);
-						}else{
-							oChess.xy[1]-1>=0?arrPracticable.push([oChess.xy[0]+2,oChess.xy[1]-1]):null;
-							oChess.xy[1]+1<=9?arrPracticable.push([oChess.xy[0]+2,oChess.xy[1]+1]):null;
-						}
-					}else if(y==-2&&oChess.xy[1]-2>=0){
-						if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-1)*9].xy){
-							arrPoor.push(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-1)*9]);
-						}else{
-							oChess.xy[0]-1>=0?arrPracticable.push([oChess.xy[0]-1,oChess.xy[1]-2]):null;
-							oChess.xy[0]+1<=8?arrPracticable.push([oChess.xy[0]+1,oChess.xy[1]-2]):null;
-						}
-					}else if(y==2&&oChess.xy[1]+2<=9){
-						if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+1)*9].xy){
-							arrPoor.push(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+1)*9]);
-						}else{
-							oChess.xy[0]-1>=0?arrPracticable.push([oChess.xy[0]-1,oChess.xy[1]+2]):null;
-							oChess.xy[0]+1<=8?arrPracticable.push([oChess.xy[0]+1,oChess.xy[1]+2]):null;
-						}
-					}
-						
-				};
+			//验证马蹩脚,传入主方向的x或y,存入撇脚位置;
+			let arrPoor = [];
 
-				//(function(){
-					//x或y只能有一个加2或减2,另一个加1或减1 ,共8个方向   跨度为2的方向验证蹩脚
-					//let arrTowards = [-2,2]
-					//四个主方向 (0仅为了占位)
-						funPoor(2,0);
-						funPoor(-2,0);
-						funPoor(0,2);
-						funPoor(0,-2);
-					//arrPracticable可行坐标中范围可能超出棋盘 ,将超出的和同阵营棋子过滤
-					//console.log(arrPracticable);
-					arrPracticable=arrPracticable.filter(function(item,index,arr){
-							return item[0]>=0&&item[0]<=8&&item[1]>=0&&item[1]<=9&&Root.arrMap[item[0]+item[1]*9].t!=oChess.t;
-					});
-					funComprise(arrPracticable,oTager);
-					if(arrPoor.length==0){
-						
-					}else{
-						console.error('马被以下位置撇脚:');
-						console.log(arrPoor);
-					};
-					
-				//})();
+			function funPoor(x, y) {
+
+				//马的朝向,大的那一个
+				//x轴右移进一格或左移一格,y不变
+				//+1  -1超范围判断必须分开... 否则影响另一组坐标的push
+				if(x == -2 && oChess.xy[0] - 2 >= 0) {
+					//转换为数组下标 验证该点是否有棋子阻挡,加入可行数组arrPracticable时 直接加x和y(两种)
+					if(Root.arrMap[oChess.xy[0] - 1 + (oChess.xy[1] * 9)].xy) {
+						arrPoor.push(Root.arrMap[oChess.xy[0] - 1 + (oChess.xy[1] * 9)]);
+					} else {
+						//x-2方向   有y+1  y-1两种可能
+						oChess.xy[1] - 1 >= 0 ? arrPracticable.push([oChess.xy[0] - 2, oChess.xy[1] - 1]) : null;
+						oChess.xy[1] + 1 <= 9 ? arrPracticable.push([oChess.xy[0] - 2, oChess.xy[1] + 1]) : null;
+
+					}
+				} else if(x == 2 && oChess.xy[0] + 2 <= 8) {
+					if(Root.arrMap[(oChess.xy[0] + 1) + (oChess.xy[1] * 9)].xy) {
+						arrPoor.push(Root.arrMap[(oChess.xy[0] + 1) + (oChess.xy[1] * 9)]);
+					} else {
+						oChess.xy[1] - 1 >= 0 ? arrPracticable.push([oChess.xy[0] + 2, oChess.xy[1] - 1]) : null;
+						oChess.xy[1] + 1 <= 9 ? arrPracticable.push([oChess.xy[0] + 2, oChess.xy[1] + 1]) : null;
+					}
+				} else if(y == -2 && oChess.xy[1] - 2 >= 0) {
+					if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] - 1) * 9].xy) {
+						arrPoor.push(Root.arrMap[oChess.xy[0] + (oChess.xy[1] - 1) * 9]);
+					} else {
+						oChess.xy[0] - 1 >= 0 ? arrPracticable.push([oChess.xy[0] - 1, oChess.xy[1] - 2]) : null;
+						oChess.xy[0] + 1 <= 8 ? arrPracticable.push([oChess.xy[0] + 1, oChess.xy[1] - 2]) : null;
+					}
+				} else if(y == 2 && oChess.xy[1] + 2 <= 9) {
+					if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] + 1) * 9].xy) {
+						arrPoor.push(Root.arrMap[oChess.xy[0] + (oChess.xy[1] + 1) * 9]);
+					} else {
+						oChess.xy[0] - 1 >= 0 ? arrPracticable.push([oChess.xy[0] - 1, oChess.xy[1] + 2]) : null;
+						oChess.xy[0] + 1 <= 8 ? arrPracticable.push([oChess.xy[0] + 1, oChess.xy[1] + 2]) : null;
+					}
+				}
+
+			};
+
+			//(function(){
+			//x或y只能有一个加2或减2,另一个加1或减1 ,共8个方向   跨度为2的方向验证蹩脚
+			//let arrTowards = [-2,2]
+			//四个主方向 (0仅为了占位)
+			funPoor(2, 0);
+			funPoor(-2, 0);
+			funPoor(0, 2);
+			funPoor(0, -2);
+			//arrPracticable可行坐标中范围可能超出棋盘 ,将超出的和同阵营棋子过滤
+			//console.log(arrPracticable);
+			arrPracticable = arrPracticable.filter(function(item, index, arr) {
+				return item[0] >= 0 && item[0] <= 8 && item[1] >= 0 && item[1] <= 9 && Root.arrMap[item[0] + item[1] * 9].t != oChess.t;
+			});
+			funComprise(arrPracticable, oTager);
+			if(arrPoor.length == 0) {
+
+			} else {
+				console.error('马被以下位置撇脚:');
+				console.log(arrPoor);
+			};
+
+			//})();
 			break;
 		case '相':
-				(function(){
-					let arrPoor = [];
-					let arr = [[2,2],[2,-2],[-2,-2],[-2,2]];
-					for(let i=0;i<arr.length;i++){
-						// 当前棋子与可行位差值x y相加不得超出棋盘
-						if(oChess.xy[0]+arr[i][0]<=8&&oChess.xy[0]+arr[i][0]>=0&&oChess.xy[1]+arr[i][1]<=9&&oChess.xy[1]+arr[i][1]>=0){
-							//塞象眼
-							if(Root.arrMap[oChess.xy[0]+arr[i][0]/2+(oChess.xy[1]+arr[i][1]/2)*9].xy){
-								arrPoor.push([parseInt(arr[i][0]/2)+oChess.xy[0],parseInt(arr[i][1]/2)+oChess.xy[1]]);
-							}else{
-								//可行位置,原棋子位置+arr偏差(!!!下面数组数字类型怎么被转字符串了?)
-								arrPracticable.push([oChess.xy[0]+arr[i][0],oChess.xy[1]+arr[i][1]]);
-							}
-						}else{
-							//超出棋盘
+			(function() {
+				let arrPoor = [];
+				let arr = [
+					[2, 2],
+					[2, -2],
+					[-2, -2],
+					[-2, 2]
+				];
+				for(let i = 0; i < arr.length; i++) {
+					// 当前棋子与可行位差值x y相加不得超出棋盘
+					if(oChess.xy[0] + arr[i][0] <= 8 && oChess.xy[0] + arr[i][0] >= 0 && oChess.xy[1] + arr[i][1] <= 9 && oChess.xy[1] + arr[i][1] >= 0) {
+						//塞象眼
+						if(Root.arrMap[oChess.xy[0] + arr[i][0] / 2 + (oChess.xy[1] + arr[i][1] / 2) * 9].xy) {
+							arrPoor.push([parseInt(arr[i][0] / 2) + oChess.xy[0], parseInt(arr[i][1] / 2) + oChess.xy[1]]);
+						} else {
+							//可行位置,原棋子位置+arr偏差(!!!下面数组数字类型怎么被转字符串了?)
+							arrPracticable.push([oChess.xy[0] + arr[i][0], oChess.xy[1] + arr[i][1]]);
 						}
+					} else {
+						//超出棋盘
 					}
-					//过滤同阵营棋子位置/判断Y(item[1])不允许过河 
-					arrPracticable=arrPracticable.filter(function(item,index,arr){
-						if(oChess.t=='r'){
-							return item[1]<=9&&item[1]>=5&&Root.arrMap[item[0]+item[1]*9].t!=oChess.t
-						}else if(oChess.t=='b'){
-							return item[1]<=4&&item[1]>=0&&Root.arrMap[item[0]+item[1]*9].t!=oChess.t
-						}else{
-							//未知数据
-						}
-					});
-					funComprise(arrPracticable,oTager);
-					if(arrPoor.length==0){
-						
-					}else{
-						console.error('象被以下位置撇脚:');
-						console.log(arrPoor);
-					};
-				})();
+				}
+				//过滤同阵营棋子位置/判断Y(item[1])不允许过河 
+				arrPracticable = arrPracticable.filter(function(item, index, arr) {
+					if(oChess.t == 'r') {
+						return item[1] <= 9 && item[1] >= 5 && Root.arrMap[item[0] + item[1] * 9].t != oChess.t
+					} else if(oChess.t == 'b') {
+						return item[1] <= 4 && item[1] >= 0 && Root.arrMap[item[0] + item[1] * 9].t != oChess.t
+					} else {
+						//未知数据
+					}
+				});
+				funComprise(arrPracticable, oTager);
+				if(arrPoor.length == 0) {
+
+				} else {
+					console.error('象被以下位置撇脚:');
+					console.log(arrPoor);
+				};
+			})();
 			break;
 		case '士':
-					(function(){
-						let arr = [[1,1],[1,-1],[-1,-1],[-1,1]];
-						for(let i=0;i<arr.length;i++){
-							if(oChess.xy[0]+arr[i][0]<=5&&oChess.xy[0]+arr[i][0]>=3){
-									if(oChess.t=='r'){
-										oChess.xy[1]+arr[i][1]<=9&&oChess.xy[1]+arr[i][1]>=7?arrPracticable.push([oChess.xy[0]+arr[i][0],oChess.xy[1]+arr[i][1]]):null;
-									}else if(oChess.t=='b'){
-										oChess.xy[1]+arr[i][1]<=2&&oChess.xy[1]+arr[i][1]>=0?arrPracticable.push([oChess.xy[0]+arr[i][0],oChess.xy[1]+arr[i][1]]):null;
-									}else{
-										//未知数据
-									}	
-
-							}else{
-								//x方向超出
-							}
+			(function() {
+				let arr = [
+					[1, 1],
+					[1, -1],
+					[-1, -1],
+					[-1, 1]
+				];
+				for(let i = 0; i < arr.length; i++) {
+					if(oChess.xy[0] + arr[i][0] <= 5 && oChess.xy[0] + arr[i][0] >= 3) {
+						if(oChess.t == 'r') {
+							oChess.xy[1] + arr[i][1] <= 9 && oChess.xy[1] + arr[i][1] >= 7 ? arrPracticable.push([oChess.xy[0] + arr[i][0], oChess.xy[1] + arr[i][1]]) : null;
+						} else if(oChess.t == 'b') {
+							oChess.xy[1] + arr[i][1] <= 2 && oChess.xy[1] + arr[i][1] >= 0 ? arrPracticable.push([oChess.xy[0] + arr[i][0], oChess.xy[1] + arr[i][1]]) : null;
+						} else {
+							//未知数据
 						}
-					//移除同阵营棋子位置
-					arrPracticable=arrPracticable.filter(function(item,index,arr){
-						return Root.arrMap[item[0]+item[1]*9].t!=oChess.t;
-					});
-						
-						funComprise(arrPracticable,oTager);
-					})();
+
+					} else {
+						//x方向超出
+					}
+				}
+				//移除同阵营棋子位置
+				arrPracticable = arrPracticable.filter(function(item, index, arr) {
+					return Root.arrMap[item[0] + item[1] * 9].t != oChess.t;
+				});
+
+				funComprise(arrPracticable, oTager);
+			})();
 			break;
 		case '帥':
-					//统一验证x范围,再验证y 
-					(function(){
-						oChess.xy[0]+1<=5?arrPracticable.push([oChess.xy[0]+1,oChess.xy[1]]):null;
-						oChess.xy[0]-1>=3?arrPracticable.push([oChess.xy[0]-1,oChess.xy[1]]):null;
-							//if(oTager.xy[0]==oNowSelectChess.xy[0]){
-								if(oNowSelectChess.t=='r'){
-									for(let y=1;y<=9;y++){
-										if(oChess.xy[1]-y<=9&&oChess.xy[1]-y>=0){
-										//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
-										//有棋子
-											if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].n=='將'){
-												//类型不同  允许该坐标添加到可行
-													arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
-													//不同阵营棋子 停止后续添加
-													break;
-													//同阵营棋子,直接终止
-											}else{
-												if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].xy){
-													break;
-												}
-												//非將位置
-												//console.log(arrPracticable)
-												//arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
-											}
-										}
-									}
-								}else if(oNowSelectChess.t=='b'){
-									for(let y=1;y<=9;y++){
-										if(oChess.xy[1]+y<=9&&oChess.xy[1]+y>=0){
-											if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].n=='帥'){
-												//类型不同  允许该坐标添加到可行
-													arrPracticable.push([oChess.xy[0],oChess.xy[1]+y]);
-													//不同阵营棋子 停止后续添加
-													break;
-													//同阵营棋子,直接终止
-											}else{
-												//有棋子才终止循环,没棋子继续循环找到 对方将帥
-												if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].xy){
-													break;
-												}
-												//非將位置
-												//console.log(arrPracticable)
-												//arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
-											}
-										}
-									}									
-								}else{
-									//未知阵营
+			//统一验证x范围,再验证y 
+			(function() {
+				oChess.xy[0] + 1 <= 5 ? arrPracticable.push([oChess.xy[0] + 1, oChess.xy[1]]) : null;
+				oChess.xy[0] - 1 >= 3 ? arrPracticable.push([oChess.xy[0] - 1, oChess.xy[1]]) : null;
+				//if(oTager.xy[0]==oNowSelectChess.xy[0]){
+				if(oNowSelectChess.t == 'r') {
+					for(let y = 1; y <= 9; y++) {
+						if(oChess.xy[1] - y <= 9 && oChess.xy[1] - y >= 0) {
+							//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+							//有棋子
+							if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] - y) * 9].n == '將') {
+								//类型不同  允许该坐标添加到可行
+								arrPracticable.push([oChess.xy[0], oChess.xy[1] - y]);
+								//不同阵营棋子 停止后续添加
+								break;
+								//同阵营棋子,直接终止
+							} else {
+								if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] - y) * 9].xy) {
+									break;
 								}
-							//};
-								if(oChess.t=='r'){
-									oChess.xy[1]+1<=9?arrPracticable.push([oChess.xy[0],oChess.xy[1]+1]):null;
-									oChess.xy[1]-1>=7?arrPracticable.push([oChess.xy[0],oChess.xy[1]-1]):null;
-								}else if(oChess.t=='b'){
-									oChess.xy[1]-1>=0?arrPracticable.push([oChess.xy[0],oChess.xy[1]-1]):null;
-									oChess.xy[1]+1<=2?arrPracticable.push([oChess.xy[0],oChess.xy[1]+1]):null;
-								}else{
-									//未知数据
-								};
-					arrPracticable=arrPracticable.filter(function(item,index,arr){
-						if(Root.arrMap[item[0]+item[1]*9]){
-							return Root.arrMap[item[0]+item[1]*9].t!=oChess.t;
+								//非將位置
+								//console.log(arrPracticable)
+								//arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
+							}
 						}
-					});
-						funComprise(arrPracticable,oTager);
-					})();
+					}
+				} else if(oNowSelectChess.t == 'b') {
+					for(let y = 1; y <= 9; y++) {
+						if(oChess.xy[1] + y <= 9 && oChess.xy[1] + y >= 0) {
+							if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] + y) * 9].n == '帥') {
+								//类型不同  允许该坐标添加到可行
+								arrPracticable.push([oChess.xy[0], oChess.xy[1] + y]);
+								//不同阵营棋子 停止后续添加
+								break;
+								//同阵营棋子,直接终止
+							} else {
+								//有棋子才终止循环,没棋子继续循环找到 对方将帥
+								if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] + y) * 9].xy) {
+									break;
+								}
+								//非將位置
+								//console.log(arrPracticable)
+								//arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
+							}
+						}
+					}
+				} else {
+					//未知阵营
+				}
+				//};
+				if(oChess.t == 'r') {
+					oChess.xy[1] + 1 <= 9 ? arrPracticable.push([oChess.xy[0], oChess.xy[1] + 1]) : null;
+					oChess.xy[1] - 1 >= 7 ? arrPracticable.push([oChess.xy[0], oChess.xy[1] - 1]) : null;
+				} else if(oChess.t == 'b') {
+					oChess.xy[1] - 1 >= 0 ? arrPracticable.push([oChess.xy[0], oChess.xy[1] - 1]) : null;
+					oChess.xy[1] + 1 <= 2 ? arrPracticable.push([oChess.xy[0], oChess.xy[1] + 1]) : null;
+				} else {
+					//未知数据
+				};
+				arrPracticable = arrPracticable.filter(function(item, index, arr) {
+					if(Root.arrMap[item[0] + item[1] * 9]) {
+						return Root.arrMap[item[0] + item[1] * 9].t != oChess.t;
+					}
+				});
+				funComprise(arrPracticable, oTager);
+			})();
 			break;
 		case '炮':
-					(function(){
-						//横向与纵向 循环棋盘最大跨度
-						//x+方向  y不变,bEat 可以吃子了  跳过越子这一次循环
-						//各方向是否越子
-						let bEat = {
-							XPlush:false,
-							XReduce:false,
-							YPlush:false,
-							YReduce:false
-						};
-						for(let x=1;x<9;x++){
-							if(oChess.xy[0]+x<=8&&oChess.xy[0]+x>=0){
-								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
-								//有棋子
-								if(Root.arrMap[oChess.xy[0]+x+oChess.xy[1]*9].xy){
-									
-										
-										//arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
-										//仅在有棋子 且已越过子停止这一次后续添加,没越子设置为越子
-										if(!bEat.XPlush){
-											bEat.XPlush = true;
-											continue;
-										}
-										
-								
-								}else{
-									//空位置 , 未越子时才添加到可行,越子后不能添加空位置
-									if(!bEat.XPlush){
-										arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
-									}else{
-										//越子了  不能再走空位
-									}
-								}
-								//如果 越子,可以开始吃子了
-								if(bEat.XPlush){
-									//不是空的位置(发现棋子):
-									if(Root.arrMap[oChess.xy[0]+x+oChess.xy[1]*9].xy){
-										//不是同阵营  添加到可行位置数组
-										 if(Root.arrMap[oChess.xy[0]+x+oChess.xy[1]*9].t!=oChess.t){
-										 	 arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
-										 	 break;
-										 }else{
-										 	//同阵营
-										 }
-										 //不管是不是同阵营棋子 都停止搜索
-										break;
-									}
-								}else{
-									//未越子 不能开始吃子
-								}
+			(function() {
+				//横向与纵向 循环棋盘最大跨度
+				//x+方向  y不变,bEat 可以吃子了  跳过越子这一次循环
+				//各方向是否越子
+				let bEat = {
+					XPlush: false,
+					XReduce: false,
+					YPlush: false,
+					YReduce: false
+				};
+				for(let x = 1; x < 9; x++) {
+					if(oChess.xy[0] + x <= 8 && oChess.xy[0] + x >= 0) {
+						//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+						//有棋子
+						if(Root.arrMap[oChess.xy[0] + x + oChess.xy[1] * 9].xy) {
+
+							//arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
+							//仅在有棋子 且已越过子停止这一次后续添加,没越子设置为越子
+							if(!bEat.XPlush) {
+								bEat.XPlush = true;
+								continue;
 							}
-							
-						}
-						//x-方向
-						for(let x=1;x<9;x++){
-							if(oChess.xy[0]-x<=8&&oChess.xy[0]-x>=0){
-								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
-								//有棋子
-								if(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].xy){
-									
-										
-										//arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
-										//仅在有棋子 且已越过子停止这一次后续添加,没越子设置为越子
-										if(!bEat.XReduce){
-											bEat.XReduce = true;
-											continue;
-										}
-										
-								
-								}else{
-									//空位置 , 未越子时才添加到可行,越子后不能添加空位置
-									if(!bEat.XReduce){
-										arrPracticable.push([oChess.xy[0]-x,oChess.xy[1]]);
-									}else{
-										//越子了  不能再走空位
-									}
-								}
-								//如果 越子,可以开始吃子了
-								if(bEat.XReduce){
-									//不是空的位置(发现棋子):
-									if(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].xy){
-										//不是同阵营  添加到可行位置数组
-										 if(Root.arrMap[oChess.xy[0]-x+oChess.xy[1]*9].t!=oChess.t){
-										 	 arrPracticable.push([oChess.xy[0]-x,oChess.xy[1]]);
-										 	 break;
-										 }else{
-										 	//同阵营
-										 }
-										 //不管是不是同阵营棋子 都停止搜索
-										break;
-									}
-								}else{
-									//未越子 不能开始吃子
-								}
-							}
-							
-						}
-						//y+方向  , x轴不变
-						for(let y=1;y<=9;y++){
-							if(oChess.xy[1]+y<=9&&oChess.xy[1]+y>=0){
-								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
-								//有棋子
-								if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].xy){
-									
-										
-										//arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
-										//仅在有棋子 且已越过子停止这一次后续添加,没越子设置为越子
-										if(!bEat.YPlush){
-											bEat.YPlush = true;
-											continue;
-										}
-										
-								
-								}else{
-									//空位置 , 未越子时才添加到可行,越子后不能添加空位置
-									if(!bEat.YPlush){
-										arrPracticable.push([oChess.xy[0],oChess.xy[1]+y]);
-									}else{
-										//越子了  不能再走空位
-									}
-								}
-								//如果 越子,可以开始吃子了
-								if(bEat.YPlush){
-									//不是空的位置(发现棋子):
-									if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].xy){
-										//不是同阵营  添加到可行位置数组
-										 if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]+y)*9].t!=oChess.t){
-										 	 arrPracticable.push([oChess.xy[0],oChess.xy[1]+y]);
-										 	 break;
-										 }else{
-										 	//同阵营
-										 }
-										 //不管是不是同阵营棋子 都停止搜索
-										break;
-									}
-								}else{
-									//未越子 不能开始吃子
-								}
-							}
-							
-						}
-						//y-方向  , x轴不变
-						for(let y=1;y<=9;y++){
-							if(oChess.xy[1]-y<=9&&oChess.xy[1]-y>=0){
-								//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
-								//有棋子
-								if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].xy){
-									
-										
-										//arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
-										//仅在有棋子 且已越过子停止这一次后续添加,没越子设置为越子
-										if(!bEat.YReduce){
-											bEat.YReduce = true;
-											continue;
-										}
-										
-								
-								}else{
-									//空位置 , 未越子时才添加到可行,越子后不能添加空位置
-									if(!bEat.YReduce){
-										arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
-									}else{
-										//越子了  不能再走空位
-									}
-								}
-								//如果 越子,可以开始吃子了
-								if(bEat.YReduce){
-									//不是空的位置(发现棋子):
-									if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].xy){
-										//不是同阵营  添加到可行位置数组
-										 if(Root.arrMap[oChess.xy[0]+(oChess.xy[1]-y)*9].t!=oChess.t){
-										 	 arrPracticable.push([oChess.xy[0],oChess.xy[1]-y]);
-										 	 break;
-										 }else{
-										 	//同阵营
-										 }
-										 //不管是不是同阵营棋子 越子后遇到棋子都停止搜索，且不能添加空位和同阵营
-										break;
-									}
-								}else{
-									//未越子 不能开始吃子
-								}
+
+						} else {
+							//空位置 , 未越子时才添加到可行,越子后不能添加空位置
+							if(!bEat.XPlush) {
+								arrPracticable.push([oChess.xy[0] + x, oChess.xy[1]]);
+							} else {
+								//越子了  不能再走空位
 							}
 						}
-						//检测目标位置是否在可行坐标中,判断数组相等
-						funComprise(arrPracticable,oTager);
-					})();
+						//如果 越子,可以开始吃子了
+						if(bEat.XPlush) {
+							//不是空的位置(发现棋子):
+							if(Root.arrMap[oChess.xy[0] + x + oChess.xy[1] * 9].xy) {
+								//不是同阵营  添加到可行位置数组
+								if(Root.arrMap[oChess.xy[0] + x + oChess.xy[1] * 9].t != oChess.t) {
+									arrPracticable.push([oChess.xy[0] + x, oChess.xy[1]]);
+									break;
+								} else {
+									//同阵营
+								}
+								//不管是不是同阵营棋子 都停止搜索
+								break;
+							}
+						} else {
+							//未越子 不能开始吃子
+						}
+					}
+
+				}
+				//x-方向
+				for(let x = 1; x < 9; x++) {
+					if(oChess.xy[0] - x <= 8 && oChess.xy[0] - x >= 0) {
+						//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+						//有棋子
+						if(Root.arrMap[oChess.xy[0] - x + oChess.xy[1] * 9].xy) {
+
+							//arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
+							//仅在有棋子 且已越过子停止这一次后续添加,没越子设置为越子
+							if(!bEat.XReduce) {
+								bEat.XReduce = true;
+								continue;
+							}
+
+						} else {
+							//空位置 , 未越子时才添加到可行,越子后不能添加空位置
+							if(!bEat.XReduce) {
+								arrPracticable.push([oChess.xy[0] - x, oChess.xy[1]]);
+							} else {
+								//越子了  不能再走空位
+							}
+						}
+						//如果 越子,可以开始吃子了
+						if(bEat.XReduce) {
+							//不是空的位置(发现棋子):
+							if(Root.arrMap[oChess.xy[0] - x + oChess.xy[1] * 9].xy) {
+								//不是同阵营  添加到可行位置数组
+								if(Root.arrMap[oChess.xy[0] - x + oChess.xy[1] * 9].t != oChess.t) {
+									arrPracticable.push([oChess.xy[0] - x, oChess.xy[1]]);
+									break;
+								} else {
+									//同阵营
+								}
+								//不管是不是同阵营棋子 都停止搜索
+								break;
+							}
+						} else {
+							//未越子 不能开始吃子
+						}
+					}
+
+				}
+				//y+方向  , x轴不变
+				for(let y = 1; y <= 9; y++) {
+					if(oChess.xy[1] + y <= 9 && oChess.xy[1] + y >= 0) {
+						//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+						//有棋子
+						if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] + y) * 9].xy) {
+
+							//arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
+							//仅在有棋子 且已越过子停止这一次后续添加,没越子设置为越子
+							if(!bEat.YPlush) {
+								bEat.YPlush = true;
+								continue;
+							}
+
+						} else {
+							//空位置 , 未越子时才添加到可行,越子后不能添加空位置
+							if(!bEat.YPlush) {
+								arrPracticable.push([oChess.xy[0], oChess.xy[1] + y]);
+							} else {
+								//越子了  不能再走空位
+							}
+						}
+						//如果 越子,可以开始吃子了
+						if(bEat.YPlush) {
+							//不是空的位置(发现棋子):
+							if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] + y) * 9].xy) {
+								//不是同阵营  添加到可行位置数组
+								if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] + y) * 9].t != oChess.t) {
+									arrPracticable.push([oChess.xy[0], oChess.xy[1] + y]);
+									break;
+								} else {
+									//同阵营
+								}
+								//不管是不是同阵营棋子 都停止搜索
+								break;
+							}
+						} else {
+							//未越子 不能开始吃子
+						}
+					}
+
+				}
+				//y-方向  , x轴不变
+				for(let y = 1; y <= 9; y++) {
+					if(oChess.xy[1] - y <= 9 && oChess.xy[1] - y >= 0) {
+						//计算出可行位置(数组xy)在arrMap中的下标 找出该下标的信息
+						//有棋子
+						if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] - y) * 9].xy) {
+
+							//arrPracticable.push([oChess.xy[0]+x,oChess.xy[1]]);
+							//仅在有棋子 且已越过子停止这一次后续添加,没越子设置为越子
+							if(!bEat.YReduce) {
+								bEat.YReduce = true;
+								continue;
+							}
+
+						} else {
+							//空位置 , 未越子时才添加到可行,越子后不能添加空位置
+							if(!bEat.YReduce) {
+								arrPracticable.push([oChess.xy[0], oChess.xy[1] - y]);
+							} else {
+								//越子了  不能再走空位
+							}
+						}
+						//如果 越子,可以开始吃子了
+						if(bEat.YReduce) {
+							//不是空的位置(发现棋子):
+							if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] - y) * 9].xy) {
+								//不是同阵营  添加到可行位置数组
+								if(Root.arrMap[oChess.xy[0] + (oChess.xy[1] - y) * 9].t != oChess.t) {
+									arrPracticable.push([oChess.xy[0], oChess.xy[1] - y]);
+									break;
+								} else {
+									//同阵营
+								}
+								//不管是不是同阵营棋子 越子后遇到棋子都停止搜索，且不能添加空位和同阵营
+								break;
+							}
+						} else {
+							//未越子 不能开始吃子
+						}
+					}
+				}
+				//检测目标位置是否在可行坐标中,判断数组相等
+				funComprise(arrPracticable, oTager);
+			})();
 			break;
 		case '兵':
-					(function(){
-						if(oChess.t=='r'){
-							//前进方向（不管是否过河，都可以前进）
-							oChess.xy[1]-1>=0?arrPracticable.push([oChess.xy[0],oChess.xy[1]-1]):null;
-							//过河
-							if(oChess.xy[1]>=0&&oChess.xy[1]<=4){
-								oChess.xy[0]-1>=0?arrPracticable.push([oChess.xy[0]-1,oChess.xy[1]]):null;
-								oChess.xy[0]+1<=8?arrPracticable.push([oChess.xy[0]+1,oChess.xy[1]]):null;
-							}else{
-								//未过河 不能左右
-							}
-						}else if(oChess.t=='b'){
-							//前进方向（不管是否过河，都可以前进）
-							oChess.xy[1]+1<=9?arrPracticable.push([oChess.xy[0],oChess.xy[1]+1]):null;
-							//过河
-							if(oChess.xy[1]>=5&&oChess.xy[1]<=9){
-								oChess.xy[0]-1>=0?arrPracticable.push([oChess.xy[0]-1,oChess.xy[1]]):null;
-								oChess.xy[0]+1<=8?arrPracticable.push([oChess.xy[0]+1,oChess.xy[1]]):null;
-							}else{
-								//未过河 不能左右
-							}							
-						}else{
-							//未知阵营
-						};
-						funComprise(arrPracticable,oTager);
-					})();
+			(function() {
+				if(oChess.t == 'r') {
+					//前进方向（不管是否过河，都可以前进）
+					oChess.xy[1] - 1 >= 0 ? arrPracticable.push([oChess.xy[0], oChess.xy[1] - 1]) : null;
+					//过河
+					if(oChess.xy[1] >= 0 && oChess.xy[1] <= 4) {
+						oChess.xy[0] - 1 >= 0 ? arrPracticable.push([oChess.xy[0] - 1, oChess.xy[1]]) : null;
+						oChess.xy[0] + 1 <= 8 ? arrPracticable.push([oChess.xy[0] + 1, oChess.xy[1]]) : null;
+					} else {
+						//未过河 不能左右
+					}
+				} else if(oChess.t == 'b') {
+					//前进方向（不管是否过河，都可以前进）
+					oChess.xy[1] + 1 <= 9 ? arrPracticable.push([oChess.xy[0], oChess.xy[1] + 1]) : null;
+					//过河
+					if(oChess.xy[1] >= 5 && oChess.xy[1] <= 9) {
+						oChess.xy[0] - 1 >= 0 ? arrPracticable.push([oChess.xy[0] - 1, oChess.xy[1]]) : null;
+						oChess.xy[0] + 1 <= 8 ? arrPracticable.push([oChess.xy[0] + 1, oChess.xy[1]]) : null;
+					} else {
+						//未过河 不能左右
+					}
+				} else {
+					//未知阵营
+				};
+				funComprise(arrPracticable, oTager);
+			})();
 			break;
-		default:console.error('棋子兵种异常');
+		default:
+			console.error('棋子兵种异常');
 			break;
 	}
-		console.log('可行位置:');
-		console.log(arrPracticable);
-		console.log('验证通过?:'+bVerification);
-		console.log('全局信息:');
-		console.log(Root.arrMap);
-		return {
-			bVerification:bVerification,
-			arrPracticable:arrPracticable		
-		}
+	console.log('可行位置:');
+	console.log(arrPracticable);
+	console.log('验证通过?:' + bVerification);
+	console.log('全局信息:');
+	console.log(Root.arrMap);
+	return {
+		bVerification: bVerification,
+		arrPracticable: arrPracticable
+	}
 }
 //拦截对象属性时  enumerable可枚举属性最好定义上,否则:
 /**
@@ -1026,126 +1032,25 @@ Root.funRules=function(oNowSelectChess,oTager){
 // 	enumerable:true
 // });
 window.onload = function() {
-	let socket;
+	let socket = io();
 	//绘制棋盘
 	//funDrawMap();
 	//放置棋子
 	//funPutChess();
 	Root.funReDraw();
-	//dom view 交互
-	(function(){
-		let btnLogin = document.getElementById("loginBtn");
-		let oLoginName = document.querySelector('#loginName input');
-		let oLoginPassword = document.querySelector("#loginPassWord input");
-		//登录表单:
-		let oLogin = document.getElementById("login");
-		//主菜单
-		let oGameMainMenu = document.getElementById("gameMainMenu");
-		let btnMenuPlay = document.getElementById("btnMenuPlay");
-		
-		let oFun={
-			loginSuccess:()=>{
-				oLogin.style.transform='perspective(16rem) rotateY(-180deg)';
-				oLogin.style.boxShadow='0px 0px 0px 0vw rgba(0,0,0,0)';
-				oGameMainMenu.style.transform='perspective(16rem) rotateY(0deg)';
-			},
-			loginFail:()=>{
-				
-			},
-			socketOn:(id)=>{
-				socket.on(id, function(receiveData){
-					
-				});
-			},
-			socketEmit:(id,sendData,callBackData)=>{
-				socket.emit(id,sendData,callBackData);
-			},
-		}
-		btnLogin.addEventListener('click',function(){
-			axios.post('/node/chessLogin', {
-			    userName: oLoginName.value,
-			    passWord: oLoginPassword.value
-			  })
-			  .then(function (res) {
-				if (res.status == 200) {
-					if(res.data[0].ID){
-					  console.log(res.data);//登录成功
-		              oFun.loginSuccess();
-			          if(!socket){
-			           	socket = io();
-			          }
-					}else{
-						//
-						console.log(res.data);
-					}
-		            
-		        } else {
-		            console.log('http状态非200');
-		        }
-			  })
-			  .catch(function (error) {
-			    console.log(error);
-			  });
-			});
-			//自动登录
-			axios.post('/node/autoLogin', {
-			    auto: '',//所有请求都自带发送cookie
-			  })
-			  .then(function (res) {
-				if (res.status == 200) {
-		            console.log('自动登录成功',res.data);
-		            oFun.loginSuccess();
-			        if(!socket){
-			          socket = io();
-			        }		            
-		        } else {
-		            console.log('http状态非200');
-		        }
-			  })
-			  .catch(function (error) {
-			    console.log('认证失效,自动登录失败',error);
-			  });
-			 //在线匹配
-			 btnMenuPlay.addEventListener('click',function(){
-			 	axios.post('/node/play', {
-			    auto: '',//所有请求都自带发送cookie
-			  })
-			  .then(function (res) {
-				if (res.status == 200) {
-		            console.log('验证通过',res.data);
-		            if(!socket){
-			          socket = io();
-			        }
-		            oFun.socketEmit('1000','测试一下',function(data){
-		            //	console.log('验证通过',res.data);
-		            	console.log(data);
-		            	if(data=='ok'){
-		            		console.log('发送成功');
-		            	}
-		            });
-		            
-		        } else {
-		            console.log('http状态非200');
-		        }
-			  })
-			  .catch(function (error) {
-			    console.log('认证失效,自动登录失败',error);
-			    window.location.reload();
-			  });
-			 },false);
-	})();
+
 	//当前 选中的棋子
 	let nowSelectedChess = null;
 	//当前游戏状态 0:和棋,1:红行棋,2:黑行棋,10:红胜,20:黑胜
-	let nowGameState = 1 ;
+	let nowGameState = 1;
 	map.addEventListener('click', function(e) {
 		let eVent = e || event; //, mapSize.height * (0.12 / 2)
 		//存储空的棋盘位置(索引 i)
 		let arrEmptyMap = [];
 		//存储棋子移动目标坐标 和map数组索引(其实根据索引就可以算出坐标xy,为了方便 都记录)
-		let target ={
-			xy:null,
-			index:null,
+		let target = {
+			xy: null,
+			index: null,
 		};
 		/*layerX是相对于当前对象(canvas)的坐标,和canvas显示坐标(屏幕像素)吻合,
 		 *为了提高图像质量,棋盘与棋子实际大小被扩大,显示大小被缩小(canvas宽高与canvas的style宽高)
@@ -1167,73 +1072,73 @@ window.onload = function() {
 
 				//点到圆心的距离 小于等于半径 说明点击到了圆形棋子内或圆形棋子上
 				if(Math.pow(x - chessX, 2) + Math.pow(y - chessY, 2) <= Math.pow(w / 2.5 * 1.1, 2)) {
-						audioClick.play();
+					audioClick.play();
 					// 1 红棋 走子  2黑棋走子
-					if(nowGameState==1){
-						if(nowSelectedChess==null){
-							if(Root.arrMap[i].t==='r'){
+					if(nowGameState == 1) {
+						if(nowSelectedChess == null) {
+							if(Root.arrMap[i].t === 'r') {
 								nowSelectedChess = Root.arrMap[i];
-							}else{
+							} else {
 								//不为红棋
 								console.error('不是红棋')
 							}
-						}else{
-							if(Root.arrMap[i].t!='r'){
+						} else {
+							if(Root.arrMap[i].t != 'r') {
 								//不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉
 								//alert('不属于己方1'+Root.arrMap[i].t);
 								funMoveChess(Root.arrMap[i]);
 								audioEat.play();
-								
-							}else{
-								//同阵营棋子,继续覆盖选中
-								nowSelectedChess = Root.arrMap[i];
-							}
-						}	
-						//console.log(nowSelectedChess);
-						break;
-					}else if(nowGameState==2){
-						if(nowSelectedChess==null){
-							if(Root.arrMap[i].t==='b'){
-								nowSelectedChess = Root.arrMap[i];
-							}else{
-								//不为黑棋
-								console.error('不是黑棋');
-							}
-						}else{
-							if(Root.arrMap[i].t!='b'){
-								//不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉
-								//alert('不属于己方2'+Root.arrMap[i].t)
-								funMoveChess(Root.arrMap[i]);
-								audioEat.play();
-							}else{
+
+							} else {
 								//同阵营棋子,继续覆盖选中
 								nowSelectedChess = Root.arrMap[i];
 							}
 						}
-						
+						//console.log(nowSelectedChess);
+						break;
+					} else if(nowGameState == 2) {
+						if(nowSelectedChess == null) {
+							if(Root.arrMap[i].t === 'b') {
+								nowSelectedChess = Root.arrMap[i];
+							} else {
+								//不为黑棋
+								console.error('不是黑棋');
+							}
+						} else {
+							if(Root.arrMap[i].t != 'b') {
+								//不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉
+								//alert('不属于己方2'+Root.arrMap[i].t)
+								funMoveChess(Root.arrMap[i]);
+								audioEat.play();
+							} else {
+								//同阵营棋子,继续覆盖选中
+								nowSelectedChess = Root.arrMap[i];
+							}
+						}
+
 						break;
 					}
 					console.log(JSON.stringify(Root.arrMap[i]) + '位置:' + i);
 					//找到了  就把它赋给一个变量  且终止循环
 					//多次点击都有棋子  也覆盖  保持只选中一个
 					//棋子为空  就选中,如果已选中 就判断已选中的的棋子与即将选中的棋子阵营是否属于己方
-					
+
 				} else {
 					//console.log('非空位  但未点击到棋子上')
 				}
 			} else {
 				//棋盘所有空位  
-				  arrEmptyMap.push(i);
+				arrEmptyMap.push(i);
 				//console.log(nowSelectedChess)
 			}
 			//arrEmptyMap.push(i);
 		}
 		//↑ Root.arrMap.length循环结束
-//		for(let a=0;a<90;a++){
-//			arrEmptyMap.push(a);
-//		}
+		//		for(let a=0;a<90;a++){
+		//			arrEmptyMap.push(a);
+		//		}
 		// 如果有 棋子被选中  就移动到空位置  //吃子时 传入目标 不传入目标为空棋盘(供前面选子时 不属于己方阵营  就不覆盖上次选中的棋子,直接吃掉)
-		function funMoveChess(tagerChess){
+		function funMoveChess(tagerChess) {
 			if(nowSelectedChess != null) {
 				//audioMove.play();
 				//循环出之前存下的所有空位的下标i
@@ -1242,40 +1147,41 @@ window.onload = function() {
 					// 排错发现行列赋值反了...  除取整为行  (y),取余为列(x)
 					let iRowX;
 					let iColY;
-					if(tagerChess){
-						iRowX = tagerChess.xy[0];	
+					if(tagerChess) {
+						iRowX = tagerChess.xy[0];
 						iColY = tagerChess.xy[1];
-					}else{
-						iRowX = arrEmptyMap[iEmpty] % 9;	
+					} else {
+						iRowX = arrEmptyMap[iEmpty] % 9;
 						iColY = Math.floor(arrEmptyMap[iEmpty] / 9);
 					}
-					
+
 					//nowSelectedChess.xy[0];
 					//nowSelectedChess.xy[1];
-				
+
 					//console.log(arrEmptyMap);
 					//当前点击坐标附近的空位  
 					//同样  判断点击区域 是否在某个空位中心为坐标 w/2.5*1.1为半径构成的为圆形的范围内
 					if(Math.pow(x - funCoordinateX(iRowX), 2) + Math.pow(y - funCoordinateY(iColY), 2) <= Math.pow(w / 2.5 * 1.1, 2)) {
 						//存入目标位置信息:
-						if(tagerChess){
-							target.xy = [tagerChess.xy[0],tagerChess.xy[1]];
-							target.index = Root.arrMap.indexOf(tagerChess);	
-						}else{
-							target.xy = [iRowX,iColY];
-							target.index =arrEmptyMap[iEmpty];							
+						if(tagerChess) {
+							target.xy = [tagerChess.xy[0], tagerChess.xy[1]];
+							target.index = Root.arrMap.indexOf(tagerChess);
+							console.log(tagerChess)
+						} else {
+							target.xy = [iRowX, iColY];
+							target.index = arrEmptyMap[iEmpty];
 						}
-						if(!Root.funRules(nowSelectedChess,target).bVerification){
+						if(!Root.funRules(nowSelectedChess, target).bVerification) {
 							console.error('棋子走法不符合规则');
 							//置空选中
-							nowSelectedChess=null;
+							nowSelectedChess = null;
 							break;
-						}else{
+						} else {
 							//合乎规则,走法在可行范围
 							//之前的棋子对象清空,在Root.arrMap中找到原来棋子的索引
 							//Root.arrMap[Root.arrMap.indexOf(nowSelectedChess)] = {};!!! indexOf可以查数组中的对象,二维数组却不行 
 							//console.log(JSON.stringify(Root.arrMap[nowSelectedChess.xy[0]+nowSelectedChess.xy[1]*9]));
-							Root.arrMap[nowSelectedChess.xy[0]+nowSelectedChess.xy[1]*9] = {};
+							Root.arrMap[nowSelectedChess.xy[0] + nowSelectedChess.xy[1] * 9] = {};
 							//console.log(JSON.stringify(Root.arrMap[nowSelectedChess.xy[0]+nowSelectedChess.xy[1]*9]));
 							//alert(Root.arrMap.indexOf(nowSelectedChess));
 							//目标位置xy 给之前被选中的棋子的xy
@@ -1286,50 +1192,51 @@ window.onload = function() {
 							let diffY = iColY - nSCY;
 							let count = 20;
 							let nowCount = 1;
-							function moveAnimation(){
+
+							function moveAnimation() {
 								//  如果不满足条件 棋子 继续移动(动画), 满足条件:切换行棋/游戏状态  , 清空选中
-								if(nowCount>count){
-									if(nowSelectedChess.t==='r'){
+								if(nowCount > count) {
+									if(nowSelectedChess.t === 'r') {
 										nowGameState = 2;
-									}else if(nowSelectedChess.t==='b'){
+									} else if(nowSelectedChess.t === 'b') {
 										nowGameState = 1;
 									}
-//									else if(nowGameState==0){
-//										//和棋
-//									}else if(nowGameState==10){
-//										//红胜
-//									}else if(nowGameState==20){
-//										//黑胜
-//									}else{
-//										//异常数据
-//									}
+									//									else if(nowGameState==0){
+									//										//和棋
+									//									}else if(nowGameState==10){
+									//										//红胜
+									//									}else if(nowGameState==20){
+									//										//黑胜
+									//									}else{
+									//										//异常数据
+									//									}
 									audioGo.play();
 									nowSelectedChess = null;
-								}else{
+								} else {
 									//console.log(nowSelectedChess);
-									nowSelectedChess.xy = [nSCX+diffX*(nowCount/count),nSCY+diffY*(nowCount/count)];
-								//	alert((diffY/count)*(nowCount/count))
+									nowSelectedChess.xy = [nSCX + diffX * (nowCount / count), nSCY + diffY * (nowCount / count)];
+									//	alert((diffY/count)*(nowCount/count))
 									Root.arrMap[target.index] = nowSelectedChess;
 									Root.funReDraw();
 									requestAnimationFrame(moveAnimation);
 									nowCount++;
 								}
 							}
-							if(Object.keys(Root.arrMap[target.index]).length==0){
+							if(Object.keys(Root.arrMap[target.index]).length == 0) {
 								// 移动了 但未吃子(目标空对象)
-							}else{
+							} else {
 								//记录哪些棋子被吃
 								Root.arrDead.push(Root.arrMap[target.index]);
-								if(Root.arrDead[Root.arrDead.length-1].n=='帥'){
+								if(Root.arrDead[Root.arrDead.length - 1].n == '帥') {
 									nowGameState = 20;
-								}else if(Root.arrDead[Root.arrDead.length-1].n=='將'){
+								} else if(Root.arrDead[Root.arrDead.length - 1].n == '將') {
 									nowGameState = 10;
 								}
 							}
 							console.log('以下棋子已阵亡:');
 							console.log(Root.arrDead);
 							moveAnimation();
-							console.log('移动到'+JSON.stringify(target));
+							console.log('移动到' + JSON.stringify(target));
 							//Root.funReDraw();
 							//console.log(Root.arrMap);
 							break;
@@ -1339,17 +1246,173 @@ window.onload = function() {
 						//console.log('棋盘其他空位')
 					}
 					//if(iEmpty==arrEmptyMap.length-1){
-						//console.log('['+iRowX+','+iColY+']');
+					//console.log('['+iRowX+','+iColY+']');
 					//}
 				}
-				
+
 			} else {
 				//alert(nowSelectedChess)
 				//console.log('点击了棋盘空位,但还未选中棋子'+i);
 			}
-						
+
 		}
 		funMoveChess();
-	},false);
+	}, false);
+	//dom view 交互
+	(function() {
+		let btnLogin = document.getElementById("loginBtn");
+		let oLoginName = document.querySelector('#loginName input');
+		let oLoginPassword = document.querySelector("#loginPassWord input");
+		//登录表单:
+		let oLogin = document.getElementById("login");
+		//主菜单
+		let oGameMainMenu = document.getElementById("gameMainMenu");
+		let btnMenuPlay = document.getElementById("btnMenuPlay");
+		//加入房间 匹配界面
+		let btnOnlinePlay = document.getElementById("btnOnlinePlay");
+		//创建房间:
+		let btnMenuCrateRoom = document.getElementById("btnMenuCrateRoom");
+		let oFun = {
+			loginSuccess: () => {
+				oLogin.style.transform = 'perspective(16rem) rotateY(-180deg)';
+				oLogin.style.boxShadow = '0px 0px 0px 0vw rgba(0,0,0,0)';
+				oGameMainMenu.style.transform = 'perspective(16rem) rotateY(0deg)';
+			},
+			loginFail: () => {
+
+			},
+			socketOn: (id) => {
+
+			},
+			socketEmit: (id, sendData, callBackData) => {
+				socket.emit(id, sendData, callBackData);
+			},
+		}
+
+		btnLogin.addEventListener('click', function() {
+			axios.post('/node/chessLogin', {
+					userName: oLoginName.value,
+					passWord: oLoginPassword.value
+				})
+				.then(function(res) {
+					if(res.status == 200) {
+						if(res.data[0].ID) {
+							console.log(res.data); //登录成功
+							oFun.loginSuccess();
+							if(!socket) {
+								socket = io();
+							} else {
+								socket.open();
+							}
+						} else {
+							//
+							console.log(res.data);
+						}
+
+					} else {
+						console.log('http状态非200');
+					}
+				})
+				.catch(function(error) {
+					console.log(error);
+				});
+		});
+		//自动登录
+		axios.post('/node/autoLogin', {
+				auto: '', //所有请求都自带发送cookie
+			})
+			.then(function(res) {
+				if(res.status == 200) {
+					console.log('自动登录成功', res.data);
+					oFun.loginSuccess();
+					if(!socket) {
+						socket = io();
+					}
+				} else {
+					console.log('http状态非200');
+				}
+			})
+			.catch(function(error) {
+				console.log('认证失效,自动登录失败', error);
+			});
+		//在线匹配
+		btnMenuPlay.addEventListener('click', function() {
+			oGameMainMenu.style.display = 'none';
+			btnOnlinePlay.style.display = 'inline-block';
+//			axios.post('/node/play', {
+//					auto: '', //所有请求都自带发送cookie
+//				})
+//				.then(function(res) {
+//					if(res.status == 200) {
+//						if(!(socket.connected)) { //每次点击都检查 是否已连接,没连接就重连	
+//							socket.open();
+//						}
+//						console.log('验证通过', res.data);
+//						oFun.socketEmit('play', '测试一下', function(data) {
+//							//	console.log('验证通过',res.data);
+//							console.log(data);
+//							if(data == 'ok') {
+//								console.log('发送成功');
+//							}
+//						});
+//
+//					} else {
+//						console.log('http状态非200');
+//					}
+//				})
+//				.catch(function(error) {
+//					console.log('认证失效,自动登录失败', error);
+//					window.location.reload();
+//				});
+		}, false);
+		let roomID;
+		socket.on('play', function(receiveData) {
+			if(roomID){
+				
+			}else{
+				
+			}
+			console.log(receiveData);
+		});
+		document.onclick=function(){
+			socket.emit('play',{ID:roomID,data:'哈哈哈哈哈'},function(){
+				
+			});
+		}
+	
+		socket.on('room', function(receiveData) {
+			btnOnlinePlay.innerHTML = '';
+			console.log(receiveData);
+			for(let i = 0; i < receiveData.length; i++) {
+				var oRoom = document.createElement('div');
+				oRoom.data = receiveData[i].ID;
+				roomID =  receiveData[i].ID;
+				oRoom.innerHTML = receiveData[i].ID;
+				oRoom.className = 'room';
+				oRoom.addEventListener('click', function() {
+					var that = this;
+					axios.post('/node/join', {
+							ID:that.data
+						})
+						.then(function(res) {
+							if(res.status == 200) {
+								console.log('加入房间成功', res.data);
+							} else {
+								console.log('http状态非200,加入游戏失败');
+							}
+						})
+						.catch(function(error) {
+							console.log('加入房间错误', error);
+						});
+				}, false);
+				btnOnlinePlay.appendChild(oRoom);
+			}
+		});
+		btnMenuCrateRoom.addEventListener('click', function() {
+			socket.emit('room', 0, function(d) {
+
+			});
+		}, false);
+	})();
 	console.timeEnd('耗时');
 }

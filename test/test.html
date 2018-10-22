@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="../js/socket.io.min.js"></script>
+	</head>
+	<body>
+		<input type="" name="input" id="input" value="" />
+		<script>
+			var input = document.getElementById("input");
+			let socket = io();
+			socket.on('test',function(backData){
+				console.log('收到:',backData);	
+			});
+			input.oninput=function(){
+				socket.emit('test',input.value,function(d){
+					console.log('发送成功:',d)
+				});
+			}
+		</script>
+	</body>
+</html>

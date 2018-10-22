@@ -204,8 +204,38 @@
 	transform: scale(0.7) translateY(-1vmin);
 	color: red;
 }
-
+#btnOnlinePlay{
+	background: rgba(249, 216, 162, 1);
+	display: none;
+	width: 70vmin;
+	height: 80vmin;
+	position:absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -40vmin;
+	margin-left: -35vmin;
+	border: 0.05rem solid darkgoldenrod;
+	overflow: hidden;
+	overflow-y: scroll;
 }
+.room{
+	display: inline-block;
+	background:darkgoldenrod;
+	width: 1rem;
+	height: 1rem;
+	margin: 0.2rem;
+	text-align: center;
+	line-height: 1.2rem;
+	word-wrap:break-word;
+	
+}
+}
+
+
+
+
+
+
 
 @media (max-width: 800px) {
 	.inputPosition{

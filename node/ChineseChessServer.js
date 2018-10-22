@@ -97,7 +97,7 @@ exp.get('/register',function(req,res){
 // });
 let gameInfo = {
     onlineNum:0,
-    user:[]
+    user:[],
 };
 //loading 加入游戏的用户ID
 let gamePlay={
@@ -106,15 +106,23 @@ let gamePlay={
     //{id:1000 ,red:user,black:user2,map:[]}
     rooms:[],
 }
+let arrMatch = [];
+function jsonToString(json){
+    return JSON.stringify(json);
+}
 //if(userInfo.Verification){matching
     io.on('connection', function (socket){
         if(socket.request.session['loginTrue']){
-           console.log(socket.id);
+            console.log(socket.request.session['loginTrue'])
+            io.emit('room',arrMatch);
+           // console.log(socket.id);
             gameInfo.onlineNum++;
-            gameInfo.user.push(socket.request.session['loginTrue']);
-            console.log('当前在线用户',gameInfo.user);
-            //console.log('用户连接',gameInfo.onlineNum);
-            //console.log(socket.request.session); 
+            // gameInfo.userID.push(socket.request.session['loginTrue'].ID);
+             gameInfo.user.push(socket.request.session['loginTrue']);
+            //  for(let i=0;i<gameInfo.user.length;i++){
+                 
+            //  }
+            //  jsonToString()
             io.emit('gameInfo',gameInfo);
             socket.on('disconnect', function(){//连接断开事件
                 gameInfo.onlineNum--;
@@ -122,40 +130,107 @@ let gamePlay={
                 io.emit('gameInfo',gameInfo);
                 console.log('当前在线用户',gameInfo.user);
             });
-            exp.post('/node/play',function(req,res){
-                socket.join('10', function(){
-                    console.log(socket.rooms);  
-                }); 
-                socket.on('1000', function(msg,callback){
-                    console.log('1000事件',msg);
-                    callback('ok');
-                    socket.to('10').emit('1000',msg);
-                }); 
-                console.log('开始匹配');
-                //没有进入等待列表就进入,已加入就不再加入
-               // gamePlay.rooms.push({id:gamePlay.roomID++,red:gamePlay.userID[0],black:gamePlay.userID[1]});
-                if(gamePlay.userID.indexOf(req.session['loginTrue'][0].ID)>-1){ 
-                    //已经进入游戏正在等待中
-                }else{
-                    gamePlay.userID.push(req.session['loginTrue'][0].ID);
-                }
-                for(let i=0;i<gameInfo.user.length;i++){
-                    //跳过自己
-                    if(req.session['loginTrue'][0].ID==gameInfo.user[i][0].ID){
-                        continue;
-                    }else{
-                        //分数相近(±150)优先
-                        if(Math.abs(req.session['loginTrue'][0].mark-gameInfo.user[i][0].mark<=150)){
-                            
-                        }else{
-                            
-                        }
+            // socket.on('play', function(msg,callback){
+            //     console.log('play事件',msg);
+            //     callback('ok');
+            //     socket.in('10').emit('play',msg);
+            // });
+            socket.on('room',function(msg){
+                let contain = false;//匹配数组是否包含
+                arrMatch.forEach(function(item,index){
+                    if(item.ID==socket.request.session['loginTrue'][0].ID){
+                        console.log(arrMatch)
+                        contain=true;
                     }
+                });
+                if(!contain){
+                    arrMatch.push(
+                        {
+                            ID:socket.request.session['loginTrue'][0].ID,
+                            red:socket.request.session['loginTrue'][0].userName,
+                            black:''
+                        }
+                    );
+                    io.emit('room',arrMatch);
+                    socket.join(socket.request.session['loginTrue'][0].ID, function(){
+                        console.log('创建了房间:'+socket.request.session['loginTrue'][0].ID,socket.rooms);  
+                    }); 
+                    console.log('创建成功');
+                }else{
+
                 }
-                
+                console.log(socket.rooms);
+                console.log(msg);
             });
+            socket.on('play',function(msg){
+                console.log('玩游戏',msg)
+                socket.in(msg.ID).emit('play',msg);  
+            });
+            exp.post('/node/join',function(req,res){
+                let contain = false;
+                for(let i=0;i<arrMatch.length;i++){
+                   if(arrMatch[i].ID == req.body.ID){
+                        contain=i;
+                   }else{
+                       //
+                   }
+                }
+                console.log(contain);
+                //检查是否存在该房间id
+                if(typeof contain == 'number'){
+                    socket.join(req.body.ID, function(){
+                        console.log('加入了房间:'+ req.body.ID,socket.rooms);
+                        socket.in(req.body.ID).emit('play','startPlay');                   
+                    }); 
+                }else{
+                    res.status(402).end('加入失败'); 
+                }
+  
+            });
+            // exp.post('/node/play',function(req,res){
+            //     // if(!gamePlay.rooms[gamePlay.rooms.length]){
+            //     //     gamePlay.rooms.push({id:gamePlay.roomID++});
+            //     //     console.log(gamePlay.rooms);
+            //     // }
+            //   //  arrMatch.push(req.session['loginTrue'][0]);
+            //    // console.log('开始匹配');
+                
+            //     //没有进入等待列表就进入,已加入就不再加入
+            //    // gamePlay.rooms.push({id:gamePlay.roomID++,red:gamePlay.userID[0],black:gamePlay.userID[1]});
+            //     if(gamePlay.userID.indexOf(req.session['loginTrue'][0].ID)>-1){ 
+            //         //已经进入游戏正在等待中
+            //     }else{
+            //         gamePlay.userID.push(req.session['loginTrue'][0].ID);
+            //     }
+            //     //gamePlay.rooms.push({id:gamePlay.roomID++});
+            //     for(let i=0;i<gamePlay.rooms.length;i++){
+                    
+            //     }
+            //     if(!gamePlay.rooms.red){
+            //         // socket.join((gamePlay.rooms.ID), function(){
+            //         //     console.log(socket.rooms);  
+            //         // }); 
+            //     }
+            //     // socket.join(100, function(){
+            //     //     console.log(socket.rooms);  
+            //     // }); 
+            //     for(let i=0;i<gameInfo.user.length;i++){
+            //         //跳过自己
+            //         if(req.session['loginTrue'][0].ID==gameInfo.user[i][0].ID){
+            //             continue;
+            //         }else{
+            //             //分数相近(±150)优先
+            //             if(Math.abs(req.session['loginTrue'][0].mark-gameInfo.user[i][0].mark<=150)){
+                            
+            //             }else{
+                            
+            //             }
+            //         }
+            //     }
+                
+            // });
         }else{
-            console.log('失败')
+            console.log('socket认证失败');
             //io也变为中间件 前面的session中间件未执行next(),io.on('connection')这段代码也不会执行
            // socket.disconnect();
         }
