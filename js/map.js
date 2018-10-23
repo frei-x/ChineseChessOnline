@@ -4,6 +4,17 @@ console.time('耗时');
  * indexOf在数组中能找到通过变量定义的对象,却不能直接找对象
  **/
 "use strict"
+let sys={
+	
+};
+sys.mySave = {
+	save: function(key, value) {
+		localStorage.setItem(key, JSON.stringify(value));
+	},
+	getsave: function(key) {
+		return JSON.parse(localStorage.getItem(key)) || []; // 第一个正确后面就会被忽略 (如果没有值,返回空字符串)
+	}
+};
 let map = document.getElementById("map");
 let box = document.getElementById("box");
 let audioClick = document.getElementById("audioClick");
@@ -1296,7 +1307,7 @@ window.onload = function() {
 				})
 				.then(function(res) {
 					if(res.status == 200) {
-						if(res.data[0].ID) {
+						if(res.data) {
 							console.log(res.data); //登录成功
 							oFun.loginSuccess();
 							if(!socket) {
@@ -1365,7 +1376,7 @@ window.onload = function() {
 //					window.location.reload();
 //				});
 		}, false);
-		let roomID;
+		let roomID;	
 		socket.on('play', function(receiveData) {
 			if(roomID){
 				
@@ -1375,11 +1386,22 @@ window.onload = function() {
 			console.log(receiveData);
 		});
 		document.onclick=function(){
-			socket.emit('play',{ID:roomID,data:'哈哈哈哈哈'},function(){
-				
+			console.log();
+			if(roomID){
+				socket.emit('play',{ID:roomID,data:'哈哈哈哈哈'},function(a){
+					console.log(a);
+				});
+			}else{
+				console.log('房间号不存在');
+			}
+		}
+	document.onkeydown=function(e){
+		if(e.keyCode==13){
+			socket.emit('play',{ID:roomID,data:'键盘按下了'},function(a){
+					console.log(a)
 			});
 		}
-	
+	}
 		socket.on('room', function(receiveData) {
 			btnOnlinePlay.innerHTML = '';
 			console.log(receiveData);
@@ -1403,14 +1425,17 @@ window.onload = function() {
 						})
 						.catch(function(error) {
 							console.log('加入房间错误', error);
+							alert('房间已满,加入失败')
 						});
 				}, false);
 				btnOnlinePlay.appendChild(oRoom);
 			}
 		});
 		btnMenuCrateRoom.addEventListener('click', function() {
-			socket.emit('room', 0, function(d) {
-
+			socket.emit('room', 0, function(data) {
+				//返回创建的房间id
+				roomID = data;
+				alert('创建成功');
 			});
 		}, false);
 	})();

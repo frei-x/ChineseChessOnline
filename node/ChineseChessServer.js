@@ -22,7 +22,7 @@ let cookieSessionMiddleware = cookieSession({
 });
 exp.use(cookieSessionMiddleware);
 // 自动登录/node/autoLogin
-exp.use('/node',function(req,res,next){
+exp.use(function(req,res,next){
     //console.log(req.body);
     //session无需考虑多用户,存当前就行,每次加载中间件(cookie-session)都会自动的另外开辟内存,无需思考太复杂
     //每一个req.session附带的cookie都不同所以不同浏览器req.session['loginTrue']不同,代码里只需要判断固定的然后赋值就行
@@ -36,7 +36,7 @@ exp.use('/node',function(req,res,next){
                 //不发送密码
                 data[0].password=null;
                 req.session['loginTrue'] = data;
-                res.send(data);
+               // res.send(data);
                 next();
                 console.log('验证通过');
                 //不应该发送session保存的数据 应该重新查询,否则 如果数据已更新但发送的数据依旧是上次登录的session中的
@@ -59,7 +59,7 @@ exp.use('/node',function(req,res,next){
                 //不发送密码
                 data[0].password=null;
                 req.session['loginTrue'] = data;
-                res.send(data);
+                //res.send(data);
                 console.log(req.session['loginTrue']);
                 next();
                // req.session['loginTrue']=null;
@@ -91,10 +91,13 @@ exp.get('/register',function(req,res){
     res.send('注册');
     console.log('有人来了');
 });
-// exp.post('/node/chessLogin',function(req,res){
+exp.post('/node/chessLogin',function(req,res){
+    res.send(req.session['loginTrue'][0]); 
+});
+exp.post('/node/autoLogin',function(req,res){
+    res.send(req.session['loginTrue'][0]);    
+});
 
-    
-// });
 let gameInfo = {
     onlineNum:0,
     user:[],
@@ -135,11 +138,11 @@ function jsonToString(json){
             //     callback('ok');
             //     socket.in('10').emit('play',msg);
             // });
-            socket.on('room',function(msg){
+            socket.on('room',function(msg,fun){
                 let contain = false;//匹配数组是否包含
                 arrMatch.forEach(function(item,index){
                     if(item.ID==socket.request.session['loginTrue'][0].ID){
-                        console.log(arrMatch)
+                        console.log(arrMatch);
                         contain=true;
                     }
                 });
@@ -147,13 +150,14 @@ function jsonToString(json){
                     arrMatch.push(
                         {
                             ID:socket.request.session['loginTrue'][0].ID,
-                            red:socket.request.session['loginTrue'][0].userName,
+                            red:socket.request.session['loginTrue'][0].ID,
                             black:''
                         }
                     );
                     io.emit('room',arrMatch);
                     socket.join(socket.request.session['loginTrue'][0].ID, function(){
                         console.log('创建了房间:'+socket.request.session['loginTrue'][0].ID,socket.rooms);  
+                        fun(socket.request.session['loginTrue'][0].ID)
                     }); 
                     console.log('创建成功');
                 }else{
@@ -163,10 +167,21 @@ function jsonToString(json){
                 console.log(msg);
             });
             socket.on('play',function(msg){
-                console.log('玩游戏',msg)
-                socket.in(msg.ID).emit('play',msg);  
+                console.log(socket.rooms);
+                if(!socket.rooms[msg.ID]){
+                    socket.join(msg.ID);
+                }
+                if(msg.ID){
+                    socket.in(msg.ID).emit('play',msg);
+                    console.log('玩游戏',msg);
+                    console.log(msg.ID);
+                }else{
+                    console.log('id错误');
+                }
+                
             });
             exp.post('/node/join',function(req,res){
+                
                 let contain = false;
                 for(let i=0;i<arrMatch.length;i++){
                    if(arrMatch[i].ID == req.body.ID){
@@ -176,12 +191,19 @@ function jsonToString(json){
                    }
                 }
                 console.log(contain);
-                //检查是否存在该房间id
+                //检查是否存在该房间id,如果黑方不存在就加入
                 if(typeof contain == 'number'){
-                    socket.join(req.body.ID, function(){
-                        console.log('加入了房间:'+ req.body.ID,socket.rooms);
-                        socket.in(req.body.ID).emit('play','startPlay');                   
-                    }); 
+                    if(!arrMatch[contain].black){
+                        socket.join(req.body.ID, function(){
+                            console.log('加入了房间:'+ req.body.ID,socket.rooms);
+                            socket.in(req.body.ID).emit('play','startPlay');
+                            arrMatch[contain].black =  req.session['loginTrue'][0].ID;   
+                            res.send(arrMatch[contain]);          
+                        }); 
+                    }else{
+                        res.status(402).end('加入失败'); 
+                    }
+
                 }else{
                     res.status(402).end('加入失败'); 
                 }
