@@ -236,7 +236,6 @@ function viewInteractive() {
 			oFormView3[i].style.transform = 'translateX(0vw)';
 		}, false);
 	}
-	let login
 }
 viewInteractive();
 
@@ -414,6 +413,7 @@ function funPutChess() {
 				p.closePath();
 				//文字
 				p.beginPath();
+				//p.rotate(Math.PI*2);
 				if(Root.arrMap[i].t === 'b') {
 					p.fillStyle = '#000';
 				} else if(Root.arrMap[i].t === 'r') {
@@ -451,6 +451,46 @@ Root.funReDraw = function() {
 		Root.arrReDraw[i]();
 	}
 	console.timeEnd('移动重绘');
+}
+Root.oChessRecor={
+	title:null,
+	win:null,
+	lose:null,
+	arr:[]
+};
+/**
+ * 程序着法转棋谱,从右往左为9 8 7 ...,
+ * 传入选中棋子与目标位置
+ */
+Root.funChessRecor=function(nowChess,target){
+	let ChineseNum = ['','一','二','三','四','五','六','七','八','九'];
+	//名字,当前x坐标,什么动作,目标位置数学描述
+	let name,nowX,action,targetPosition;
+	name = nowChess.n;
+	//从右往左数,而程序是从左往右,用10减,程序x数组从0开始所以加1
+	nowX = nowChess.t=='r'?ChineseNum[10 - (nowChess.xy[0]+1)] : (nowChess.xy[0]+1);
+	//y不变,说明在同一X轴活动
+	if(nowChess.xy[1]==target.xy[1]){
+		action = '平';
+		targetPosition = nowChess.t=='r'? ChineseNum[10 - (target.xy[0]+1)]:target.xy[0]+1;
+	}else if(nowChess.xy[0]==target.xy[0]){
+		if(nowChess.t=='r'){
+			action = target.xy[1]<nowChess.xy[1]?'进':'退';
+			targetPosition = ChineseNum[Math.abs(target.xy[1] - nowChess.xy[1])];
+		}else{
+			action = target.xy[1]>nowChess.xy[1]?'进':'退';
+			targetPosition = Math.abs(target.xy[1] - nowChess.xy[1]);
+		}
+	}else{//x轴和y轴都发生变化:马 象 士 
+			if(nowChess.t=='r'){
+				action = target.xy[1]<nowChess.xy[1]?'进':'退';
+			}else{
+				action = target.xy[1]>nowChess.xy[1]?'进':'退';
+			}
+			targetPosition = nowChess.t=='r'? ChineseNum[10 - (target.xy[0]+1)]:target.xy[0]+1;
+	}
+	console.log(name+nowX+action+targetPosition);
+	Root.oChessRecor.arr.push(name+nowX+action+targetPosition);
 }
 /**
  * 棋子走法规则描述,传入当前棋子信息与目标位置信息  结合整个棋盘信息判断是否能够通行
@@ -1046,8 +1086,17 @@ window.onload = function() {
 	let socket = io();
 	//socket房间id
 	let roomID;
+	//对局信息
+	let roomInfo ={
+		red:null,
+		black:null,
+		win:null,
+		lose:null,
+	}
 	//socket 所属阵营
 	let camp;
+	//用户信息
+	let user;
 	//绘制棋盘
 	//funDrawMap();
 	//放置棋子
@@ -1061,10 +1110,12 @@ window.onload = function() {
 	//当前游戏状态 0:和棋,1:红行棋,2:黑行棋,10:红胜,20:黑胜
 	let nowGameState = 1;
 	map.addEventListener('click', function(e) {
+		if(camp==-1){
+			Root.funReDraw();
+		}
 		if(camp){
 			nowGameState = camp
 		}
-		
 		let eVent = e || event; //, mapSize.height * (0.12 / 2)
 		//存储空的棋盘位置(索引 i)
 		let arrEmptyMap = [];
@@ -1094,15 +1145,22 @@ window.onload = function() {
 				//点到圆心的距离 小于等于半径 说明点击到了圆形棋子内或圆形棋子上
 				if(Math.pow(x - chessX, 2) + Math.pow(y - chessY, 2) <= Math.pow(w / 2.5 * 1.1, 2)) {
 					audioClick.play();
-					
+					Root.funReDraw();
+					p.beginPath();
+					p.strokeStyle = 'rgba(0,0,255,1)';
+					p.arc(chessX, chessY, w / 2.5 * 1.3, 0, 360 * Math.PI / 180);
+					p.stroke();
+					p.closePath();
 					// 1 红棋 走子  2黑棋走子
 					if(nowGameState == 1) {
 						if(nowSelectedChess == null) {
 							if(Root.arrMap[i].t === 'r') {
 								nowSelectedChess = Root.arrMap[i];
-							} else {
+							} else {	
 								//不为红棋
-								console.error('不是红棋')
+								console.error('不是红棋');
+								//取消选中反馈
+								Root.funReDraw();
 							}
 						} else {
 							if(Root.arrMap[i].t != 'r') {
@@ -1117,6 +1175,8 @@ window.onload = function() {
 							}
 						}
 						console.log(nowSelectedChess);
+						//console.log('当前可行位置',Root.funRules(nowSelectedChess));
+							
 						break;
 					} else if(nowGameState == 2) {
 						if(nowSelectedChess == null) {
@@ -1125,6 +1185,8 @@ window.onload = function() {
 							} else {
 								//不为黑棋
 								console.error('不是黑棋');
+								//取消选中反馈
+								Root.funReDraw();
 							}
 						} else {
 							if(Root.arrMap[i].t != 'b') {
@@ -1138,6 +1200,7 @@ window.onload = function() {
 							}
 						}
 						console.log(nowSelectedChess);
+						//console.log('当前可行位置:',Root.funRules(nowSelectedChess));
 						break;
 					}
 					
@@ -1188,15 +1251,16 @@ window.onload = function() {
 						if(tagerChess) {
 							target.xy = [tagerChess.xy[0], tagerChess.xy[1]];
 							target.index = Root.arrMap.indexOf(tagerChess);
-							console.log(tagerChess)
+							console.log(tagerChess);
 						} else {
 							target.xy = [iRowX, iColY];
 							target.index = arrEmptyMap[iEmpty];
 						}
-						
 						if(!Root.funRules(nowSelectedChess, target).bVerification) {
 							console.error('棋子走法不符合规则');
-							//置空选中
+							//取消选中反馈
+							Root.funReDraw();
+							//置空选中	
 							nowSelectedChess = null;
 							break;
 						} else {
@@ -1206,6 +1270,32 @@ window.onload = function() {
 							//Root.arrMap[Root.arrMap.indexOf(nowSelectedChess)] = {};!!! indexOf可以查数组中的对象,二维数组却不行 
 							//console.log(JSON.stringify(Root.arrMap[nowSelectedChess.xy[0]+nowSelectedChess.xy[1]*9]));
 							Root.arrMap[nowSelectedChess.xy[0] + nowSelectedChess.xy[1] * 9] = {};
+							//棋谱记录 
+							Root.funChessRecor(beforeSelectedChess,target);
+							//目标位置的下一次可行位置
+							
+							let arr =  Root.funRules({n:beforeSelectedChess.n,t:beforeSelectedChess.t,xy:target.xy}).arrPracticable;
+							console.log('下次可行位置:',arr);
+							//下次可行位置是否有将/帅(实际上需要检测所有棋子下次可行位置功能才完整)
+							if(beforeSelectedChess.t=='r'){
+								//some为true时停止(一个通过条件就通过),every为false停止(一个未通过条件就false)
+								arr.some(function(item,index){
+									//转换为数组下标
+									if(Root.arrMap[item[0]+item[1]*9].n=='將'){
+										audioKill.play();
+										return true;
+									}
+								});
+							}else{
+								arr.some(function(item,index){
+									//转换为数组下标
+									if(Root.arrMap[item[0]+item[1]*9].n=='帥'){
+										audioKill.play();
+										return true;
+									}
+								});
+							}
+							console.log(JSON.stringify(beforeSelectedChess)+'移动到' + JSON.stringify(target));
 							//console.log(JSON.stringify(Root.arrMap[nowSelectedChess.xy[0]+nowSelectedChess.xy[1]*9]));
 							//alert(Root.arrMap.indexOf(nowSelectedChess));
 							//目标位置xy 给之前被选中的棋子的xy
@@ -1243,7 +1333,7 @@ window.onload = function() {
 									//										//异常数据
 									//									}
 									audioGo.play();
-									console.log(JSON.stringify(nowSelectedChess)+'移动到' + JSON.stringify(target));
+									
 									nowSelectedChess = null;
 								} else {
 									//console.log(nowSelectedChess);
@@ -1262,15 +1352,20 @@ window.onload = function() {
 								Root.arrDead.push(Root.arrMap[target.index]);
 								if(Root.arrDead[Root.arrDead.length - 1].n == '帥') {
 									nowGameState = 20;
+									alert('红棋输了');
 								} else if(Root.arrDead[Root.arrDead.length - 1].n == '將') {
 									nowGameState = 10;
+									alert('黑棋输了');
 								}
 							}
 							console.log('以下棋子已阵亡:');
 							console.log(Root.arrDead);
-							socket.emit('play',{ID:roomID,nowGameState:nowGameState,data:{now:beforeSelectedChess,target:target}},function(a){
-								//console.log(a);
-							});
+							if(roomInfo.red||roomInfo.black){
+								socket.emit('play',{ID:roomID,nowGameState:nowGameState,red:roomInfo.red.ID,black:roomInfo.black.ID,data:{now:beforeSelectedChess,target:target}},function(a){
+									camp = -1;
+								});
+							}
+							
 							moveAnimation();
 							
 							//Root.funReDraw();
@@ -1304,6 +1399,8 @@ window.onload = function() {
 		//主菜单
 		let oGameMainMenu = document.getElementById("gameMainMenu");
 		let btnMenuPlay = document.getElementById("btnMenuPlay");
+		//单机游戏
+		let singlePlay = document.getElementById("singlePlay");
 		//加入房间 匹配界面
 		let btnOnlinePlay = document.getElementById("btnOnlinePlay");
 		//创建房间:
@@ -1324,7 +1421,10 @@ window.onload = function() {
 				socket.emit(id, sendData, callBackData);
 			},
 		}
-
+		singlePlay.addEventListener('click',function(){
+			camp=null;
+			oGameMainMenu.style.display='none';
+		});
 		btnLogin.addEventListener('click', function() {
 			axios.post('/node/chessLogin', {
 					userName: oLoginName.value,
@@ -1334,6 +1434,7 @@ window.onload = function() {
 					if(res.status == 200) {
 						if(res.data) {
 							console.log(res.data); //登录成功
+							user = res.data;
 							oFun.loginSuccess();
 							if(!socket) {
 								socket = io();
@@ -1360,6 +1461,7 @@ window.onload = function() {
 			.then(function(res) {
 				if(res.status == 200) {
 					console.log('自动登录成功', res.data);
+					user = res.data;
 					oFun.loginSuccess();
 					if(!socket) {
 						socket = io();
@@ -1407,11 +1509,19 @@ window.onload = function() {
 				Root.arrMap[data.data.now.xy[0]+data.data.now.xy[1]*9] ={};
 				data.data.now.xy = data.data.target.xy;
 				Root.arrMap[data.data.target.index] = data.data.now;
-				//nowGameState = ;
+				camp =sys.mySave.getsave('camp');
+				console.log(camp);
 				Root.funReDraw();
-				console.log(Root.arrMap)
+				console.log(Root.arrMap);
 			}
-			console.log(data)
+			//创建方会收到加入方信息,现在完善对局信息
+			if(data.user){
+				roomInfo.red = user;
+				roomInfo.black = data.user;
+				console.log(roomInfo);
+				oGameMainMenu.style.display='none';
+			}
+			console.log(data);
 			
 		});
 //		document.onclick=function(){
@@ -1430,6 +1540,7 @@ window.onload = function() {
 //			});
 //		}
 //	}
+	
 		socket.on('room', function(receiveData) {
 			btnOnlinePlay.innerHTML = '';
 			console.log(receiveData);
@@ -1440,15 +1551,29 @@ window.onload = function() {
 				oRoom.innerHTML = receiveData[i].ID;
 				oRoom.className = 'room';
 				oRoom.addEventListener('click', function() {
+					if(!(socket.connected)) { //每次点击都检查 是否已连接,没连接就重连	
+						socket.open();
+					}
 					var that = this;
-					console.log(that.getAttribute('data'))
+					console.log(that.getAttribute('data'));
 					axios.post('/node/join', {
 							ID:that.getAttribute('data')
 						})
 						.then(function(res) {
 							if(res.status == 200) {
-								console.log('加入房间成功', res.data);
+							socket.emit('play',{ID:that.getAttribute('data'),user:user},function(a){
+								
+							});
+							oGameMainMenu.style.display='none';
+							btnOnlinePlay.style.display='none';
+							console.log('加入房间成功', res.data);
+							socket.emit('selsecUser',{ID:res.data.ID},function(resUser){
+								roomInfo.red = resUser;
+								roomInfo.black = user;
+								console.log(roomInfo);
+							});	
 								camp = 2;
+								sys.mySave.save('camp',camp);	
 							} else {
 								console.log('http状态非200,加入游戏失败');
 							}
@@ -1466,6 +1591,7 @@ window.onload = function() {
 				//返回创建的房间id
 				roomID = data;
 				camp = 1;
+				sys.mySave.save('camp',camp);
 				alert('创建成功');
 			});
 		}, false);

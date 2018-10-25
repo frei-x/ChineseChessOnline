@@ -82,7 +82,17 @@ exp.use(function(req,res,next){
 io.use(function(socket, next) {
     cookieSessionMiddleware(socket.request, socket.request.res, next);
 });
-
+function simpleDB(criteria,arr){
+    let ResultData;
+    DB(criteria,arr,function(err){
+        console.log('数据查询出现错误',err.code);
+        ResultData = null;
+    },function(data){
+        ResultData = data;
+        console.log(ResultData);
+    });
+    return ResultData;
+}
 exp.get('/',function(req,res){
     res.send('aaa');
     console.log('有人来了');
@@ -132,6 +142,9 @@ function jsonToString(json){
                 gameInfo.user.splice(gameInfo.user.indexOf(socket.request.session['loginTrue']),1);
                 io.emit('gameInfo',gameInfo);
                 console.log('当前在线用户',gameInfo.user);
+                for(let i=0;i<Object.keys(socket.rooms).length;i++){
+                    socket.leave(Object.keys(socket.rooms)[i]);
+                }
             });
             // socket.on('play', function(msg,callback){
             //     console.log('play事件',msg);
@@ -146,7 +159,7 @@ function jsonToString(json){
                         contain=true;
                     }
                 });
-                if(!contain){
+                if(!contain&&msg ==0){
                     arrMatch.push(
                         {
                             ID:socket.request.session['loginTrue'][0].ID,
@@ -155,33 +168,70 @@ function jsonToString(json){
                         }
                     );
                     io.emit('room',arrMatch);
-                    socket.join(socket.request.session['loginTrue'][0].ID, function(){
-                        console.log('创建了房间:'+socket.request.session['loginTrue'][0].ID,socket.rooms);  
-                        fun(socket.request.session['loginTrue'][0].ID)
-                    }); 
-                    console.log('创建成功');
+                    if(msg == 0){
+                        socket.join(Number(socket.request.session['loginTrue'][0].ID), function(){
+                            console.log('创建了房间:'+socket.request.session['loginTrue'][0].ID,socket.rooms);  
+                            fun(socket.request.session['loginTrue'][0].ID);
+                        }); 
+                        console.log('创建成功');
+                    }
                 }else{
-
+                    
                 }
                 console.log(socket.rooms);
                 console.log(msg);
             });
-            socket.on('play',function(msg){
+            socket.on('play',function(msg,fun){
                 console.log(socket.rooms);
-                if(!socket.rooms[msg.ID]){
-                    socket.join(msg.ID);
+                if(!socket.rooms[Number(msg.ID)]){
+                    socket.join(Number(msg.ID));
                 }
                 if(msg.ID){
-                    socket.in(msg.ID).emit('play',msg);
+                    socket.to(msg.ID).emit('play',msg);
+                    fun('ok');
                     console.log('玩游戏',msg);
+                    //游戏状态10 20 游戏结束,开始清算/关闭房间
+                if(msg.nowGameState==10||msg.nowGameState==20){
+                    if(msg.nowGameState==10){
+                       simpleDB('update chess_user set mark = mark + 40, win = win+1 where ID =?',[msg.red]);
+                       simpleDB('update chess_user set mark = mark - 30, lose = lose+1 where ID =?',[msg.black]);
+                    }else if(msg.nowGameState==20){
+                        simpleDB('update chess_user set mark = mark + 45, win = win+1 where ID =?',[msg.black]);
+                        simpleDB('update chess_user set mark = mark - 30, lose = lose+1 where ID =?',[msg.red]);
+                    }
+                    //离开房间,
+                    socket.leave(msg.ID);
+                    //关闭房间
+                    arrMatch.some(function(item,index){
+                        if(item.ID==msg.ID){
+                            arrMatch.splice(index,1);
+                            return true;
+                        }
+                    });
+                    //通知其他客户端
+                    io.emit('room',arrMatch);
+                }
                     console.log(msg.ID);
                 }else{
                     console.log('id错误');
                 }
                 
             });
+            socket.on('selsecUser',function(msg,fun){
+                console.log(msg)
+                DB('select * from chess_user where ID = ?',[Number(msg.ID)],function(err){
+                    console.log(err);
+                },function(data){
+                    delete data[0].password;
+                    fun(data[0]);
+                    console.log(data[0]);
+                });
+                console.log('socket-ID',socket.id);
+               // socket.to(socket.id).emit('selsecUser',msg); 
+            });
             exp.post('/node/join',function(req,res){
-                
+                socket.emit('play','startPlay');
+                console.log(socket.rooms);
                 let contain = false;
                 for(let i=0;i<arrMatch.length;i++){
                    if(arrMatch[i].ID == req.body.ID){
@@ -194,20 +244,19 @@ function jsonToString(json){
                 //检查是否存在该房间id,如果黑方不存在就加入
                 if(typeof contain == 'number'){
                     if(!arrMatch[contain].black){
-                        socket.join(req.body.ID, function(){
+                        socket.join(Number(req.body.ID), function(){
                             console.log('加入了房间:'+ req.body.ID,socket.rooms);
                             socket.in(req.body.ID).emit('play','startPlay');
                             arrMatch[contain].black =  req.session['loginTrue'][0].ID;   
                             res.send(arrMatch[contain]);          
                         }); 
+                        socket.emit('play','startPlay');
                     }else{
                         res.status(402).end('加入失败'); 
                     }
-
                 }else{
                     res.status(402).end('加入失败'); 
                 }
-  
             });
             // exp.post('/node/play',function(req,res){
             //     // if(!gamePlay.rooms[gamePlay.rooms.length]){
