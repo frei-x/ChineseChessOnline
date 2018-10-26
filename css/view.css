@@ -1,6 +1,13 @@
 @charset "utf-8";
 /*登录 注册*/	
 @media (min-width: 800px) {
+	#box{
+		width: 100vw;
+		height: 100vh;
+		position: relative;
+		left: 0;
+		top: 0;
+	}
 	.form{
 		width: 70vmin;
 		height: 80vmin;
@@ -229,6 +236,390 @@
 	word-wrap:break-word;
 	
 }
+
+#chat {
+	opacity: 0;
+	transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
+	-webkit-transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
+	-ms-transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
+	-moz-transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
+	font: .14rem/.4rem "微软雅黑";
+	background: linear-gradient(to top, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 1));
+	position: absolute;
+	left: 50%;
+	top: -4rem;
+	width: 6.5rem;
+	height: 5.5rem;
+	border-radius: 2%;
+	margin-left: -3.25rem;
+	/*box-shadow: 3px 2px 20px black;*/
+	z-index: -1;
+}
+
+.chat_show {
+	opacity: 1 !important;
+	top: 1rem !important;
+	z-index: 1000 !important;
+}
+
+#chat .fa-close {
+	display: block;
+	width: 0.25rem;
+	height: 0.25rem;
+	position: absolute;
+	font-size: .25rem;
+	top: .08rem;
+	right: .1rem;
+	transition: .5s;
+	color: rgba(0, 245, 255, 0.8);
+}
+
+#chat .fa-close:hover {
+	color: red;
+}
+#chat #chat_title {
+	position: absolute;
+	cursor: move;
+	transition: 0s;
+	width: 6.5rem;
+	height: .4rem;
+	font-size: .15rem;
+	font-weight: bold;
+	border-top-left-radius: 3%;
+	border-top-right-radius: 3%;
+	color: rgba(0,245,255,1);
+	text-indent: .2rem;
+	background-color: #08AEEA;
+	background-image: -webkit-linear-gradient(90deg, #08AEEA 0%, #595eba 100%);
+	background-image: -moz-linear-gradient(90deg, #08AEEA 0%, #595eba 100%);
+	background-image: -o-linear-gradient(90deg, #08AEEA 0%, #595eba 100%);
+	background-image: linear-gradient(90deg, #08AEEA 0%, #595eba 100%);
+}
+
+.chat_center {
+	position: absolute;
+	top: 0.4rem;
+}
+#chat_body{
+	width: 6.5rem;
+	height: 5.1rem;
+	border-bottom-right-radius:2%;
+	border-bottom-left-radius:2%;
+}
+#chat_main{
+	position:absolute;
+	width:6.5rem;
+	height: 3.6rem;
+	font-size: 0.14rem;
+	line-height: 0.22rem;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+#chat_main::-webkit-scrollbar {
+	/*background: rgba(255, 255, 255, 1);*/
+}
+
+#chat_main::-webkit-scrollbar-thumb {
+	background: deepskyblue;
+	border-radius: 6px;
+}
+#chat_input{
+	position:absolute;
+	overflow-y: scroll;
+	top: 3.6rem;
+	border-top: 1px solid #C2C2C2 ;
+	width:6.5rem;
+	height: 1.5rem;
+	text-indent: 0.4rem;
+	text-align: left;
+	line-height: 0.2rem;
+	font-size: 0.16rem;
+	border-bottom-right-radius:4%;
+	border-bottom-left-radius:4%;
+}
+#chat_input::-webkit-scrollbar {
+	/*background: rgba(255, 255, 255, 1);*/
+}
+
+#chat_input::-webkit-scrollbar-thumb {
+	background: deepskyblue;
+	border-radius: 6px;
+}
+#biaoqing{
+	font-size: 0.25rem;
+	position:absolute;
+	top: 3.6rem;
+	left:0.1rem;
+}
+#biaoqing_box{
+	display: none;
+	background: white;
+	position:absolute;
+	top: -1.5rem;
+	left: -0.1rem;
+	width:3rem;
+	height:1.5rem;
+}
+#biaoqing_box img{
+	padding: 0.05rem;
+	width: 0.3rem;
+	height: 0.3rem;
+}
+.fa-smile-o:hover{
+	color: rgba(0,245,255,1);
+}
+#btnSend{
+	border-radius: 8%;
+	width: .6rem;
+	height: .3rem;
+	cursor: pointer;
+	font-family: "新宋体" "微软雅黑";
+	font-size: .14rem;
+	margin: 0;
+	border: none;
+	outline: none;
+	color: white;
+	box-shadow: 2px 2px 10px rgba(0, 0, 0, .3);
+	background: rgba(0, 132, 255, 0.8);
+	position: absolute;
+	right: 0.2rem;
+	bottom: 0.2rem;
+	line-height: 0.3rem;
+	text-align: center;
+}
+
+#btnSend:hover{
+	background: rgba(0, 132, 255, 1);
+}
+#btnSend:active{
+	box-shadow: 2px 2px 10px rgba(0, 0, 0, .3) inset;
+}
+#setName{
+	display:none;
+	width: 6.5rem;
+	height: 5.2rem;
+	position: absolute;
+	left: 50%;
+	top: 0.4rem;
+	margin-left:-3.25rem ;
+	z-index: 9999;
+	background-color: #8EC5FC;
+background-image: -webkit-linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+background-image: -moz-linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+background-image: -o-linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+
+}
+#setName input{
+	border: none;
+	width: 1rem;
+	font-family: "微软雅黑";
+	font-size: 0.16rem;
+	position: absolute;
+	top: 0.2rem;
+	left: 50%;
+	margin-left: -0.5rem;
+	background: transparent;
+	border-radius: 5%;
+	border-bottom: 2px solid deepskyblue;
+}
+#smile{
+	width: 0.7rem;
+	height:0.7rem;
+	border-radius: 50%;
+	position: absolute;
+	top: 0.5rem;
+	left: 50%;
+	margin-left: -0.35rem;
+	font-size: 0.7rem;
+	line-height:0.7rem ;
+	color: #40AFFE;
+}
+#smileList{
+	width: 6.5rem;
+	height:2.1rem;
+	position: absolute;
+	top: 1.2rem;
+	left: 0rem;
+	font-size: 0.4rem;
+	line-height:0.7rem ;
+	text-align: center;
+}
+#smileList div{
+	font-size: 0.2rem;
+	text-align: center;
+}
+#smileList i:hover{
+	color: #40AFFE;
+}
+#btnSetName{
+	border-radius: 8%;
+	width: 1rem;
+	height: .5rem;
+	cursor: pointer;
+	font-family: "新宋体" "微软雅黑";
+	font-size: .16rem;
+	margin: 0;
+	border: none;
+	outline: none;
+	color: white;
+	box-shadow: 2px 2px 10px rgba(0, 0, 0, .3);
+	background: rgba(0, 132, 255, 0.8);
+	position: absolute;
+	right: 0.5rem;
+	bottom: 1.2rem;
+	line-height: 0.5rem;
+	text-align: center;
+}
+/*聊天界面 用户信息*/
+/*头像*/
+#chat_main code{
+	display: inline-block;
+	text-align: center;
+	width: 0.4rem;
+	height: 0.4rem;
+	line-height: 0.4rem;
+	border: 1px solid #00BFFF;
+	border-radius: 100%;
+	font-size: 0.3rem;
+	color: #40AFFE;
+}
+/*自己的消息气泡*/
+.uesr_info_chat{
+	/*允许复制有一定概率触发拖动bug*/
+-moz-user-select: none;
+-khtml-user-select: none;
+user-select: none;
+	display: inline-block;
+	text-align: left;
+	border-radius: 10px 10px;
+	padding: 0.1rem;
+	color: white;
+	background:rgba(0, 132, 255, 1);
+	max-width: 5.1rem;
+	height: auto;
+}
+/*复制时的颜色*/
+.uesr_info_chat::selection {
+    background:cyan; 
+    color:white;
+}
+
+.uesr_info_chat::-moz-selection {
+    background:#d3d3d3; 
+    color:#555;
+}
+
+.uesr_info_chat::-webkit-selection {
+    background:#d3d3d3; 
+    color:#555;
+}
+/*整体*/
+#chat_main_info{
+	width:6.5rem;
+	height: 3.6rem;
+	display: inline-block !important;
+	position: absolute;
+	right: 0px;
+	left: 0px;
+}
+/*每个消息的内容 昵称 头像  消息*/
+.self_info{
+	position: relative;
+	top: 0;
+	right:0.67rem;
+	display:block;
+	margin-top: 0.2rem;
+	text-align: right;
+}
+.self_info_name,.self_info_photo{
+	display: inline-block;
+	text-align: right;
+	/*position:absolute;*/
+}
+.self_info_photo{
+	position: absolute;
+	right:-0.5rem;
+}
+.self_info_name{
+	position: absolute;
+	color:black;
+	font-weight: 500;
+	top:-0.2rem;
+	right:0rem;
+	font-size: 0.13rem;
+}
+/*其他用户*/
+.other_info{
+	position: relative;
+	left:0.5rem;
+	top: 0;
+	display:block;
+	margin-top: 0.2rem;
+	text-align: left !important;
+}
+.other_info_name,.other_info_photo{
+	display: inline-block;
+	text-align: left;
+}
+.other_info_name{
+	position: absolute;
+	color:black;
+	font-weight: 500;
+	top:-0.22rem;
+	left:0rem;
+	font-size: 0.13rem;
+}
+.other_info_photo{
+	position: absolute;
+	left:-0.5rem;
+}
+/*别人的气泡*/
+.other_info_chat{
+/*允许复制有一定概率触发拖动bug*/
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	user-select: none;
+	display: inline-block;
+	text-align: left;
+	border-radius: 10px 10px;
+	padding: 0.1rem;
+	color: black;
+	background:#DCDCDC;
+	max-width: 5.1rem;
+	height: auto;
+}
+/*vip气泡  彩蛋  哈哈*/
+.vip_info_chat{
+	/*允许复制有一定概率触发拖动bug*/
+	-moz-user-select: none;
+-khtml-user-select: none;
+user-select: none;
+	display: inline-block;
+	text-align: left;
+	border-radius: 10px 10px;
+	padding: 0.1rem;
+	color: black;
+	background:gold;
+	animation: vip_info_chat 2s linear;
+	max-width: 5.1rem;
+	height: auto;
+}
+@keyframes vip_info_chat{
+	0%{background: #00FFFF;}
+	25%{background: #009F95;}
+	50%{background: red;}
+	100%{background: gold;}
+}
+/*在线人数*/
+.chat_title_onlineNum{
+	font-size: 0.12rem;
+	color: white;
+	margin-left: 0.1rem;
+}
+
+
 }
 
 

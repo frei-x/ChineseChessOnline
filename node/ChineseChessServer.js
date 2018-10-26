@@ -217,6 +217,10 @@ function jsonToString(json){
                 }
                 
             });
+            socket.on('chat',function(msg,fun){
+                io.emit('chat',msg);
+                fun('send_ok');
+            })
             socket.on('selsecUser',function(msg,fun){
                 console.log(msg)
                 DB('select * from chess_user where ID = ?',[Number(msg.ID)],function(err){

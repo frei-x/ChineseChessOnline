@@ -4,6 +4,7 @@ console.time('耗时');
  * indexOf在数组中能找到通过变量定义的对象,却不能直接找对象
  **/
 "use strict"
+let doc = document;
 let sys={
 	
 };
@@ -14,6 +15,9 @@ sys.mySave = {
 	getsave: function(key) {
 		return JSON.parse(localStorage.getItem(key)) || []; // 第一个正确后面就会被忽略 (如果没有值,返回空字符串)
 	}
+};
+sys.getel = function(o) {
+	return doc.querySelectorAll(o);
 };
 let map = document.getElementById("map");
 let box = document.getElementById("box");
@@ -1412,10 +1416,10 @@ window.onload = function() {
 				oGameMainMenu.style.transform = 'perspective(16rem) rotateY(0deg)';
 			},
 			loginFail: () => {
-
+				
 			},
 			socketOn: (id) => {
-
+				
 			},
 			socketEmit: (id, sendData, callBackData) => {
 				socket.emit(id, sendData, callBackData);
@@ -1595,6 +1599,192 @@ window.onload = function() {
 				alert('创建成功');
 			});
 		}, false);
+	})();
+	//聊天部分
+	(function(){
+		let btnOpenChat = document.getElementById("btnMenuChat");
+		let btnCloseChat = sys.getel('#chat .fa-close')[0];
+		let oChat = sys.getel('#chat')[0];
+		let oChat_title = sys.getel('#chat_title')[0];
+		let chat_input = sys.getel('#chat_input')[0];
+		let btnSend = sys.getel('#btnSend')[0];
+		let info = [];
+		let chat_main_info = sys.getel('#chat_main_info')[0]; //聊天主消息 头像 昵称 
+		let chat_main = sys.getel('#chat_main')[0]; //聊天可滚动窗口
+		let btnBiaoqing = sys.getel('#biaoqing')[0];
+		let biaoqing_box = sys.getel('#biaoqing_box')[0];
+		//表情名 同时也是文件名 title名
+		let imgName = ['hh', 'hj', 'jk', 'mg', 'ng', 'ok', 'ts', 'wx', 'yx', 'h', 'z', 'a', 'g', 'y', 'k', 'n', 'q', 't'];
+		btnCloseChat.onclick = function() {
+			oChat.className = '';
+		};
+		btnOpenChat.onclick = function() {
+			let setName = sys.getel('#setName')[0];
+			oChat.className = 'chat_show';
+			info = [user.userName]; //取出用户信息
+			chat_main.scrollTop = chat_main.scrollHeight;
+			if(!info[1]) { //如果用户信息不正确/为空 切换到注册
+				setName.style.display = 'block';
+				let nowPhoto = sys.getel('#smile')[0];
+				let sysPhoto = sys.getel('#smileList i');
+				let btnSetName = sys.getel('#btnSetName')[0];
+				for(let i = 0; i < sysPhoto.length; i++) {
+					sysPhoto[i].addEventListener('click', function() {
+						nowPhoto.className = this.className;
+					});
+				};
+				btnSetName.addEventListener('click', function() {
+						info[1] =nowPhoto.className;
+						setName.style.display = 'none';
+				});
+			}
+			
+		}
+		let fun = {
+
+		}
+		let chatStyle = oChat.style;
+		let deviationX = 0,
+			deviationY = 0,
+			sumx = 0,
+			sumy = 0;
+		let stateDeviationX = 0;
+		let state = true; //防止连续点击  而不移动的重复累加偏移量bug
+		//拖动 使用css3技术  gpu重绘  性能更强
+		oChat_title.onmousedown = function(e) {
+			if(state) { //判断是否点击
+				sumx += deviationX; //把移动最终偏移值累加(translate坐标相对于自身)
+				sumy += deviationY;
+				state = false; //第一次点击生效,否者想要生效  必须移动=>518row
+			}
+			let ev = e || event;
+			let oldClint = {
+				sx: ev.clientX,
+				sy: ev.clientY
+			};
+			let youX = sumx - oldClint.sx; //先计算了已知的数据  ,不用移动时再计算,eMove.clientX-oldClint.sx+sumx,当前鼠标偏移量+累计偏移量
+			let youY = sumy - oldClint.sy;
+			fun.funMousemove = function(e) {
+				state = true; //已经移动过(解决不停点击而不移动会不断累加  bug)					
+				let eMove = e || event;
+				//pageX和clentX一样  但是不会随着滚动条改变(始终为当前视觉 页面左上角)
+				//left 和top改为transform 性能更强
+				let nowClintX = eMove.clientX;
+				let nowClintY = eMove.clientY;
+				if(eMove.clientX >= innerWidth - 20) {
+					nowClintX = innerWidth - 20;
+				} else if(eMove.clientX <= 20) {
+					nowClintX = 20;
+				}
+				if(eMove.clientY >= innerHeight - 20) {
+					nowClintY = innerHeight - 20;
+				} else if(eMove.clientY <= 20) {
+					nowClintY = 20;
+				}
+				chatStyle.transform = `translateX(${nowClintX+youX}px) translateY(${nowClintY+youY}px)`; //let top版本等同search.offsetLeft+(新的鼠标位置-旧的鼠标位置),css3版  累加偏移量+当前偏移量	sumy+eMove.clientY-oldClint.sy,优化已知的	sumy-oldClint.sy再加									
+				deviationX = nowClintX - oldClint.sx; //记录这次按下的最终偏移量
+				deviationY = nowClintY - oldClint.sy;
+			}
+			doc.addEventListener('mousemove', fun.funMousemove);
+			doc.addEventListener('mouseup', function() {
+				doc.removeEventListener('mousemove', fun.funMousemove);
+			});
+		};
+		socket.on('chat', function(receiveData) {
+					receiveData = receiveData;
+					//对比用户名  头像 判断是否是自己,决定这条群发的消息是否显示(自己的消息不用从服务器获取  只判断发送成功否)
+					if(receiveData.self[0] == info[0]) {
+
+					} else { //不是自己  从服务端接收socket消息
+						chat_main_info.innerHTML += `<div class="other_info">								
+												<span class="other_info_name">${receiveData.self[0]}</span>
+												<code class="${receiveData.self[1]} other_info_photo" style=""></code>
+												<span class="other_info_chat">${receiveData.chatText}</span>
+											</div>`;
+
+					}
+					console.log("收到:" + JSON.stringify(receiveData));
+					chat_main.scrollTop = chat_main.scrollHeight; //收到消息 也置底
+					//如果页面处于隐藏状态(浏览器最小化/用户正在浏览器其他页面),系统将会在右下角发出系统通知
+					//console.log('页面状态:'+document.hidden);
+					if(oChat.className != 'chat_show') {
+						
+					}
+					//					if(document.hidden){
+					//							let mynotifi = new Notification("『星云』您收到一条新消息", {
+					//				                body: receiveData.chatText,
+					//				                icon: 'img/favicon.png',
+					//				                tag:1
+					//       				  });
+					//					}else{//页面未隐藏,但是聊天窗口未打开,聊天图标闪烁
+					//						
+					//					}
+				});
+			btnSend.addEventListener('click', function() {
+			//let divLength = sys.getel('#chat_input div');
+			//let old_chat_mainInnerHTML = chat_main.innerHTML;//保存前一次
+			//let saveDivText = '';
+			//console.log(chat_input.querySelectorAll('img')[0].toString())
+			//let imgs = chat_input.querySelectorAll('img');
+			let nowInputInnerHTML = chat_input.innerHTML;
+			//把img标签转为自定义的'暗号',传输更少的文本 也不怕截断250字导致标签错乱
+			//			for(let iRe=0;iRe<imgs.length;iRe++){
+			//				nowInputInnerHTML=nowInputInnerHTML.replace(/^<img.*>$/,'/'+imgs[iRe].title);
+			//				console.log(nowInputInnerHTML);
+			//			}
+			//			if(imgs.length>9){
+			//				imgs.length=9;
+			//			}
+			let sendStr = nowInputInnerHTML.substr(0, 340);
+			//if(sendStr[250]&&(sendStr[250]=='>'||sendStr[250]=='<'))
+			let sendData = {
+				self: info,
+				chatText: sendStr
+			};
+			if(sendData.chatText) {
+				chat_main_info.innerHTML += `<div class="self_info">					
+							<span class="self_info_name">${sendData.self[0]}</span>
+							<code class="${sendData.self[1]} self_info_photo" style=""></code>	
+							<span class="uesr_info_chat">${sendData.chatText}</span>
+						</div>`;
+
+				chat_main.scrollTop = chat_main.scrollHeight;
+				socket.emit('chat', sendData, function(state) {
+					if(state == 'send_ok') {
+						console.log('发送成功');
+					} else {
+						//应该用超时
+						loading_text.style.display = "block";
+						loading_text.style.opacity = "1";
+						loading_title.innerText = '发送失败';
+						loading_content.innerText = `网络不佳哦!`;
+						setTimeout(function() {
+							loading_text.style.opacity = "0";
+							setTimeout(function() {
+								loading_text.style.display = "none";
+							}, 1800);
+						}, 1400);
+					}
+				});
+			} else {
+				if(socket.connected) {
+					loading_text.style.display = "block";
+					loading_text.style.opacity = "1";
+					loading_title.innerText = '';
+					loading_content.innerText = `请输入消息`;
+					setTimeout(function() {
+						loading_text.style.opacity = "0";
+						setTimeout(function() {
+							loading_text.style.display = "none";
+						}, 2000);
+					}, 1800);
+				}
+			}
+
+			sendData.chatText = '';
+			chat_input.innerHTML = ''
+		});
+		
 	})();
 	console.timeEnd('耗时');
 }

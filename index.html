@@ -51,6 +51,7 @@
 			}
 		</style>
 		<link rel="stylesheet" type="text/css" href="./css/view.css"/>
+		<link href="./css/css/font-awesome.css" rel="stylesheet">
 		<script>
 			(function() {
 				//rem 与屏幕/字体大小比例计算
@@ -101,10 +102,56 @@
 				<div id="btnMenuGameSet">游戏设置</div>
 			</div>
 			<div id="btnOnlinePlay">
-				<div class="room">1</div>
-				<div class="room">room12</div>
-				<div class="room">111</div>
+				<div class="room">1000</div>
+				<div class="room">1002</div>
+				<div class="room">1001</div>
 			</div>
+			
+			<div id="chat" class=''>
+			<div id="chat_title">在线交流<span class="chat_title_onlineNum">(当前<span id="chat_title_onlineNum">0</span>人在线)</span>
+			</div><i class="fa fa-close"><span></span></i>
+			<div id="chat_body" class="chat_center">
+				<div id="chat_main">
+					<div id="chat_main_info">
+						<!--别人的-->
+						<div class="other_info">
+						
+						</div>
+					</div>
+				</div>
+				<div id="chat_input" contenteditable="true">
+
+				</div>
+				<i class="" id="onlineNum" title="在线人数"></i>
+				<i class="fa fa-smile-o" id="biaoqing" title="选择表情">
+					<div id="biaoqing_box"></div>
+				</i>
+
+				<div id="btnSend">发送</div>
+			</div>
+			<div id="setName">
+				<input type="text" id="" value="" placeholder="输入您的昵称" maxlength="6" />
+				<div id="selfName"></div>
+				<div id="smile" class="fa fa-paper-plane-o"></div>
+				<!--头像列表-->
+				<div id="smileList">
+					<div>选择您的头像</div>
+					<i class="fa fa-paper-plane-o"></i>
+					<i class="fa fa-user-o"></i>
+					<i class="fa fa-github"></i>
+					<i class="fa fa-android"></i>
+					<i class="fa fa-pagelines"></i>
+					<i class="fa fa-diamond"></i>
+					<i class="fa fa-frown-o"></i>
+					<i class="fa fa-smile-o"></i>
+					<i class="fa fa-star"></i>
+					<i class="fa fa-pied-piper-alt"></i>
+					<i class="fa fa-heart"></i>
+				</div>
+				<div id="btnSetName">进入房间</div>
+			</div>
+		</div>
+		
 			<form class="form" id="reg">
 				注册
 				<div id="youkeBtn111" class="formBtn btnBack">注册</div>
