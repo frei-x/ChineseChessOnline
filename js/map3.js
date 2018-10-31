@@ -231,6 +231,13 @@ Root.canvasAndScreenRatioHeight = map.height / parseFloat(map.style.height);
 function viewInteractive() {
 	let oBtnChangeForm = document.querySelectorAll('#regBtn,#youkeBtn,#forgetBtn');
 	let oFormView = document.querySelectorAll('.form');
+	let gameMenu = document.querySelectorAll('#gameMenu')[0];
+	let chessboard= document.querySelectorAll('#Chessboard')[0];
+	chessboard.style.marginLeft = -parseFloat(map.style.marginLeft)+20+'px';
+	chessboard.style.marginTop = parseFloat(map.style.marginTop)+20+'px';
+	chessboard.style.width =parseFloat(map.style.width)/3 + 'px';
+	gameMenu.style.marginLeft = -parseFloat(map.style.marginLeft)+20+'px';
+	gameMenu.style.marginTop = -parseFloat(map.style.marginTop)-40+'px';
 	let oFormView3 = [...oFormView].slice(1, oFormView.length);
 	for(let i = 0; i < oBtnChangeForm.length; i++) {
 		oBtnChangeForm[i].addEventListener('click', function() {
@@ -495,6 +502,7 @@ Root.funChessRecor=function(nowChess,target){
 	}
 	console.log(name+nowX+action+targetPosition);
 	Root.oChessRecor.arr.push(name+nowX+action+targetPosition);
+	return name+nowX+action+targetPosition;
 }
 /**
  * 棋子走法规则描述,传入当前棋子信息与目标位置信息  结合整个棋盘信息判断是否能够通行
@@ -1097,6 +1105,10 @@ window.onload = function() {
 		win:null,
 		lose:null,
 	}
+	//步数
+	let round = 1;
+	//走法字符串
+	let sChessBoard = '';
 	//socket 所属阵营
 	let camp;
 	//用户信息
@@ -1275,7 +1287,19 @@ window.onload = function() {
 							//console.log(JSON.stringify(Root.arrMap[nowSelectedChess.xy[0]+nowSelectedChess.xy[1]*9]));
 							Root.arrMap[nowSelectedChess.xy[0] + nowSelectedChess.xy[1] * 9] = {};
 							//棋谱记录 
-							Root.funChessRecor(beforeSelectedChess,target);
+							//现在的走法
+							let snowChess = Root.funChessRecor(beforeSelectedChess,target);;
+							if(round%2==1){
+								//单数就说明开始下一回合,加1除2
+								sChessBoard +=`${(round+1)/2}.<span>${snowChess}</span>`;
+							}else{
+								sChessBoard += `<span>${snowChess}</span>`
+							}
+							round++;
+							document.getElementById("Chessboard").innerHTML = sChessBoard;
+							//滚动条自动下滑到新位置
+							document.getElementById("Chessboard").scrollTop = document.getElementById("Chessboard").scrollHeight;
+							//Root.oChessRecor.arr.length;
 							//目标位置的下一次可行位置
 							
 							let arr =  Root.funRules({n:beforeSelectedChess.n,t:beforeSelectedChess.t,xy:target.xy}).arrPracticable;
@@ -1578,6 +1602,8 @@ window.onload = function() {
 							});	
 								camp = 2;
 								sys.mySave.save('camp',camp);	
+								let chessboard= document.querySelectorAll('#Chessboard')[0];
+								chessboard.style.display='none';
 							} else {
 								console.log('http状态非200,加入游戏失败');
 							}
@@ -1597,6 +1623,8 @@ window.onload = function() {
 				camp = 1;
 				sys.mySave.save('camp',camp);
 				alert('创建成功');
+				let chessboard= document.querySelectorAll('#Chessboard')[0];
+				chessboard.style.display='none';
 			});
 		}, false);
 	})();
@@ -1753,31 +1781,21 @@ window.onload = function() {
 					if(state == 'send_ok') {
 						console.log('发送成功');
 					} else {
-						//应该用超时
-						loading_text.style.display = "block";
-						loading_text.style.opacity = "1";
-						loading_title.innerText = '发送失败';
-						loading_content.innerText = `网络不佳哦!`;
-						setTimeout(function() {
-							loading_text.style.opacity = "0";
-							setTimeout(function() {
-								loading_text.style.display = "none";
-							}, 1800);
-						}, 1400);
+						console.log('发送失败');
 					}
 				});
 			} else {
 				if(socket.connected) {
-					loading_text.style.display = "block";
-					loading_text.style.opacity = "1";
-					loading_title.innerText = '';
-					loading_content.innerText = `请输入消息`;
-					setTimeout(function() {
-						loading_text.style.opacity = "0";
-						setTimeout(function() {
-							loading_text.style.display = "none";
-						}, 2000);
-					}, 1800);
+//					loading_text.style.display = "block";
+//					loading_text.style.opacity = "1";
+//					loading_title.innerText = '';
+//					loading_content.innerText = `请输入消息`;
+//					setTimeout(function() {
+//						loading_text.style.opacity = "0";
+//						setTimeout(function() {
+//							loading_text.style.display = "none";
+//						}, 2000);
+//					}, 1800);
 				}
 			}
 

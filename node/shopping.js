@@ -18,13 +18,69 @@ function DB(criteria,arrMap,funerr,funsuccess){
 }
 exp.use(bodyParser.json());
 exp.use(cookieParser('dada11_ad4ADADA5aAf_lIoqO4444_a1__99a'));
+let cookieSessionMiddleware = cookieSession({
+    name: 'una',
+    keys: ['dada11_ad4ADADA5aAf_lIoqO4444_a1__99a'],
+    maxAge: 365*3600*1000*24
+});
+exp.use(cookieSessionMiddleware);
+exp.use('/node/captcha',function(req,res){
+    //创建验证码  长度4 干扰线1 不允许出现0o1IiLlNmnM字符
+    var captcha = svgCaptcha.create({size:4,noise:1,ignoreChars:'0Oo1IiLlNmnMABCDEFGHIJKLMNOPQRSTUVWXYZ'});
+    req.session.captcha = captcha.text;
+    console.log(captcha.text);
+    console.log(req.session.captcha);
+    res.type('SVG');
+    res.send(captcha.data);
+  });
+exp.use(function(req,res,next){
+     
+       next();
+});
+
+//接收post请求 路径为/node/login
+exp.post('/node/login',function(req,res){
+    DB('select * from admin where user=? and password=?',[req.body.user,req.body.password],function(err){
+        console.log(err.code);
+        res.status(403).end('数据库错误');
+    },function(data){
+        //设置req.session,后面的send会自动设置并发送cookie
+        if(data.length==1){
+            console.log(req.body)
+            //保存session
+            console.log(req.session)
+            if(req.session.captcha==req.body.captcha){
+                req.session['loginTrue'] = true;
+                console.log(req.session);
+                res.send(data);
+            }else{
+                res.status(403).end('验证码');
+            }
+           
+        }else{
+           // req.session['loginTrue'] =false;
+            res.status(403).end('登录失败');
+            console.log('登录未认证未通过,程序不继续执行');
+        }
+    });
+});
+exp.post('/node/change',function(req,res){
+    console.log(req.body.arr);
+    var str = `mark  40, win =1 where ID =?`
+   // update RandomSource set mark = mark + 40, win = win+1 where ID =?
+    DB('',[],function(){
+
+    },function(){
+       
+    })
+});
 exp.get('/node/adminRoom',function(req,res){
     res.send({
         "code": 0
         ,"msg": ""
         ,"count": 4
         ,"data": [
-            {         "id": "10008"
+            { "id": "10008"
             ,"username": "福蓉"
             ,"email": "保密"
             ,"sex": "女"
@@ -199,40 +255,6 @@ let SessionMiddleware = cookieSession({
 });
 
 exp.use(SessionMiddleware);
-// 自动登录/node/autoLogin
-exp.use('/node',function(req,res,next){
-    req.session['login']=true;
-    //每一个req.session附带的cookie都不同所以不同浏览器req.session['login']不同,代码里只需要判断固定的然后赋值就行
-    if(req.session['login']){ //过滤器验证登录
-        console.log(req.session);
-        next();
-      }else{
-        //自动登录未通过,尝试登录
-        DB('select * from user where userName=? and password=?',[req.body.userName,req.body.passWord],function(err){
-            console.log(err.code);
-            req.session['login']=true;
-            res.status(403).end('数据库错误');
-        },function(data){
-            //设置req.session,后面的send会自动设置并发送cookie
-            if(data.length==1){
-                //不发送密码
-                data[0].password=null;
-                req.session['login'] = data;
-                res.send(data);
-                console.log(req.session['login']);
-                next();
-               // req.session['login']=null;
-            }else{
-                next();
-                res.status(403).end('登录失败');
-                console.log('登录/自动登录未认证未通过,程序不继续执行');
-            }
-    
-        });
-        //next();
-    }
-
-});
 exp.get('/node/getRoomTop3',function(req,res){
     DB('SELECT * FROM room LIMIT 0, 3',[],function(){
 

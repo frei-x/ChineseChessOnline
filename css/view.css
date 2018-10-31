@@ -79,6 +79,39 @@
 		transition: 0.1s box-shadow;
 		box-shadow: 2px 2px 10px rgba(0, 0, 0, .3) inset;
 	}
+	#gameMenu{
+		width: 15vmin;
+		height: 5vmin;
+		position:absolute;
+		line-height: 5vmin;
+		top: 50%;
+		left: 50%;
+		color: white;
+		background: darkgoldenrod;
+		z-index: 999;
+	}
+	#Chessboard{
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 15vmin;
+		max-height: 20vmin;
+		overflow-y: scroll;
+		border: 0.05rem solid darkgoldenrod;
+		background: rgba(249, 216, 162, 1);
+	}
+	#Chessboard span{
+		display: inline-block;
+		margin: 5px;
+		line-height: initial;
+	}
+	#Chessboard::-webkit-scrollbar-thumb {
+		background: burlywood;
+		border-radius: 6px;
+	}
+	#Chessboard::-webkit-scrollbar {
+		/*background: rgba(255, 255, 255, 1);*/
+	}
 	#login{
 		transform: translate3d(0, 0, 0);
 		position: absolute;
@@ -244,7 +277,9 @@
 	-ms-transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
 	-moz-transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
 	font: .14rem/.4rem "微软雅黑";
-	background: linear-gradient(to top, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 1));
+		border: 0.05rem solid darkgoldenrod;
+		background: rgba(249, 216, 162, 1);
+	background: linear-gradient(to top, rgba(249, 216, 162, 1),darkgoldenrod);
 	position: absolute;
 	left: 50%;
 	top: -4rem;
@@ -271,7 +306,7 @@
 	top: .08rem;
 	right: .1rem;
 	transition: .5s;
-	color: rgba(0, 245, 255, 0.8);
+	color: burlywood;
 }
 
 #chat .fa-close:hover {
@@ -287,13 +322,9 @@
 	font-weight: bold;
 	border-top-left-radius: 3%;
 	border-top-right-radius: 3%;
-	color: rgba(0,245,255,1);
+	color:white;
 	text-indent: .2rem;
-	background-color: #08AEEA;
-	background-image: -webkit-linear-gradient(90deg, #08AEEA 0%, #595eba 100%);
-	background-image: -moz-linear-gradient(90deg, #08AEEA 0%, #595eba 100%);
-	background-image: -o-linear-gradient(90deg, #08AEEA 0%, #595eba 100%);
-	background-image: linear-gradient(90deg, #08AEEA 0%, #595eba 100%);
+	background: linear-gradient(to top, rgba(249, 216, 162, 1),darkgoldenrod);
 }
 
 .chat_center {
@@ -404,14 +435,11 @@
 	top: 0.4rem;
 	margin-left:-3.25rem ;
 	z-index: 9999;
-	background-color: #8EC5FC;
-background-image: -webkit-linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
-background-image: -moz-linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
-background-image: -o-linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
-background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+	background: linear-gradient(to top, rgba(249, 216, 162, 1),darkgoldenrod);
 
 }
 #setName input{
+	display: none !important;
 	border: none;
 	width: 1rem;
 	font-family: "微软雅黑";
@@ -629,6 +657,20 @@ user-select: none;
 
 
 @media (max-width: 800px) {
+	#setName input{
+	display: none !important;
+	border: none;
+	width: 1rem;
+	font-family: "微软雅黑";
+	font-size: 0.16rem;
+	position: absolute;
+	top: 0.2rem;
+	left: 50%;
+	margin-left: -0.5rem;
+	background: transparent;
+	border-radius: 5%;
+	border-bottom: 2px solid deepskyblue;
+}
 	.inputPosition{
 		position: absolute;
 		left: 50%;
