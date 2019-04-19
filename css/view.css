@@ -11,6 +11,7 @@
 		
 	}
 	.form{
+		display:none;
 		width: 70vmin;
 		height: 80vmin;
 		position:absolute;
