@@ -6,7 +6,9 @@
 		height: 100vh;
 		position: relative;
 		left: 0;
-		top: 0;
+		top: 0;display:none;
+		
+		
 	}
 	.form{
 		width: 70vmin;
