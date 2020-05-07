@@ -1,4 +1,8 @@
-在线地址 : https://frei-x.github.io/ChineseChessOnline/
+在线地址 :
+github-pages:
+https://frei-x.github.io/ChineseChessOnline/
+gitee-pages:
+http://stringify.gitee.io/chinesechessonline/
 
 # ChineseChessOnline
 
