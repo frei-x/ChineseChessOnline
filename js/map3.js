@@ -1379,7 +1379,7 @@ window.onload = function() {
 								let snowChess = Root.funChessRecor(beforeSelectedChess, target);
 								if (round % 2 == 1) {
 									//单数就说明开始下一回合,加1除2
-									sChessBoard += `${(round + 1) / 2}.<span>${snowChess}</span>`;
+									sChessBoard += `<span>${(round + 1) / 2}.${snowChess}</span>`;
 								} else {
 									sChessBoard += `<span>${snowChess}</span>`;
 								}

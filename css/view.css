@@ -1,20 +1,18 @@
 @charset "utf-8";
-/*登录 注册*/	
+/*登录 注册*/
 @media (min-width: 800px) {
-	#box{
+	#box {
 		width: 100vw;
 		height: 100vh;
 		position: relative;
 		left: 0;
 		top: 0;
-		
-		
 	}
-	.form{
-		display:none;
+	.form {
+		display: none;
 		width: 70vmin;
 		height: 80vmin;
-		position:absolute;
+		position: absolute;
 		top: 50%;
 		left: 50%;
 		margin-top: -40vmin;
@@ -28,12 +26,12 @@
 		z-index: 999;
 	}
 	/*登录成功后 游戏主菜单*/
-	#gameMainMenu{
+	#gameMainMenu {
 		transform: translate3d(0, 0, 0);
 		opacity: 0.96;
 		width: 70vmin;
 		height: 80vmin;
-		position:absolute;
+		position: absolute;
 		top: 50%;
 		left: 50%;
 		margin-top: -40vmin;
@@ -43,11 +41,11 @@
 		transform-style: preserve-3d;
 		transform: perspective(16rem) rotateY(180deg);
 		transform-origin: 50% 50%;
-		transition: 1s  transform ease;
+		transition: 1s transform ease;
 		backface-visibility: hidden;
 		z-index: 999;
 	}
-	#gameMainMenu>div{
+	#gameMainMenu > div {
 		-moz-user-select: none;
 		-ms-user-select: none;
 		-webkit-user-select: none;
@@ -55,7 +53,7 @@
 		width: 25vmin;
 		height: 5vmin;
 		cursor: pointer;
-		font-family:"微软雅黑";
+		font-family: '微软雅黑';
 		font-size: 2.2vmin;
 		margin: 1vmin;
 		margin-left: -11.5vmin;
@@ -63,7 +61,7 @@
 		border: none;
 		outline: none;
 		color: white;
-		box-shadow: 2px 2px 10px rgba(0, 0, 0, .3);
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
 		background: darkgoldenrod;
 		position: relative;
 		left: 50%;
@@ -73,19 +71,19 @@
 		opacity: 0.9;
 		transition: 0.6s;
 	}
-	#gameMainMenu>div:hover{
+	#gameMainMenu > div:hover {
 		background: orange;
 		opacity: 1;
-		transition:0.5s all;
+		transition: 0.5s all;
 	}
-	#gameMainMenu>div:active{
+	#gameMainMenu > div:active {
 		transition: 0.1s box-shadow;
-		box-shadow: 2px 2px 10px rgba(0, 0, 0, .3) inset;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3) inset;
 	}
-	#gameMenu{
+	#gameMenu {
 		width: 15vmin;
 		height: 5vmin;
-		position:absolute;
+		position: absolute;
 		line-height: 5vmin;
 		top: 50%;
 		left: 50%;
@@ -93,7 +91,10 @@
 		background: darkgoldenrod;
 		z-index: 999;
 	}
-	#Chessboard{
+	#Chessboard {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
 		position: absolute;
 		left: 50%;
 		top: 50%;
@@ -102,8 +103,10 @@
 		overflow-y: scroll;
 		border: 0.05rem solid darkgoldenrod;
 		background: rgba(249, 216, 162, 1);
+		padding: 5px;
+		box-sizing: border-box;
 	}
-	#Chessboard span{
+	#Chessboard span {
 		display: inline-block;
 		margin: 5px;
 		line-height: initial;
@@ -115,62 +118,62 @@
 	#Chessboard::-webkit-scrollbar {
 		/*background: rgba(255, 255, 255, 1);*/
 	}
-	#login{
+	#login {
 		transform: translate3d(0, 0, 0);
 		position: absolute;
 		transform-style: preserve-3d;
 		transform: perspective(16rem) rotateY(0deg);
 		transform-origin: 50% 50%;
-		transition: 1s  transform ease;
+		transition: 1s transform ease;
 		backface-visibility: hidden;
-		box-shadow: 1px 1px 0px 50vmin rgba(0,0,0,0.4);
+		box-shadow: 1px 1px 0px 50vmin rgba(0, 0, 0, 0.4);
 	}
-	#reg{
+	#reg {
 		transform: translateX(-100vw);
 	}
-	#forgetPassword{
+	#forgetPassword {
 		transform: translateX(-100vw);
 	}
-	#youke{
+	#youke {
 		transform: translateX(-100vw);
 	}
-	.inputPosition{
+	.inputPosition {
 		position: absolute;
 		left: 50%;
-		width:30vmin;
+		width: 30vmin;
 		margin-left: -18vmin;
 	}
-	.inputStyle{
-		width:20vmin;
+	.inputStyle {
+		width: 20vmin;
 		height: 5vmin;
-		font:2.5vmin "宋体" ;
+		font: 2.5vmin '宋体';
 		margin: 0;
 		margin-top: -5vmin;
 		padding: 0;
 		outline: none;
 		border: none;
 		background: transparent;
-		border-bottom:2px solid darkgoldenrod;
+		border-bottom: 2px solid darkgoldenrod;
 		transition: 0.3s;
 	}
-	.inputStyle:focus{
-		border-color:red;
+	.inputStyle:focus {
+		border-color: red;
 	}
-	#loginName{
+	#loginName {
 		top: 24vmin;
 	}
-	#loginPassWord{
+	#loginPassWord {
 		top: 32vmin;
 	}
-	.inputPosition span{
-		min-width:10vmin;
+	.inputPosition span {
+		min-width: 10vmin;
 		float: left;
 		margin-left: 0vmin;
 		line-height: 3.5vmin;
 		display: inline-block;
 		text-indent: 0vmin;
 	}
-	.formBtn{
+	.formBtn {
 		-moz-user-select: none;
 		-ms-user-select: none;
 		-webkit-user-select: none;
@@ -178,14 +181,14 @@
 		width: 8vmin;
 		height: 4vmin;
 		cursor: pointer;
-		font-family:"微软雅黑";
+		font-family: '微软雅黑';
 		font-size: 2vmin;
 		margin: 0;
 		padding: 0.2vmin;
 		border: none;
 		outline: none;
 		color: white;
-		box-shadow: 2px 2px 10px rgba(0, 0, 0, .3);
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
 		background: darkgoldenrod;
 		position: absolute;
 		left: 50%;
@@ -194,507 +197,507 @@
 		text-align: center;
 		opacity: 0.9;
 	}
-	.formBtn:hover{
+	.formBtn:hover {
 		background: orange;
 		opacity: 1;
-		transition:0.5s all;
-		border-radius:20%/40%;
+		transition: 0.5s all;
+		border-radius: 20%/40%;
 	}
-	.formBtn:active{
+	.formBtn:active {
 		transition: 0.1s box-shadow;
-		box-shadow: 2px 2px 10px rgba(0, 0, 0, .3) inset;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3) inset;
 	}
-	#loginBtn{
-		margin-left:-20vmin;
+	#loginBtn {
+		margin-left: -20vmin;
 	}
-	#regBtn{
-		margin-left:-10vmin;
+	#regBtn {
+		margin-left: -10vmin;
 	}
-	#youkeBtn{
-		margin-left:0vmin;
+	#youkeBtn {
+		margin-left: 0vmin;
 	}
-	#forgetBtn{
-		margin-left:10vmin;
+	#forgetBtn {
+		margin-left: 10vmin;
 	}
-.inputStyle::-webkit-input-placeholder {
-	text-indent: .05rem;
-	color: gray;
-	transition: .5s;
-	transform-origin: left top;
-}
+	.inputStyle::-webkit-input-placeholder {
+		text-indent: 0.05rem;
+		color: gray;
+		transition: 0.5s;
+		transform-origin: left top;
+	}
 
-.inputStyle:-moz-placeholder {
-	text-indent: .05rem;
-	transition: .5s;
-	transform-origin: left top;
-}
-.inputStyle:-ms-input-placeholder {
-	text-indent: .05rem;
-	-ms-transition: .5s;
-	transform-origin: left top;
-}
-.inputStyle:focus::-webkit-input-placeholder {
-	transform: scale(0.7) translateY(-1vmin);
-	color: red;
-}
+	.inputStyle:-moz-placeholder {
+		text-indent: 0.05rem;
+		transition: 0.5s;
+		transform-origin: left top;
+	}
+	.inputStyle:-ms-input-placeholder {
+		text-indent: 0.05rem;
+		-ms-transition: 0.5s;
+		transform-origin: left top;
+	}
+	.inputStyle:focus::-webkit-input-placeholder {
+		transform: scale(0.7) translateY(-1vmin);
+		color: red;
+	}
 
-.inputStyle:focus::-moz-placeholder {
-	transform: scale(0.7) translateY(-1vmin);
-	color: red;
-}
+	.inputStyle:focus::-moz-placeholder {
+		transform: scale(0.7) translateY(-1vmin);
+		color: red;
+	}
 
-.inputStyle:focus:-ms-input-placeholder {
-	transform: scale(0.7) translateY(-1vmin);
-	color: red;
-}
-#btnOnlinePlay{
-	background: rgba(249, 216, 162, 1);
-	display: none;
-	width: 70vmin;
-	height: 80vmin;
-	position:absolute;
-	top: 50%;
-	left: 50%;
-	margin-top: -40vmin;
-	margin-left: -35vmin;
-	border: 0.05rem solid darkgoldenrod;
-	overflow: hidden;
-	overflow-y: scroll;
-}
-.room{
-	display: inline-block;
-	background:darkgoldenrod;
-	width: 1rem;
-	height: 1rem;
-	margin: 0.2rem;
-	text-align: center;
-	line-height: 1.2rem;
-	word-wrap:break-word;
-	
-}
+	.inputStyle:focus:-ms-input-placeholder {
+		transform: scale(0.7) translateY(-1vmin);
+		color: red;
+	}
+	#btnOnlinePlay {
+		background: rgba(249, 216, 162, 1);
+		display: none;
+		width: 70vmin;
+		height: 80vmin;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		margin-top: -40vmin;
+		margin-left: -35vmin;
+		border: 0.05rem solid darkgoldenrod;
+		overflow: hidden;
+		overflow-y: scroll;
+	}
+	.room {
+		display: inline-block;
+		background: darkgoldenrod;
+		width: 1rem;
+		height: 1rem;
+		margin: 0.2rem;
+		text-align: center;
+		line-height: 1.2rem;
+		word-wrap: break-word;
+	}
 
-#chat {
-	opacity: 0;
-	transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
-	-webkit-transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
-	-ms-transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
-	-moz-transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
-	font: .14rem/.4rem "微软雅黑";
+	#chat {
+		opacity: 0;
+		transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
+		-webkit-transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
+		-ms-transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
+		-moz-transition: opacity 0.5s ease, top 0.3s ease, transform 0s;
+		font: 0.14rem/0.4rem '微软雅黑';
 		border: 0.05rem solid darkgoldenrod;
 		background: rgba(249, 216, 162, 1);
-	background: linear-gradient(to top, rgba(249, 216, 162, 1),darkgoldenrod);
-	position: absolute;
-	left: 50%;
-	top: -4rem;
-	width: 6.5rem;
-	height: 5.5rem;
-	border-radius: 2%;
-	margin-left: -3.25rem;
-	/*box-shadow: 3px 2px 20px black;*/
-	z-index: -1;
-}
-
-.chat_show {
-	opacity: 1 !important;
-	top: 1rem !important;
-	z-index: 1000 !important;
-}
-
-#chat .fa-close {
-	display: block;
-	width: 0.25rem;
-	height: 0.25rem;
-	position: absolute;
-	font-size: .25rem;
-	top: .08rem;
-	right: .1rem;
-	transition: .5s;
-	color: burlywood;
-}
-
-#chat .fa-close:hover {
-	color: red;
-}
-#chat #chat_title {
-	position: absolute;
-	cursor: move;
-	transition: 0s;
-	width: 6.5rem;
-	height: .4rem;
-	font-size: .15rem;
-	font-weight: bold;
-	border-top-left-radius: 3%;
-	border-top-right-radius: 3%;
-	color:white;
-	text-indent: .2rem;
-	background: linear-gradient(to top, rgba(249, 216, 162, 1),darkgoldenrod);
-}
-
-.chat_center {
-	position: absolute;
-	top: 0.4rem;
-}
-#chat_body{
-	width: 6.5rem;
-	height: 5.1rem;
-	border-bottom-right-radius:2%;
-	border-bottom-left-radius:2%;
-}
-#chat_main{
-	position:absolute;
-	width:6.5rem;
-	height: 3.6rem;
-	font-size: 0.14rem;
-	line-height: 0.22rem;
-	overflow-y: scroll;
-	overflow-x: hidden;
-}
-
-#chat_main::-webkit-scrollbar {
-	/*background: rgba(255, 255, 255, 1);*/
-}
-
-#chat_main::-webkit-scrollbar-thumb {
-	background: deepskyblue;
-	border-radius: 6px;
-}
-#chat_input{
-	position:absolute;
-	overflow-y: scroll;
-	top: 3.6rem;
-	border-top: 1px solid #C2C2C2 ;
-	width:6.5rem;
-	height: 1.5rem;
-	text-indent: 0.4rem;
-	text-align: left;
-	line-height: 0.2rem;
-	font-size: 0.16rem;
-	border-bottom-right-radius:4%;
-	border-bottom-left-radius:4%;
-}
-#chat_input::-webkit-scrollbar {
-	/*background: rgba(255, 255, 255, 1);*/
-}
-
-#chat_input::-webkit-scrollbar-thumb {
-	background: deepskyblue;
-	border-radius: 6px;
-}
-#biaoqing{
-	font-size: 0.25rem;
-	position:absolute;
-	top: 3.6rem;
-	left:0.1rem;
-}
-#biaoqing_box{
-	display: none;
-	background: white;
-	position:absolute;
-	top: -1.5rem;
-	left: -0.1rem;
-	width:3rem;
-	height:1.5rem;
-}
-#biaoqing_box img{
-	padding: 0.05rem;
-	width: 0.3rem;
-	height: 0.3rem;
-}
-.fa-smile-o:hover{
-	color: rgba(0,245,255,1);
-}
-#btnSend{
-	border-radius: 8%;
-	width: .6rem;
-	height: .3rem;
-	cursor: pointer;
-	font-family: "新宋体" "微软雅黑";
-	font-size: .14rem;
-	margin: 0;
-	border: none;
-	outline: none;
-	color: white;
-	box-shadow: 2px 2px 10px rgba(0, 0, 0, .3);
-	background: rgba(0, 132, 255, 0.8);
-	position: absolute;
-	right: 0.2rem;
-	bottom: 0.2rem;
-	line-height: 0.3rem;
-	text-align: center;
-}
-
-#btnSend:hover{
-	background: rgba(0, 132, 255, 1);
-}
-#btnSend:active{
-	box-shadow: 2px 2px 10px rgba(0, 0, 0, .3) inset;
-}
-#setName{
-	display:none;
-	width: 6.5rem;
-	height: 5.2rem;
-	position: absolute;
-	left: 50%;
-	top: 0.4rem;
-	margin-left:-3.25rem ;
-	z-index: 9999;
-	background: linear-gradient(to top, rgba(249, 216, 162, 1),darkgoldenrod);
-
-}
-#setName input{
-	display: none !important;
-	border: none;
-	width: 1rem;
-	font-family: "微软雅黑";
-	font-size: 0.16rem;
-	position: absolute;
-	top: 0.2rem;
-	left: 50%;
-	margin-left: -0.5rem;
-	background: transparent;
-	border-radius: 5%;
-	border-bottom: 2px solid deepskyblue;
-}
-#smile{
-	width: 0.7rem;
-	height:0.7rem;
-	border-radius: 50%;
-	position: absolute;
-	top: 0.5rem;
-	left: 50%;
-	margin-left: -0.35rem;
-	font-size: 0.7rem;
-	line-height:0.7rem ;
-	color: #40AFFE;
-}
-#smileList{
-	width: 6.5rem;
-	height:2.1rem;
-	position: absolute;
-	top: 1.2rem;
-	left: 0rem;
-	font-size: 0.4rem;
-	line-height:0.7rem ;
-	text-align: center;
-}
-#smileList div{
-	font-size: 0.2rem;
-	text-align: center;
-}
-#smileList i:hover{
-	color: #40AFFE;
-}
-#btnSetName{
-	border-radius: 8%;
-	width: 1rem;
-	height: .5rem;
-	cursor: pointer;
-	font-family: "新宋体" "微软雅黑";
-	font-size: .16rem;
-	margin: 0;
-	border: none;
-	outline: none;
-	color: white;
-	box-shadow: 2px 2px 10px rgba(0, 0, 0, .3);
-	background: rgba(0, 132, 255, 0.8);
-	position: absolute;
-	right: 0.5rem;
-	bottom: 1.2rem;
-	line-height: 0.5rem;
-	text-align: center;
-}
-/*聊天界面 用户信息*/
-/*头像*/
-#chat_main code{
-	display: inline-block;
-	text-align: center;
-	width: 0.4rem;
-	height: 0.4rem;
-	line-height: 0.4rem;
-	border: 1px solid #00BFFF;
-	border-radius: 100%;
-	font-size: 0.3rem;
-	color: #40AFFE;
-}
-/*自己的消息气泡*/
-.uesr_info_chat{
-	/*允许复制有一定概率触发拖动bug*/
--moz-user-select: none;
--khtml-user-select: none;
-user-select: none;
-	display: inline-block;
-	text-align: left;
-	border-radius: 10px 10px;
-	padding: 0.1rem;
-	color: white;
-	background:rgba(0, 132, 255, 1);
-	max-width: 5.1rem;
-	height: auto;
-}
-/*复制时的颜色*/
-.uesr_info_chat::selection {
-    background:cyan; 
-    color:white;
-}
-
-.uesr_info_chat::-moz-selection {
-    background:#d3d3d3; 
-    color:#555;
-}
-
-.uesr_info_chat::-webkit-selection {
-    background:#d3d3d3; 
-    color:#555;
-}
-/*整体*/
-#chat_main_info{
-	width:6.5rem;
-	height: 3.6rem;
-	display: inline-block !important;
-	position: absolute;
-	right: 0px;
-	left: 0px;
-}
-/*每个消息的内容 昵称 头像  消息*/
-.self_info{
-	position: relative;
-	top: 0;
-	right:0.67rem;
-	display:block;
-	margin-top: 0.2rem;
-	text-align: right;
-}
-.self_info_name,.self_info_photo{
-	display: inline-block;
-	text-align: right;
-	/*position:absolute;*/
-}
-.self_info_photo{
-	position: absolute;
-	right:-0.5rem;
-}
-.self_info_name{
-	position: absolute;
-	color:black;
-	font-weight: 500;
-	top:-0.2rem;
-	right:0rem;
-	font-size: 0.13rem;
-}
-/*其他用户*/
-.other_info{
-	position: relative;
-	left:0.5rem;
-	top: 0;
-	display:block;
-	margin-top: 0.2rem;
-	text-align: left !important;
-}
-.other_info_name,.other_info_photo{
-	display: inline-block;
-	text-align: left;
-}
-.other_info_name{
-	position: absolute;
-	color:black;
-	font-weight: 500;
-	top:-0.22rem;
-	left:0rem;
-	font-size: 0.13rem;
-}
-.other_info_photo{
-	position: absolute;
-	left:-0.5rem;
-}
-/*别人的气泡*/
-.other_info_chat{
-/*允许复制有一定概率触发拖动bug*/
-	-moz-user-select: none;
-	-khtml-user-select: none;
-	user-select: none;
-	display: inline-block;
-	text-align: left;
-	border-radius: 10px 10px;
-	padding: 0.1rem;
-	color: black;
-	background:#DCDCDC;
-	max-width: 5.1rem;
-	height: auto;
-}
-/*vip气泡  彩蛋  哈哈*/
-.vip_info_chat{
-	/*允许复制有一定概率触发拖动bug*/
-	-moz-user-select: none;
--khtml-user-select: none;
-user-select: none;
-	display: inline-block;
-	text-align: left;
-	border-radius: 10px 10px;
-	padding: 0.1rem;
-	color: black;
-	background:gold;
-	animation: vip_info_chat 2s linear;
-	max-width: 5.1rem;
-	height: auto;
-}
-@keyframes vip_info_chat{
-	0%{background: #00FFFF;}
-	25%{background: #009F95;}
-	50%{background: red;}
-	100%{background: gold;}
-}
-/*在线人数*/
-.chat_title_onlineNum{
-	font-size: 0.12rem;
-	color: white;
-	margin-left: 0.1rem;
-}
-
-
-}
-
-
-
-
-
-
-
-@media (max-width: 800px) {
-	#setName input{
-	display: none !important;
-	border: none;
-	width: 1rem;
-	font-family: "微软雅黑";
-	font-size: 0.16rem;
-	position: absolute;
-	top: 0.2rem;
-	left: 50%;
-	margin-left: -0.5rem;
-	background: transparent;
-	border-radius: 5%;
-	border-bottom: 2px solid deepskyblue;
-}
-	.inputPosition{
+		background: linear-gradient(to top, rgba(249, 216, 162, 1), darkgoldenrod);
 		position: absolute;
 		left: 50%;
-		width:30vmin;
+		top: -4rem;
+		width: 6.5rem;
+		height: 5.5rem;
+		border-radius: 2%;
+		margin-left: -3.25rem;
+		/*box-shadow: 3px 2px 20px black;*/
+		z-index: -1;
+	}
+
+	.chat_show {
+		opacity: 1 !important;
+		top: 1rem !important;
+		z-index: 1000 !important;
+	}
+
+	#chat .fa-close {
+		display: block;
+		width: 0.25rem;
+		height: 0.25rem;
+		position: absolute;
+		font-size: 0.25rem;
+		top: 0.08rem;
+		right: 0.1rem;
+		transition: 0.5s;
+		color: burlywood;
+	}
+
+	#chat .fa-close:hover {
+		color: red;
+	}
+	#chat #chat_title {
+		position: absolute;
+		cursor: move;
+		transition: 0s;
+		width: 6.5rem;
+		height: 0.4rem;
+		font-size: 0.15rem;
+		font-weight: bold;
+		border-top-left-radius: 3%;
+		border-top-right-radius: 3%;
+		color: white;
+		text-indent: 0.2rem;
+		background: linear-gradient(to top, rgba(249, 216, 162, 1), darkgoldenrod);
+	}
+
+	.chat_center {
+		position: absolute;
+		top: 0.4rem;
+	}
+	#chat_body {
+		width: 6.5rem;
+		height: 5.1rem;
+		border-bottom-right-radius: 2%;
+		border-bottom-left-radius: 2%;
+	}
+	#chat_main {
+		position: absolute;
+		width: 6.5rem;
+		height: 3.6rem;
+		font-size: 0.14rem;
+		line-height: 0.22rem;
+		overflow-y: scroll;
+		overflow-x: hidden;
+	}
+
+	#chat_main::-webkit-scrollbar {
+		/*background: rgba(255, 255, 255, 1);*/
+	}
+
+	#chat_main::-webkit-scrollbar-thumb {
+		background: deepskyblue;
+		border-radius: 6px;
+	}
+	#chat_input {
+		position: absolute;
+		overflow-y: scroll;
+		top: 3.6rem;
+		border-top: 1px solid #c2c2c2;
+		width: 6.5rem;
+		height: 1.5rem;
+		text-indent: 0.4rem;
+		text-align: left;
+		line-height: 0.2rem;
+		font-size: 0.16rem;
+		border-bottom-right-radius: 4%;
+		border-bottom-left-radius: 4%;
+	}
+	#chat_input::-webkit-scrollbar {
+		/*background: rgba(255, 255, 255, 1);*/
+	}
+
+	#chat_input::-webkit-scrollbar-thumb {
+		background: deepskyblue;
+		border-radius: 6px;
+	}
+	#biaoqing {
+		font-size: 0.25rem;
+		position: absolute;
+		top: 3.6rem;
+		left: 0.1rem;
+	}
+	#biaoqing_box {
+		display: none;
+		background: white;
+		position: absolute;
+		top: -1.5rem;
+		left: -0.1rem;
+		width: 3rem;
+		height: 1.5rem;
+	}
+	#biaoqing_box img {
+		padding: 0.05rem;
+		width: 0.3rem;
+		height: 0.3rem;
+	}
+	.fa-smile-o:hover {
+		color: rgba(0, 245, 255, 1);
+	}
+	#btnSend {
+		border-radius: 8%;
+		width: 0.6rem;
+		height: 0.3rem;
+		cursor: pointer;
+		font-family: '新宋体' '微软雅黑';
+		font-size: 0.14rem;
+		margin: 0;
+		border: none;
+		outline: none;
+		color: white;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+		background: rgba(0, 132, 255, 0.8);
+		position: absolute;
+		right: 0.2rem;
+		bottom: 0.2rem;
+		line-height: 0.3rem;
+		text-align: center;
+	}
+
+	#btnSend:hover {
+		background: rgba(0, 132, 255, 1);
+	}
+	#btnSend:active {
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3) inset;
+	}
+	#setName {
+		display: none;
+		width: 6.5rem;
+		height: 5.2rem;
+		position: absolute;
+		left: 50%;
+		top: 0.4rem;
+		margin-left: -3.25rem;
+		z-index: 9999;
+		background: linear-gradient(to top, rgba(249, 216, 162, 1), darkgoldenrod);
+	}
+	#setName input {
+		display: none !important;
+		border: none;
+		width: 1rem;
+		font-family: '微软雅黑';
+		font-size: 0.16rem;
+		position: absolute;
+		top: 0.2rem;
+		left: 50%;
+		margin-left: -0.5rem;
+		background: transparent;
+		border-radius: 5%;
+		border-bottom: 2px solid deepskyblue;
+	}
+	#smile {
+		width: 0.7rem;
+		height: 0.7rem;
+		border-radius: 50%;
+		position: absolute;
+		top: 0.5rem;
+		left: 50%;
+		margin-left: -0.35rem;
+		font-size: 0.7rem;
+		line-height: 0.7rem;
+		color: #40affe;
+	}
+	#smileList {
+		width: 6.5rem;
+		height: 2.1rem;
+		position: absolute;
+		top: 1.2rem;
+		left: 0rem;
+		font-size: 0.4rem;
+		line-height: 0.7rem;
+		text-align: center;
+	}
+	#smileList div {
+		font-size: 0.2rem;
+		text-align: center;
+	}
+	#smileList i:hover {
+		color: #40affe;
+	}
+	#btnSetName {
+		border-radius: 8%;
+		width: 1rem;
+		height: 0.5rem;
+		cursor: pointer;
+		font-family: '新宋体' '微软雅黑';
+		font-size: 0.16rem;
+		margin: 0;
+		border: none;
+		outline: none;
+		color: white;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+		background: rgba(0, 132, 255, 0.8);
+		position: absolute;
+		right: 0.5rem;
+		bottom: 1.2rem;
+		line-height: 0.5rem;
+		text-align: center;
+	}
+	/*聊天界面 用户信息*/
+	/*头像*/
+	#chat_main code {
+		display: inline-block;
+		text-align: center;
+		width: 0.4rem;
+		height: 0.4rem;
+		line-height: 0.4rem;
+		border: 1px solid #00bfff;
+		border-radius: 100%;
+		font-size: 0.3rem;
+		color: #40affe;
+	}
+	/*自己的消息气泡*/
+	.uesr_info_chat {
+		/*允许复制有一定概率触发拖动bug*/
+		-moz-user-select: none;
+		-khtml-user-select: none;
+		user-select: none;
+		display: inline-block;
+		text-align: left;
+		border-radius: 10px 10px;
+		padding: 0.1rem;
+		color: white;
+		background: rgba(0, 132, 255, 1);
+		max-width: 5.1rem;
+		height: auto;
+	}
+	/*复制时的颜色*/
+	.uesr_info_chat::selection {
+		background: cyan;
+		color: white;
+	}
+
+	.uesr_info_chat::-moz-selection {
+		background: #d3d3d3;
+		color: #555;
+	}
+
+	.uesr_info_chat::-webkit-selection {
+		background: #d3d3d3;
+		color: #555;
+	}
+	/*整体*/
+	#chat_main_info {
+		width: 6.5rem;
+		height: 3.6rem;
+		display: inline-block !important;
+		position: absolute;
+		right: 0px;
+		left: 0px;
+	}
+	/*每个消息的内容 昵称 头像  消息*/
+	.self_info {
+		position: relative;
+		top: 0;
+		right: 0.67rem;
+		display: block;
+		margin-top: 0.2rem;
+		text-align: right;
+	}
+	.self_info_name,
+	.self_info_photo {
+		display: inline-block;
+		text-align: right;
+		/*position:absolute;*/
+	}
+	.self_info_photo {
+		position: absolute;
+		right: -0.5rem;
+	}
+	.self_info_name {
+		position: absolute;
+		color: black;
+		font-weight: 500;
+		top: -0.2rem;
+		right: 0rem;
+		font-size: 0.13rem;
+	}
+	/*其他用户*/
+	.other_info {
+		position: relative;
+		left: 0.5rem;
+		top: 0;
+		display: block;
+		margin-top: 0.2rem;
+		text-align: left !important;
+	}
+	.other_info_name,
+	.other_info_photo {
+		display: inline-block;
+		text-align: left;
+	}
+	.other_info_name {
+		position: absolute;
+		color: black;
+		font-weight: 500;
+		top: -0.22rem;
+		left: 0rem;
+		font-size: 0.13rem;
+	}
+	.other_info_photo {
+		position: absolute;
+		left: -0.5rem;
+	}
+	/*别人的气泡*/
+	.other_info_chat {
+		/*允许复制有一定概率触发拖动bug*/
+		-moz-user-select: none;
+		-khtml-user-select: none;
+		user-select: none;
+		display: inline-block;
+		text-align: left;
+		border-radius: 10px 10px;
+		padding: 0.1rem;
+		color: black;
+		background: #dcdcdc;
+		max-width: 5.1rem;
+		height: auto;
+	}
+	/*vip气泡  彩蛋  哈哈*/
+	.vip_info_chat {
+		/*允许复制有一定概率触发拖动bug*/
+		-moz-user-select: none;
+		-khtml-user-select: none;
+		user-select: none;
+		display: inline-block;
+		text-align: left;
+		border-radius: 10px 10px;
+		padding: 0.1rem;
+		color: black;
+		background: gold;
+		animation: vip_info_chat 2s linear;
+		max-width: 5.1rem;
+		height: auto;
+	}
+	@keyframes vip_info_chat {
+		0% {
+			background: #00ffff;
+		}
+		25% {
+			background: #009f95;
+		}
+		50% {
+			background: red;
+		}
+		100% {
+			background: gold;
+		}
+	}
+	/*在线人数*/
+	.chat_title_onlineNum {
+		font-size: 0.12rem;
+		color: white;
+		margin-left: 0.1rem;
+	}
+}
+
+@media (max-width: 800px) {
+	#setName input {
+		display: none !important;
+		border: none;
+		width: 1rem;
+		font-family: '微软雅黑';
+		font-size: 0.16rem;
+		position: absolute;
+		top: 0.2rem;
+		left: 50%;
+		margin-left: -0.5rem;
+		background: transparent;
+		border-radius: 5%;
+		border-bottom: 2px solid deepskyblue;
+	}
+	.inputPosition {
+		position: absolute;
+		left: 50%;
+		width: 30vmin;
 		margin-left: -15vmin;
 	}
-	.inputStyle{
-		width:30vmin;
+	.inputStyle {
+		width: 30vmin;
 		height: 5vmin;
-		font:3vmin "宋体" ;
+		font: 3vmin '宋体';
 		margin: 0;
 		padding: 0;
 		outline: none;
 		border: none;
 		background: transparent;
-		border-bottom:2px solid darkgoldenrod;
+		border-bottom: 2px solid darkgoldenrod;
 		transition: 0.3s;
 	}
-	.form{
+	.form {
 		display: none !important;
-		position:absolute;
+		position: absolute;
 		top: 50%;
 		left: 50%;
 		margin-top: -48vmin;
@@ -705,15 +708,15 @@ user-select: none;
 		background: rgba(249, 216, 162, 1);
 		opacity: 0.95;
 		z-index: 999;
-		box-shadow: 1px 1px 0px 100vw rgba(0,0,0,0.4);
+		box-shadow: 1px 1px 0px 100vw rgba(0, 0, 0, 0.4);
 	}
-	#loginName{
+	#loginName {
 		top: 27vmin;
 	}
-	#loginPassWord{
+	#loginPassWord {
 		top: 36vmin;
 	}
-	.inputPosition span{
+	.inputPosition span {
 		float: left;
 		margin-left: -1.5rem;
 		line-height: 4vmin;
