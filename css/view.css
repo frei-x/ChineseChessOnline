@@ -99,11 +99,12 @@
 		left: 50%;
 		top: 50%;
 		width: 15vmin;
+		min-width: 282px;
 		max-height: 20vmin;
 		overflow-y: scroll;
 		border: 0.05rem solid darkgoldenrod;
 		background: rgba(249, 216, 162, 1);
-		padding: 5px;
+		padding: 5px 8px;
 		box-sizing: border-box;
 	}
 	#Chessboard span {
